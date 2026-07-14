@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@font-face {
+  font-family: "LogRecap Local";
+  src:
+    local("Segoe UI Variable"),
+    local("Segoe UI"),
+    local("Inter"),
+    local("Poppins");
+  font-display: swap;
+  font-style: normal;
+  font-weight: 100 900;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  /* Kalau punya file font sendiri, simpan di public/fonts lalu ganti src @font-face ke url("/fonts/nama-font.woff2"). */
+  font-family:
+    "LogRecap Local", Inter, Poppins, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  background:
+    radial-gradient(circle at 12% 12%, rgba(244, 114, 182, 0.1), transparent 26rem),
+    radial-gradient(circle at 86% 8%, rgba(132, 204, 22, 0.12), transparent 22rem),
+    #f8fafc;
+  color: #18181b;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.dark body {
+  background:
+    radial-gradient(circle at 12% 12%, rgba(244, 114, 182, 0.12), transparent 26rem),
+    radial-gradient(circle at 86% 8%, rgba(132, 204, 22, 0.13), transparent 22rem),
+    #050505;
+  color: #f8fafc;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  background: rgba(244, 114, 182, 0.32);
+}
+
+.gradient-text {
+  @apply bg-gradient-to-r from-pink-500 via-lime-400 to-cyan-400 bg-clip-text text-transparent;
+}
+
+.soft-grid {
+  background-image:
+    linear-gradient(rgba(24, 24, 27, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(24, 24, 27, 0.08) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.dark .soft-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+}
+
+/* Transisi tema global supaya dark mode terasa halus. */
+body,
+body * {
+  @apply transition-colors duration-300;
+}
