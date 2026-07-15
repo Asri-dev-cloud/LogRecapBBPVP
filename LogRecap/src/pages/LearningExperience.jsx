@@ -547,84 +547,14 @@ const LearningExperience = () => {
           </div>
         </motion.div>
 
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-          {/* Quiz List */}
-          <div className="lg:col-span-2">
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-              <div className="mb-4 flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <BookOpen size={20} className="text-pink-500" />
-                  <h2 className="text-xl font-black uppercase tracking-wider text-white drop-shadow-[0_0_6px_rgba(236,72,153,0.3)]">
-                    Daftar Kuis Tersedia
-                  </h2>
-                </div>
-                <button
-                  onClick={refreshQuizzes}
-                  className="grid size-9 place-items-center rounded-xl border border-pink-500/30 bg-black hover:bg-pink-500/10 text-pink-400 transition-colors shadow-sm"
-                  title="Muat Ulang"
-                >
-                  <RefreshCw size={14} />
-                </button>
-              </div>
-
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                {quizzes.length === 0 ? (
-                  <div className="col-span-full flex flex-col items-center gap-4 py-16 text-center border border-dashed border-zinc-800 rounded-3xl bg-[#09090b]/40">
-                    <BookOpen size={44} className="text-zinc-700" />
-                    <p className="text-sm font-medium text-zinc-500">Belum ada kuis yang ditambahkan admin.</p>
-                  </div>
-                ) : (
-                  quizzes.map((quiz, idx) => {
-                    const dColor = difficultyColors[quiz.difficulty] || difficultyColors.Easy;
-                    return (
-                      <motion.button
-                        key={quiz.id}
-                        initial={{ opacity: 0, y: 15 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.03 * idx }}
-                        whileHover={{ scale: 1.01, y: -4 }}
-                        whileTap={{ scale: 0.99 }}
-                        onClick={() => startQuiz(quiz)}
-                        className="group relative flex flex-col justify-between rounded-2xl border border-pink-500/10 bg-[#09090b]/85 p-5 text-left backdrop-blur-sm transition-all hover:border-pink-500/50 hover:shadow-[0_0_20px_rgba(236,72,153,0.12)] shadow-sm"
-                      >
-                        <div>
-                          <div className="mb-4 flex items-center justify-between">
-                            <span className="grid size-11 place-items-center rounded-xl bg-pink-500/10 text-pink-400 shadow-inner group-hover:scale-110 transition-transform">
-                              <Zap size={20} />
-                            </span>
-                            <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${dColor.bg}`}>
-                              <span className={`mr-1.5 inline-block size-1.5 rounded-full ${dColor.dot}`} />
-                              {quiz.difficulty}
-                            </span>
-                          </div>
-                          <h3 className="text-base font-bold text-white group-hover:text-pink-400 transition-colors">
-                            {quiz.title}
-                          </h3>
-                          <p className="mt-2 text-xs text-zinc-400 line-clamp-2 leading-relaxed">
-                            {quiz.description}
-                          </p>
-                        </div>
-                        <div className="mt-4 flex items-center justify-between border-t border-zinc-900 pt-3 text-[11px] font-bold text-zinc-500">
-                          <span>{quiz.totalQuestions} Pertanyaan</span>
-                          <span className="flex items-center gap-1 text-pink-500 opacity-0 group-hover:opacity-100 transition-all">
-                            Mulai Kuis <ChevronRight size={12} />
-                          </span>
-                        </div>
-                      </motion.button>
-                    );
-                  })
-                )}
-              </div>
-            </motion.div>
-          </div>
-
+        {/* Top Section: Leaderboard + Stats Dashboard */}
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3 mb-8">
           {/* Leaderboard Column */}
           <div className="lg:col-span-1">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="lg:sticky lg:top-28"
             >
               <div className="mb-4 flex items-center gap-2.5">
                 <Medal size={20} className="text-lime-400" />
@@ -640,7 +570,7 @@ const LearningExperience = () => {
                     <p className="text-xs font-semibold text-zinc-500">Belum ada skor tercatat.</p>
                   </div>
                 ) : (
-                  <div className="divide-y divide-zinc-900">
+                  <div className="divide-y divide-zinc-900 max-h-[380px] overflow-y-auto">
                     {leaderboard.map((entry, index) => (
                       <motion.div
                         key={entry.id || index}
@@ -657,7 +587,7 @@ const LearningExperience = () => {
                         >
                           {index + 1}
                         </span>
-                        <div className="flex-1 min-w-0">
+                        <div className="flex-1 min-w-0 text-left">
                           <p className="truncate text-sm font-bold text-zinc-900 dark:text-white">
                             {entry.fullName || entry.username}
                           </p>
@@ -676,68 +606,143 @@ const LearningExperience = () => {
               </div>
             </motion.div>
           </div>
+
+          {/* Stats Column */}
+          <div className="lg:col-span-2">
+            {isAuthenticated && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.05 }}
+                className="grid grid-cols-1 gap-4 sm:grid-cols-3 h-full"
+              >
+                {/* Streak Card */}
+                <div className="rounded-2xl border border-pink-500/20 bg-[#09090b]/85 p-5 backdrop-blur-md shadow-[0_0_15px_rgba(236,72,153,0.05)] hover:border-pink-500/50 hover:shadow-[0_0_20px_rgba(236,72,153,0.12)] transition-all duration-300 flex flex-col justify-center">
+                  <div className="flex items-center gap-4">
+                    <span className="grid size-12 place-items-center rounded-xl bg-gradient-to-br from-pink-500 to-rose-600 text-white shadow-lg shadow-pink-500/20">
+                      <Flame size={22} className="animate-pulse" />
+                    </span>
+                    <div className="text-left">
+                      <h3 className="text-2xl font-black tracking-tight text-white">{streak} Hari</h3>
+                      <p className="text-xs font-bold text-pink-400/80 uppercase tracking-wider mt-0.5">Current Streak</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Total Points Card */}
+                <div className="rounded-2xl border border-yellow-500/20 bg-[#09090b]/85 p-5 backdrop-blur-md shadow-[0_0_15px_rgba(234,179,8,0.05)] hover:border-yellow-500/50 hover:shadow-[0_0_20px_rgba(234,179,8,0.12)] transition-all duration-300 flex flex-col justify-center">
+                  <div className="flex items-center gap-4">
+                    <span className="grid size-12 place-items-center rounded-xl bg-gradient-to-br from-yellow-400 to-amber-650 text-white shadow-lg shadow-yellow-500/20">
+                      <Star size={22} />
+                    </span>
+                    <div className="text-left">
+                      <h3 className="text-2xl font-black tracking-tight text-white">{points} pts</h3>
+                      <p className="text-xs font-bold text-yellow-400/80 uppercase tracking-wider mt-0.5">Total Points</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Achievements Progress Card */}
+                <div className="rounded-2xl border border-lime-500/20 bg-[#09090b]/85 p-5 backdrop-blur-md shadow-[0_0_15px_rgba(132,204,22,0.05)] hover:border-lime-500/50 hover:shadow-[0_0_20px_rgba(132,204,22,0.12)] transition-all duration-300 flex flex-col justify-center">
+                  <div className="flex items-center gap-4">
+                    <span className="grid size-12 place-items-center rounded-xl bg-gradient-to-br from-emerald-500 to-lime-650 text-white shadow-lg shadow-emerald-500/20">
+                      <TrendingUp size={22} />
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between">
+                        <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-gradient-to-r ${getBadgeColor(points)}`}>
+                          {getBadgeTitle(points)}
+                        </span>
+                        <span className="text-xs font-bold text-zinc-500">1000 pts</span>
+                      </div>
+                      <div className="mt-2.5 h-2 w-full overflow-hidden rounded-full bg-zinc-900">
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{ width: `${progressPercent}%` }}
+                          transition={{ duration: 1, ease: 'easeOut' }}
+                          className="h-full rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </div>
         </div>
 
-        {/* Stats Dashboard */}
-        {isAuthenticated && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.05 }}
-            className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3"
-          >
-            {/* Streak Card */}
-            <div className="rounded-2xl border border-pink-500/20 bg-[#09090b]/85 p-5 backdrop-blur-md shadow-[0_0_15px_rgba(236,72,153,0.05)] hover:border-pink-500/50 hover:shadow-[0_0_20px_rgba(236,72,153,0.12)] transition-all duration-300">
-              <div className="flex items-center gap-4">
-                <span className="grid size-12 place-items-center rounded-xl bg-gradient-to-br from-pink-500 to-rose-600 text-white shadow-lg shadow-pink-500/20">
-                  <Flame size={22} className="animate-pulse" />
-                </span>
-                <div className="text-left">
-                  <h3 className="text-2xl font-black tracking-tight text-white">{streak} Hari</h3>
-                  <p className="text-xs font-bold text-pink-400/80 uppercase tracking-wider mt-0.5">Current Streak</p>
-                </div>
+        {/* Separator */}
+        <div className="border-t border-zinc-800/40 my-8" />
+
+        {/* Bottom Section: Quiz List */}
+        <div className="w-full">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+            <div className="mb-4 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <BookOpen size={20} className="text-pink-500" />
+                <h2 className="text-xl font-black uppercase tracking-wider text-white drop-shadow-[0_0_6px_rgba(236,72,153,0.3)]">
+                  Daftar Kuis Tersedia
+                </h2>
               </div>
+              <button
+                onClick={refreshQuizzes}
+                className="grid size-9 place-items-center rounded-xl border border-pink-500/30 bg-black hover:bg-pink-500/10 text-pink-400 transition-colors shadow-sm"
+                title="Muat Ulang"
+              >
+                <RefreshCw size={14} />
+              </button>
             </div>
 
-            {/* Total Points Card */}
-            <div className="rounded-2xl border border-yellow-500/20 bg-[#09090b]/85 p-5 backdrop-blur-md shadow-[0_0_15px_rgba(234,179,8,0.05)] hover:border-yellow-500/50 hover:shadow-[0_0_20px_rgba(234,179,8,0.12)] transition-all duration-300">
-              <div className="flex items-center gap-4">
-                <span className="grid size-12 place-items-center rounded-xl bg-gradient-to-br from-yellow-400 to-amber-650 text-white shadow-lg shadow-yellow-500/20">
-                  <Star size={22} />
-                </span>
-                <div className="text-left">
-                  <h3 className="text-2xl font-black tracking-tight text-white">{points} pts</h3>
-                  <p className="text-xs font-bold text-yellow-400/80 uppercase tracking-wider mt-0.5">Total Points</p>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {quizzes.length === 0 ? (
+                <div className="col-span-full flex flex-col items-center gap-4 py-16 text-center border border-dashed border-zinc-800 rounded-3xl bg-[#09090b]/40">
+                  <BookOpen size={44} className="text-zinc-700" />
+                  <p className="text-sm font-medium text-zinc-500">Belum ada kuis yang ditambahkan admin.</p>
                 </div>
-              </div>
-            </div>
-
-            {/* Achievements Progress Card */}
-            <div className="rounded-2xl border border-lime-500/20 bg-[#09090b]/85 p-5 backdrop-blur-md shadow-[0_0_15px_rgba(132,204,22,0.05)] hover:border-lime-500/50 hover:shadow-[0_0_20px_rgba(132,204,22,0.12)] transition-all duration-300">
-              <div className="flex items-center gap-4">
-                <span className="grid size-12 place-items-center rounded-xl bg-gradient-to-br from-emerald-500 to-lime-650 text-white shadow-lg shadow-emerald-500/20">
-                  <TrendingUp size={22} />
-                </span>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-gradient-to-r ${getBadgeColor(points)}`}>
-                      {getBadgeTitle(points)}
-                    </span>
-                    <span className="text-xs font-bold text-zinc-500">1000 pts</span>
-                  </div>
-                  <div className="mt-2.5 h-2 w-full overflow-hidden rounded-full bg-zinc-900">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: `${progressPercent}%` }}
-                      transition={{ duration: 1, ease: 'easeOut' }}
-                      className="h-full rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500"
-                    />
-                  </div>
-                </div>
-              </div>
+              ) : (
+                quizzes.map((quiz, idx) => {
+                  const dColor = difficultyColors[quiz.difficulty] || difficultyColors.Easy;
+                  return (
+                    <motion.button
+                      key={quiz.id}
+                      initial={{ opacity: 0, y: 15 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.03 * idx }}
+                      whileHover={{ scale: 1.01, y: -4 }}
+                      whileTap={{ scale: 0.99 }}
+                      onClick={() => startQuiz(quiz)}
+                      className="group relative flex flex-col justify-between rounded-2xl border border-pink-500/10 bg-[#09090b]/85 p-5 text-left backdrop-blur-sm transition-all hover:border-pink-500/50 hover:shadow-[0_0_20px_rgba(236,72,153,0.12)] shadow-sm"
+                    >
+                      <div>
+                        <div className="mb-4 flex items-center justify-between">
+                          <span className="grid size-11 place-items-center rounded-xl bg-pink-500/10 text-pink-400 shadow-inner group-hover:scale-110 transition-transform">
+                            <Zap size={20} />
+                          </span>
+                          <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${dColor.bg}`}>
+                            <span className={`mr-1.5 inline-block size-1.5 rounded-full ${dColor.dot}`} />
+                            {quiz.difficulty}
+                          </span>
+                        </div>
+                        <h3 className="text-base font-bold text-white group-hover:text-pink-400 transition-colors">
+                          {quiz.title}
+                        </h3>
+                        <p className="mt-2 text-xs text-zinc-400 line-clamp-2 leading-relaxed">
+                          {quiz.description}
+                        </p>
+                      </div>
+                      <div className="mt-4 flex items-center justify-between border-t border-zinc-900 pt-3 text-[11px] font-bold text-zinc-500">
+                        <span>{quiz.totalQuestions} Pertanyaan</span>
+                        <span className="flex items-center gap-1 text-pink-500 opacity-0 group-hover:opacity-100 transition-all">
+                          Mulai Kuis <ChevronRight size={12} />
+                        </span>
+                      </div>
+                    </motion.button>
+                  );
+                })
+              )}
             </div>
           </motion.div>
-        )}
+        </div>
       </div>
 
       {/* Quiz Modal */}
