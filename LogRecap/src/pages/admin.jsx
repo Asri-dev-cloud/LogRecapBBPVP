@@ -857,58 +857,93 @@ const Admin = () => {
                   <p className="text-xs">Tidak ada log aktivitas tercatat.</p>
                 </div>
               ) : (
-                <div className="overflow-x-auto rounded-2xl border border-zinc-200 dark:border-white/5 bg-white dark:bg-zinc-950/20">
-                  <table className="w-full border-collapse text-left text-xs">
-                    <thead>
-                      <tr className="border-b border-zinc-200 dark:border-white/5 bg-zinc-50 dark:bg-white/[0.02] text-zinc-500 dark:text-zinc-400 font-bold uppercase tracking-wider">
-                        <th className="px-5 py-3.5">Waktu</th>
-                        <th className="px-5 py-3.5">User</th>
-                        <th className="px-5 py-3.5">Aksi</th>
-                        <th className="px-5 py-3.5">Keterangan</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-zinc-150 dark:divide-white/5">
-                      {filteredLogs.map((l) => (
-                        <tr key={l.id} className="hover:bg-zinc-50/55 dark:hover:bg-white/[0.01] transition-colors">
-                          <td className="px-5 py-3 text-zinc-500 font-mono whitespace-nowrap">
-                            {new Date(l.createdAt).toLocaleDateString('id-ID', {
-                              day: 'numeric',
-                              month: 'short',
-                            })}{' '}
-                            {new Date(l.createdAt).toLocaleTimeString('id-ID', {
-                              hour: '2-digit',
-                              minute: '2-digit',
-                              second: '2-digit',
-                            })}
-                          </td>
-                          <td className="px-5 py-3 whitespace-nowrap">
-                            <span className="font-bold text-zinc-750 dark:text-zinc-300">
-                              {l.username || `User ID ${l.userId}`}
-                            </span>
-                          </td>
-                          <td className="px-5 py-3 whitespace-nowrap">
-                            <span
-                              className={`inline-block rounded-md px-2 py-0.5 text-[9px] font-bold ${
-                                l.action.startsWith('CREATE') || l.action.startsWith('ADD')
-                                  ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
-                                  : l.action.startsWith('DELETE')
-                                  ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400'
-                                  : l.action.startsWith('CHANGE') || l.action.startsWith('UPDATE')
-                                  ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
-                                  : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400'
-                              }`}
-                            >
-                              {l.action}
-                            </span>
-                          </td>
-                          <td className="px-5 py-3 text-zinc-600 dark:text-zinc-400 max-w-md truncate" title={l.details}>
-                            {l.details}
-                          </td>
+                <>
+                  {/* Desktop View: Table */}
+                  <div className="hidden md:block overflow-x-auto rounded-2xl border border-zinc-200 dark:border-white/5 bg-white dark:bg-zinc-950/20">
+                    <table className="w-full border-collapse text-left text-xs">
+                      <thead>
+                        <tr className="border-b border-zinc-200 dark:border-white/5 bg-zinc-50 dark:bg-white/[0.02] text-zinc-500 dark:text-zinc-400 font-bold uppercase tracking-wider">
+                          <th className="px-5 py-3.5">Waktu</th>
+                          <th className="px-5 py-3.5">User</th>
+                          <th className="px-5 py-3.5">Aksi</th>
+                          <th className="px-5 py-3.5">Keterangan</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                      </thead>
+                      <tbody className="divide-y divide-zinc-150 dark:divide-white/5">
+                        {filteredLogs.map((l) => (
+                          <tr key={l.id} className="hover:bg-zinc-50/55 dark:hover:bg-white/[0.01] transition-colors">
+                            <td className="px-5 py-3 text-zinc-500 font-mono whitespace-nowrap">
+                              {new Date(l.createdAt).toLocaleDateString('id-ID', {
+                                day: 'numeric',
+                                month: 'short',
+                              })}{' '}
+                              {new Date(l.createdAt).toLocaleTimeString('id-ID', {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                second: '2-digit',
+                              })}
+                            </td>
+                            <td className="px-5 py-3 whitespace-nowrap">
+                              <span className="font-bold text-zinc-750 dark:text-zinc-300">
+                                {l.username || (l.userId ? `User ID ${l.userId}` : 'Sistem')}
+                              </span>
+                            </td>
+                            <td className="px-5 py-3 whitespace-nowrap">
+                              <span
+                                className={`inline-block rounded-md px-2 py-0.5 text-[9px] font-bold ${
+                                  l.action.startsWith('CREATE') || l.action.startsWith('ADD')
+                                    ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
+                                    : l.action.startsWith('DELETE')
+                                    ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400'
+                                    : l.action.startsWith('CHANGE') || l.action.startsWith('UPDATE')
+                                    ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
+                                    : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400'
+                                }`}
+                              >
+                                {l.action}
+                              </span>
+                            </td>
+                            <td className="px-5 py-3 text-zinc-600 dark:text-zinc-400 max-w-md truncate" title={l.details}>
+                              {l.details}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Mobile View: Cards list */}
+                  <div className="block md:hidden space-y-3">
+                    {filteredLogs.map((l) => (
+                      <div key={l.id} className="rounded-2xl border border-zinc-200 dark:border-white/10 bg-white/70 dark:bg-[#0c0d12]/50 p-4 space-y-2 text-left">
+                        <div className="flex items-center justify-between">
+                          <span className="text-3xs font-bold text-zinc-500 dark:text-zinc-450 font-mono">
+                            {new Date(l.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })} {new Date(l.createdAt).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
+                          </span>
+                          <span className={`inline-block rounded-md px-2 py-0.5 text-[9px] font-bold ${
+                            l.action.startsWith('CREATE') || l.action.startsWith('ADD')
+                              ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
+                              : l.action.startsWith('DELETE')
+                              ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400'
+                              : l.action.startsWith('CHANGE') || l.action.startsWith('UPDATE')
+                              ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400'
+                              : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400'
+                          }`}>
+                            {l.action}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="text-xs font-black text-zinc-800 dark:text-white">
+                            {l.username || (l.userId ? `User ID ${l.userId}` : 'Sistem')}
+                          </span>
+                        </div>
+                        <div className="text-xs font-semibold text-zinc-500 dark:text-zinc-450 break-words leading-relaxed border-t border-zinc-150 dark:border-white/5 pt-1.5">
+                          {l.details}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
               )}
             </motion.div>
           )}

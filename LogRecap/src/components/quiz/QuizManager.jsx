@@ -405,18 +405,21 @@ const QuizManager = ({ onClose, onQuizUpdate }) => {
 
   return (
     <div className="rounded-2xl border border-zinc-200 bg-white/80 dark:border-white/10 dark:bg-zinc-900/80">
-      <div className="flex items-center justify-between border-b border-zinc-200 px-5 py-4 dark:border-white/10">
-        <div className="flex items-center gap-2"><ShieldCheck size={16} className="text-amber-500" /><h3 className="text-base font-black text-zinc-900 dark:text-white">Kelola Quiz (Admin)</h3></div>
-        <div className="flex gap-2">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center justify-between border-b border-zinc-200 px-5 py-4 dark:border-white/10 text-left">
+        <div className="flex items-center gap-2">
+          <ShieldCheck size={16} className="text-amber-500" />
+          <h3 className="text-base font-black text-zinc-900 dark:text-white">Kelola Quiz (Admin)</h3>
+        </div>
+        <div className="flex flex-wrap gap-2 items-center">
           <button type="button" onClick={() => { resetForm(); setShowForm(true); }}
-            className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-2 text-xs font-bold text-white shadow-lg transition-all hover:shadow-xl">
+            className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-3 py-2 text-xs font-bold text-white shadow-lg transition-all hover:shadow-xl">
             <Plus size={14} /> Buat Quiz
           </button>
           <button type="button" onClick={downloadTemplate}
-            className="flex items-center gap-1.5 rounded-xl border border-zinc-200 px-4 py-2 text-xs font-bold text-zinc-600 transition-colors hover:bg-zinc-150 dark:border-white/10 dark:text-zinc-400 dark:hover:bg-zinc-800">
+            className="flex items-center gap-1.5 rounded-xl border border-zinc-200 px-3 py-2 text-xs font-bold text-zinc-600 transition-colors hover:bg-zinc-150 dark:border-white/10 dark:text-zinc-400 dark:hover:bg-zinc-800">
             Unduh Templat
           </button>
-          <label className="flex cursor-pointer items-center gap-1.5 rounded-xl border border-zinc-200 px-4 py-2 text-xs font-bold text-zinc-600 transition-colors hover:bg-zinc-100 dark:border-white/10 dark:text-zinc-400 dark:hover:bg-zinc-800">
+          <label className="flex cursor-pointer items-center gap-1.5 rounded-xl border border-zinc-200 px-3 py-2 text-xs font-bold text-zinc-600 transition-colors hover:bg-zinc-100 dark:border-white/10 dark:text-zinc-400 dark:hover:bg-zinc-800">
             <Upload size={14} /> Impor CSV
             <input type="file" accept=".csv,.tsv,.txt" className="hidden" onChange={(e) => { resetForm(); setShowForm(true); handleCsvImport(e); }} />
           </label>
@@ -528,18 +531,36 @@ const QuizManager = ({ onClose, onQuizUpdate }) => {
             const IconComp = iconOptions.find((o) => o.value === quiz.icon)?.Icon || Zap;
             return (
               <div key={quiz.id} className="group">
-                <div className="flex items-center gap-3 px-5 py-3.5 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/30">
-                  <div className="grid size-9 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 text-white shadow"><IconComp size={16} /></div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-bold text-zinc-900 dark:text-white">{quiz.title}</p>
-                    <p className="truncate text-[11px] text-zinc-500">{quiz.description}</p>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-3 px-5 py-4 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/30">
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <div className="grid size-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 text-white shadow">
+                      <IconComp size={18} />
+                    </div>
+                    <div className="flex-1 min-w-0 text-left">
+                      <p className="text-sm font-bold text-zinc-900 dark:text-white break-words">{quiz.title}</p>
+                      <p className="text-[11px] text-zinc-500 line-clamp-1">{quiz.description}</p>
+                      
+                      {/* Mobile metadata */}
+                      <div className="flex sm:hidden items-center gap-2 mt-1.5">
+                        <span className={`rounded-full px-2 py-0.5 text-[9px] font-bold ${dColor}`}>{quiz.difficulty}</span>
+                        <span className="text-[10px] font-bold text-zinc-400">{quiz.totalQuestions} Soal</span>
+                      </div>
+                    </div>
                   </div>
-                  <span className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold ${dColor}`}>{quiz.difficulty}</span>
-                  <span className="shrink-0 text-[11px] font-bold text-zinc-400">{quiz.totalQuestions} S</span>
-                  <div className="flex shrink-0 gap-1 opacity-0 transition-opacity group-hover:opacity-100">
-                    <button type="button" onClick={() => handleEdit(quiz)} className="grid size-8 place-items-center rounded-lg text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-300"><Pencil size={14} /></button>
-                    <button type="button" onClick={() => handleDelete(quiz.id)} className="grid size-8 place-items-center rounded-lg text-zinc-400 transition-colors hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-950/30"><Trash2 size={14} /></button>
-                    <button type="button" onClick={() => setExpandedId(isExpanded ? null : quiz.id)} className="grid size-8 place-items-center rounded-lg text-zinc-400 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800">{isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}</button>
+
+                  <div className="flex items-center justify-between sm:justify-end gap-3 border-t border-zinc-150 pt-3 mt-1 sm:border-0 sm:pt-0 sm:mt-0 shrink-0 dark:border-white/5">
+                    {/* Desktop metadata */}
+                    <div className="hidden sm:flex items-center gap-3 mr-2">
+                      <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${dColor}`}>{quiz.difficulty}</span>
+                      <span className="text-[11px] font-bold text-zinc-400 whitespace-nowrap">{quiz.totalQuestions} S</span>
+                    </div>
+
+                    {/* Action buttons (always visible on mobile, hover-reveal on desktop) */}
+                    <div className="flex gap-1.5 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+                      <button type="button" onClick={() => handleEdit(quiz)} className="grid size-9 place-items-center rounded-xl border border-zinc-200 dark:border-white/10 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-300 transition-all" title="Edit Quiz"><Pencil size={14} /></button>
+                      <button type="button" onClick={() => handleDelete(quiz.id)} className="grid size-9 place-items-center rounded-xl border border-red-500/20 text-red-500 hover:bg-red-500 hover:text-white dark:hover:bg-red-950/30 transition-all" title="Hapus Quiz"><Trash2 size={14} /></button>
+                      <button type="button" onClick={() => setExpandedId(isExpanded ? null : quiz.id)} className="grid size-9 place-items-center rounded-xl border border-zinc-200 dark:border-white/10 text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-all">{isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}</button>
+                    </div>
                   </div>
                 </div>
                 <AnimatePresence>
