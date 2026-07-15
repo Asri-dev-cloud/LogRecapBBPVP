@@ -169,7 +169,7 @@ const LearningExperience = () => {
 
   const startQuiz = (quiz) => {
     if (!isAuthenticated) {
-      navigate('/login');
+      navigate('/login', { state: { message: 'Silakan masuk terlebih dahulu untuk memulai kuis.' } });
       return;
     }
 
@@ -412,10 +412,10 @@ const LearningExperience = () => {
       .cert-wrap { position: relative; width: 1000px; max-width: 100%; border: 4px solid #333; border-radius: 12px; overflow: hidden; }
       .cert-wrap img { width: 100%; display: block; }
       .cert-text { position: absolute; text-align: center; }
-      .cert-name { left: 50%; transform: translateX(-50%); top: 38%; width: 85%; font-size: 54px; font-family: 'Great Vibes', cursive; color: #dfb75c; text-shadow: 1px 1px 2px rgba(0,0,0,0.6); }
-      .cert-title { left: 50%; transform: translateX(-50%); top: 63%; width: 85%; font-size: 22px; font-weight: 700; color: #ffffff; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
-      .cert-score { left: 29%; transform: translateX(-50%); top: 70%; font-size: 18px; font-weight: 900; color: #ffffff; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
-      .cert-date { right: 29%; transform: translateX(50%); top: 70%; font-size: 16px; font-weight: 700; color: #ffffff; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
+      .cert-name { left: 50%; transform: translateX(-50%); top: 48%; width: 85%; font-size: 54px; font-family: 'Great Vibes', cursive; color: #dfb75c; text-shadow: 1px 1px 2px rgba(0,0,0,0.6); }
+      .cert-title { left: 50%; transform: translateX(-50%); top: 68%; width: 85%; font-size: 22px; font-weight: 700; color: #ffffff; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
+      .cert-score { left: 29%; transform: translateX(-50%); top: 78%; font-size: 18px; font-weight: 900; color: #ffffff; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
+      .cert-date { right: 29%; transform: translateX(50%); top: 78%; font-size: 16px; font-weight: 700; color: #ffffff; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
     </style></head>
     <body>
       <div class="cert-wrap">
@@ -428,6 +428,68 @@ const LearningExperience = () => {
       <script>window.onload = function(){ window.print(); window.close(); };</script>
     </body></html>`);
     pw.document.close();
+  };
+
+  const handleDownloadCertificate = () => {
+    if (!certificateData) return;
+    const { userName, quizTitle, percentage, date } = certificateData;
+    const dateStr = new Date(date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+    const imageUrl = `/assets/Sertif.png`;
+
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.src = imageUrl;
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.naturalWidth || 1000;
+      canvas.height = img.naturalHeight || 700;
+
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+      // 1. Receiver Name
+      const nameFontSize = Math.round(canvas.width * 0.055);
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.font = `normal ${nameFontSize}px 'Great Vibes', cursive`;
+      ctx.fillStyle = '#dfb75c';
+      ctx.shadowColor = 'rgba(0,0,0,0.6)';
+      ctx.shadowBlur = 4;
+      ctx.shadowOffsetX = 1;
+      ctx.shadowOffsetY = 1;
+      ctx.fillText(userName, canvas.width / 2, canvas.height * 0.48);
+
+      // Reset shadow for readability of standard texts
+      ctx.shadowColor = 'transparent';
+      ctx.shadowBlur = 0;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 0;
+
+      // 2. Quiz Title
+      const titleFontSize = Math.round(canvas.width * 0.02);
+      ctx.font = `bold ${titleFontSize}px Georgia, serif`;
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText(quizTitle, canvas.width / 2, canvas.height * 0.68);
+
+      // 3. Score
+      const scoreFontSize = Math.round(canvas.width * 0.016);
+      ctx.font = `bold ${scoreFontSize}px sans-serif`;
+      ctx.fillText(`${percentage}%`, canvas.width * 0.29, canvas.height * 0.78);
+
+      // 4. Date
+      ctx.fillText(dateStr, canvas.width * 0.71, canvas.height * 0.78);
+
+      canvas.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Sertifikat-${userName.replace(/\s+/g, '_')}-${quizTitle.replace(/\s+/g, '_')}.png`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 'image/png');
+    };
   };
 
   if (loading) {
@@ -868,7 +930,7 @@ const LearningExperience = () => {
                 <img src="/assets/Sertif.png" alt="Sertifikat" className="w-full select-none" draggable={false} />
 
                 {/* Receiver Name */}
-                <div className="absolute left-1/2 w-[85%] -translate-x-1/2 text-center" style={{ top: '37%' }}>
+                <div className="absolute left-1/2 w-[85%] -translate-x-1/2 text-center" style={{ top: '48%' }}>
                   <p
                     className="text-4xl font-normal text-[#dfb75c] drop-shadow-md sm:text-5xl md:text-6xl"
                     style={{ fontFamily: "'Great Vibes', cursive" }}
@@ -878,19 +940,19 @@ const LearningExperience = () => {
                 </div>
 
                 {/* Quiz Title */}
-                <div className="absolute left-1/2 w-[85%] -translate-x-1/2 text-center" style={{ top: '63%' }}>
+                <div className="absolute left-1/2 w-[85%] -translate-x-1/2 text-center" style={{ top: '68%' }}>
                   <p className="text-xs font-bold text-white sm:text-sm md:text-lg">{certificateData.quizTitle}</p>
                 </div>
 
                 {/* Score */}
-                <div className="absolute left-[29%] -translate-x-1/2 text-center" style={{ top: '70%' }}>
+                <div className="absolute left-[29%] -translate-x-1/2 text-center" style={{ top: '78%' }}>
                   <span className="block text-xs font-black text-white sm:text-sm md:text-base">
                     {certificateData.percentage}%
                   </span>
                 </div>
 
                 {/* Date */}
-                <div className="absolute right-[29%] translate-x-1/2 text-center" style={{ top: '70%' }}>
+                <div className="absolute right-[29%] translate-x-1/2 text-center" style={{ top: '78%' }}>
                   <span className="block text-xs font-black text-white sm:text-sm md:text-base">
                     {new Date(certificateData.date).toLocaleDateString('id-ID', {
                       day: 'numeric',
@@ -903,10 +965,16 @@ const LearningExperience = () => {
 
               <div className="mt-4 flex flex-wrap gap-2 justify-end">
                 <button
-                  onClick={handlePrintCertificate}
+                  onClick={handleDownloadCertificate}
                   className="flex items-center gap-1.5 rounded-xl bg-amber-500 hover:bg-amber-450 px-5 py-3 text-sm font-bold text-zinc-950 transition-all shadow-lg shadow-amber-500/10"
                 >
-                  <Download size={15} /> Cetak / Unduh PDF
+                  <Download size={15} /> Unduh Sertifikat (PNG)
+                </button>
+                <button
+                  onClick={handlePrintCertificate}
+                  className="rounded-xl border border-zinc-200 dark:border-white/10 bg-zinc-50 dark:bg-white/5 px-5 py-3 text-sm font-bold text-zinc-700 dark:text-white hover:bg-zinc-100 dark:hover:bg-white/10"
+                >
+                  Cetak / Print
                 </button>
                 <button
                   onClick={closeCertificate}

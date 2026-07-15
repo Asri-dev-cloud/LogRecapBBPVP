@@ -61,34 +61,44 @@ export const AuthProvider = ({ children }) => {
         setUser(data.user);
         setIsAuthenticated(true);
         return data;
+      } else {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Username/email atau password salah.');
       }
-    } catch {
+    } catch (err) {
+      if (err.message && err.message !== 'Failed to fetch') {
+        throw err;
+      }
       // Server not available, try local
     }
 
     // Fallback: local storage auth
     const localUsers = getLocalUsers();
     const found = localUsers.find(u => u.email === email || u.username === email);
-    if (found && found.password === password) {
-      const userData = {
-        id: found.id,
-        username: found.username,
-        fullName: found.fullName,
-        email: found.email,
-        bio: found.bio || '',
-        totalPoints: found.totalPoints || 0,
-        streak: found.streak || 0,
-      };
-      const fakeToken = 'local_' + btoa(JSON.stringify({ id: found.id, email: found.email }));
-      localStorage.setItem('logrecap_token', fakeToken);
-      localStorage.setItem('logrecap_user', JSON.stringify(userData));
-      setToken(fakeToken);
-      setUser(userData);
-      setIsAuthenticated(true);
-      return { token: fakeToken, user: userData };
+    if (found) {
+      if (found.password === password) {
+        const userData = {
+          id: found.id,
+          username: found.username,
+          fullName: found.fullName,
+          email: found.email,
+          bio: found.bio || '',
+          totalPoints: found.totalPoints || 0,
+          streak: found.streak || 0,
+        };
+        const fakeToken = 'local_' + btoa(JSON.stringify({ id: found.id, email: found.email }));
+        localStorage.setItem('logrecap_token', fakeToken);
+        localStorage.setItem('logrecap_user', JSON.stringify(userData));
+        setToken(fakeToken);
+        setUser(userData);
+        setIsAuthenticated(true);
+        return { token: fakeToken, user: userData };
+      } else {
+        throw new Error('Password salah. Silakan coba lagi.');
+      }
     }
 
-    throw new Error('Invalid credentials. Server may be offline. Use local account or start the backend.');
+    throw new Error('Username atau email tidak terdaftar.');
   }, []);
 
   const register = useCallback(async (userData) => {

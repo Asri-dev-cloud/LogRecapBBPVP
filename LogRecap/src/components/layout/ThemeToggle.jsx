@@ -12,11 +12,10 @@ const ThemeToggle = () => {
       type="button"
       aria-label="Toggle theme"
       onClick={toggleTheme}
-      whileHover={{ scale: 1.04 }}
       whileTap={{ scale: 0.92 }}
-      className="grid size-9 place-items-center rounded-xl border border-zinc-200/60 bg-white/80 text-zinc-600 backdrop-blur transition-all hover:border-zinc-300 hover:bg-white hover:text-zinc-900 dark:border-zinc-700/50 dark:bg-zinc-800/40 dark:text-zinc-400 dark:hover:border-zinc-500 dark:hover:bg-zinc-700/60 dark:hover:text-white"
+      className="grid size-10 place-items-center rounded-full border border-zinc-200/60 bg-white/80 text-zinc-600 backdrop-blur transition-all duration-300 hover:border-transparent hover:bg-gradient-to-tr hover:from-pink-500 hover:to-amber-500 hover:text-white hover:shadow-lg hover:shadow-pink-500/20 dark:border-zinc-800/50 dark:bg-zinc-900/30 dark:text-zinc-400 dark:hover:border-transparent dark:hover:from-lime-400 dark:hover:to-emerald-500 dark:hover:text-zinc-950 dark:hover:shadow-emerald-500/20"
     >
-      {isDark ? <Sun size={15} /> : <Moon size={15} />}
+      {isDark ? <Sun size={17} /> : <Moon size={17} />}
     </motion.button>
   )
 }

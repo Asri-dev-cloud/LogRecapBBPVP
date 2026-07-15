@@ -184,7 +184,7 @@ const Admin = () => {
   // Access check
   useEffect(() => {
     if (!loading && !isAuthenticated) {
-      navigate('/login');
+      navigate('/login', { state: { message: 'Silakan masuk terlebih dahulu untuk mengakses Dashboard Admin.' } });
     }
   }, [loading, isAuthenticated, navigate]);
 
@@ -482,6 +482,17 @@ const Admin = () => {
           </div>
         </motion.div>
 
+        {user?.role !== 'admin' && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6 rounded-2xl border border-red-500/30 bg-red-950/20 p-4 text-sm text-red-400 font-semibold shadow-lg shadow-red-950/40 text-left flex items-center gap-2"
+          >
+            <span>⚠️</span>
+            <span>Berhasil masuk dashboard admin tapi belum punya akses sebagai admin (kemungkinan pembobolan)</span>
+          </motion.div>
+        )}
+
         {/* Tab Selector */}
         <div className="mb-8 flex flex-wrap gap-2 border-b border-pink-500/20 pb-5">
           {TABS.map((t) => {
@@ -692,13 +703,13 @@ const Admin = () => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="fixed inset-0 z-[95] flex items-center justify-center bg-zinc-950/80 p-4 backdrop-blur-md"
+                    className="fixed inset-0 z-[9999] flex items-center justify-center bg-zinc-950/80 p-4 backdrop-blur-md"
                   >
                     <motion.div
                       initial={{ scale: 0.92, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       exit={{ scale: 0.92, opacity: 0 }}
-                      className="w-full max-w-md rounded-3xl border border-zinc-200 dark:border-white/10 bg-white dark:bg-zinc-900 p-6 shadow-2xl"
+                      className="w-full max-w-md rounded-3xl border border-zinc-200 dark:border-white/10 bg-white dark:bg-zinc-900 p-6 shadow-2xl max-h-[82vh] overflow-y-auto"
                     >
                       <div className="mb-5 flex items-center justify-between border-b border-zinc-150 dark:border-white/5 pb-4">
                         <h3 className="text-lg font-black text-zinc-900 dark:text-white">
@@ -713,7 +724,7 @@ const Admin = () => {
                         </button>
                       </div>
 
-                      <form onSubmit={handleSaveUser} className="space-y-4 text-left">
+                      <form onSubmit={handleSaveUser} className="space-y-4 text-left pb-8">
                         <div>
                           <label className="mb-1 block text-xs font-bold text-zinc-500 dark:text-zinc-450">Username</label>
                           <input

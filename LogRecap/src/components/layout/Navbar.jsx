@@ -58,10 +58,10 @@ const Navbar = () => {
     }`
 
   const iconBtn = ({ isActive }) =>
-    `grid size-9 place-items-center rounded-xl border text-xs font-bold transition-all duration-200 ${
+    `grid size-10 place-items-center rounded-full border text-xs font-bold transition-all duration-300 shadow-sm ${
       isActive
-        ? 'border-zinc-300 bg-zinc-100 text-zinc-950 shadow-sm dark:border-zinc-700 dark:bg-white/10 dark:text-white'
-        : 'border-zinc-200/60 bg-white/80 text-zinc-600 backdrop-blur hover:border-zinc-300 hover:bg-white hover:text-zinc-900 dark:border-zinc-800/50 dark:bg-zinc-900/30 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:bg-zinc-800/60 dark:hover:text-white'
+        ? 'border-transparent bg-gradient-to-tr from-pink-500 to-amber-500 text-white shadow-lg shadow-pink-500/20 dark:from-lime-400 dark:to-emerald-500 dark:text-zinc-950 dark:shadow-emerald-500/20'
+        : 'border-zinc-200/60 bg-white/80 text-zinc-600 backdrop-blur hover:border-transparent hover:bg-gradient-to-tr hover:from-pink-500 hover:to-amber-500 hover:text-white hover:shadow-lg hover:shadow-pink-500/20 dark:border-zinc-800/50 dark:bg-zinc-900/30 dark:text-zinc-400 dark:hover:border-transparent dark:hover:from-lime-400 dark:hover:to-emerald-500 dark:hover:text-zinc-950 dark:hover:shadow-emerald-500/20'
     }`
 
   return (
@@ -106,24 +106,23 @@ const Navbar = () => {
 
           {/* Right side */}
           <div className="ml-auto flex items-center gap-1">
-            <NavLink to="/learning-experience" className={linkBase}>
-              <GraduationCap size={13} />
-              <span className="hidden sm:inline">Learn</span>
+            <NavLink to="/learning-experience" className={iconBtn} title="Mulai Belajar (Learning Experience)">
+              <GraduationCap size={17} />
             </NavLink>
 
             {isAuthenticated ? (
               <NavLink to="/account" className={iconBtn} title="Account">
-                <UserCircle size={16} />
+                <UserCircle size={17} />
               </NavLink>
             ) : (
               <NavLink to="/login" className={iconBtn} title="Login / Register">
-                <UserCircle size={16} />
+                <UserCircle size={17} />
               </NavLink>
             )}
 
             {isAuthenticated && (
               <NavLink to="/admin" className={iconBtn} title="Panel Admin">
-                <ShieldCheck size={16} />
+                <ShieldCheck size={17} />
               </NavLink>
             )}
 
@@ -134,7 +133,7 @@ const Navbar = () => {
               aria-label="Toggle menu"
               onClick={() => setIsOpen((prev) => !prev)}
               whileTap={{ scale: 0.92 }}
-              className="grid size-9 place-items-center rounded-xl border border-zinc-200/60 bg-white/80 text-zinc-600 backdrop-blur transition-all hover:border-zinc-300 hover:bg-white hover:text-zinc-900 dark:border-zinc-700/50 dark:bg-zinc-800/40 dark:text-zinc-400 dark:hover:border-zinc-500 dark:hover:bg-zinc-700/60 dark:hover:text-white lg:hidden"
+              className="grid size-10 place-items-center rounded-full border border-zinc-200/60 bg-white/80 text-zinc-600 backdrop-blur transition-all duration-300 hover:border-transparent hover:bg-gradient-to-tr hover:from-pink-500 hover:to-amber-500 hover:text-white hover:shadow-lg hover:shadow-pink-500/20 dark:border-zinc-800/50 dark:bg-zinc-900/30 dark:text-zinc-400 dark:hover:border-transparent dark:hover:from-lime-400 dark:hover:to-emerald-500 dark:hover:text-zinc-950 dark:hover:shadow-emerald-500/20 lg:hidden"
             >
               {isOpen ? <X size={17} /> : <Menu size={17} />}
             </motion.button>

@@ -34,7 +34,7 @@ const Account = () => {
 
   React.useEffect(() => {
     if (!loading && !isAuthenticated) {
-      navigate('/login');
+      navigate('/login', { state: { message: 'Silakan masuk terlebih dahulu untuk mengakses halaman akun Anda.' } });
     }
   }, [loading, isAuthenticated, navigate]);
 

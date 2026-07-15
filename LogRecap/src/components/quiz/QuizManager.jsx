@@ -142,6 +142,40 @@ const QuizManager = ({ onClose, onQuizUpdate }) => {
     );
   };
 
+  const parseCSV = (text) => {
+    const result = [];
+    let row = [''];
+    let inQuotes = false;
+
+    for (let i = 0; i < text.length; i++) {
+      const char = text[i];
+      const nextChar = text[i + 1];
+
+      if (char === '"') {
+        if (inQuotes && nextChar === '"') {
+          row[row.length - 1] += '"';
+          i++;
+        } else {
+          inQuotes = !inQuotes;
+        }
+      } else if (char === ',' && !inQuotes) {
+        row.push('');
+      } else if ((char === '\r' || char === '\n') && !inQuotes) {
+        if (char === '\r' && nextChar === '\n') {
+          i++;
+        }
+        result.push(row.map(val => val.trim()));
+        row = [''];
+      } else {
+        row[row.length - 1] += char;
+      }
+    }
+    if (row.length > 1 || row[0] !== '') {
+      result.push(row.map(val => val.trim()));
+    }
+    return result;
+  };
+
   const handleCsvImport = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -149,11 +183,11 @@ const QuizManager = ({ onClose, onQuizUpdate }) => {
     reader.onload = (evt) => {
       const text = evt.target?.result;
       if (typeof text !== 'string') return;
-      const lines = text.split('\n').filter((l) => l.trim());
-      if (lines.length < 2) return;
+      const parsedRows = parseCSV(text);
+      if (parsedRows.length < 2) return;
       const imported = [];
       const colMap = {};
-      const parts = lines[0].split(',').map((h) => h.trim().toLowerCase().replace(/^"(.*)"$/, '$1'));
+      const parts = parsedRows[0].map((h) => h.toLowerCase());
       parts.forEach((p, i) => {
         if (p.includes('question') || p.includes('pertanyaan') || p.includes('soal')) colMap.question = i;
         else if (p === 'a' || p === 'option1' || p === 'opt1') colMap.opt1 = i;
@@ -163,9 +197,10 @@ const QuizManager = ({ onClose, onQuizUpdate }) => {
         else if (p.includes('correct') || p.includes('answer') || p.includes('jawaban') || p.includes('benar')) colMap.correct = i;
       });
 
-      for (let i = 1; i < lines.length; i++) {
-        const cols = lines[i].split(',').map((c) => c.trim().replace(/^"(.*)"$/, '$1'));
-        if (!cols[colMap.question]) continue;
+      for (let i = 1; i < parsedRows.length; i++) {
+        const cols = parsedRows[i];
+        if (cols.length <= 1 && cols[0] === '') continue; // Skip empty rows
+        if (colMap.question === undefined || !cols[colMap.question]) continue;
         const q = { question: cols[colMap.question] || '', options: ['', '', '', ''], correct: 0 };
         if (colMap.opt1 !== undefined) q.options[0] = cols[colMap.opt1] || '';
         if (colMap.opt2 !== undefined) q.options[1] = cols[colMap.opt2] || '';
