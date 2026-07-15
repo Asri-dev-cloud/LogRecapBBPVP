@@ -504,7 +504,7 @@ const LearningExperience = () => {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white pt-28 pb-16 relative transition-colors duration-200">
+    <div className="min-h-screen bg-zinc-50 dark:bg-[#07080b] text-zinc-900 dark:text-white pt-28 pb-16 relative transition-colors duration-200">
       {/* Cyberpunk Glow Backgrounds */}
       <div className="absolute top-0 left-0 -z-10 size-[500px] rounded-full bg-pink-500/10 blur-[130px] opacity-80" />
       <div className="absolute bottom-0 right-0 -z-10 size-[500px] rounded-full bg-lime-500/10 blur-[130px] opacity-80" />
@@ -518,10 +518,10 @@ const LearningExperience = () => {
                 <BrainCircuit size={24} />
               </span>
               <div className="text-left">
-                <h1 className="text-3xl font-black uppercase tracking-wider text-white drop-shadow-[0_0_10px_rgba(236,72,153,0.5)]">
+                <h1 className="text-3xl font-black uppercase tracking-wider text-zinc-950 dark:text-white drop-shadow-[0_0_10px_rgba(236,72,153,0.5)]">
                   Learning Experience
                 </h1>
-                <p className="text-sm text-zinc-400 mt-1 font-medium">
+                <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1 font-medium">
                   {isAuthenticated
                     ? `Selamat datang kembali, ${user?.fullName || user?.username}!`
                     : 'Masuk akun untuk menyimpan progress belajar & mengklaim sertifikat.'}
@@ -532,7 +532,7 @@ const LearningExperience = () => {
               <div className="flex flex-wrap items-center gap-2">
                 <button
                   onClick={() => setShowHistory(true)}
-                  className="flex items-center gap-1.5 rounded-xl border border-pink-500/30 bg-black/60 px-4 py-2.5 text-xs font-bold text-pink-400 transition-all hover:bg-pink-500/10 hover:shadow-[0_0_15px_rgba(236,72,153,0.15)]"
+                  className="flex items-center gap-1.5 rounded-xl border border-pink-500/30 bg-white/70 dark:bg-black/60 px-4 py-2.5 text-xs font-bold text-pink-400 transition-all hover:bg-pink-500/10 hover:shadow-[0_0_15px_rgba(236,72,153,0.15)]"
                 >
                   <History size={14} />
                   <span>Riwayat Sertifikat</span>
@@ -558,31 +558,31 @@ const LearningExperience = () => {
             >
               <div className="mb-4 flex items-center gap-2.5">
                 <Medal size={20} className="text-lime-400" />
-                <h2 className="text-xl font-black uppercase tracking-wider text-white drop-shadow-[0_0_6px_rgba(132,204,22,0.3)]">
+                <h2 className="text-xl font-black uppercase tracking-wider text-zinc-950 dark:text-white drop-shadow-[0_0_6px_rgba(132,204,22,0.3)]">
                   Leaderboard Global
                 </h2>
               </div>
               
-              <div className="rounded-2xl border border-lime-500/10 bg-[#09090b]/85 backdrop-blur-md overflow-hidden shadow-[0_0_15px_rgba(132,204,22,0.05)]">
+              <div className="rounded-2xl border border-zinc-200 dark:border-lime-500/10 bg-white/80 dark:bg-[#09090b]/85 backdrop-blur-md overflow-hidden shadow-[0_0_15px_rgba(132,204,22,0.05)]">
                 {leaderboard.length === 0 ? (
                   <div className="flex flex-col items-center gap-2 py-16 text-center">
                     <User size={36} className="text-zinc-700" />
                     <p className="text-xs font-semibold text-zinc-500">Belum ada skor tercatat.</p>
                   </div>
                 ) : (
-                  <div className="divide-y divide-zinc-900 max-h-[380px] overflow-y-auto">
+                  <div className="divide-y divide-zinc-150 dark:divide-zinc-900 max-h-[380px] overflow-y-auto">
                     {leaderboard.map((entry, index) => (
                       <motion.div
                         key={entry.id || index}
                         whileHover={{ x: 3, backgroundColor: 'rgba(132,204,22,0.04)' }}
-                        className="flex items-center gap-4 px-4 py-3.5 transition-colors border-b border-zinc-900/40 last:border-b-0"
+                        className="flex items-center gap-4 px-4 py-3.5 transition-colors border-b border-zinc-150 dark:border-zinc-900/40 last:border-b-0"
                       >
                         <span
                           className={`grid size-7 shrink-0 place-items-center rounded-lg text-xs font-black ${
                             index === 0 ? 'bg-gradient-to-br from-yellow-400 to-amber-500 text-amber-950 shadow-md'
                             : index === 1 ? 'bg-gradient-to-br from-slate-300 to-slate-400 text-slate-950 shadow-md'
                             : index === 2 ? 'bg-gradient-to-br from-orange-400 to-amber-500 text-orange-950 shadow-md'
-                            : 'bg-[#0e0e11] text-zinc-400 border border-zinc-900'
+                            : 'bg-zinc-100 dark:bg-[#0e0e11] text-zinc-650 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-900'
                           }`}
                         >
                           {index + 1}
@@ -617,33 +617,33 @@ const LearningExperience = () => {
                 className="grid grid-cols-1 gap-4 sm:grid-cols-3 h-full"
               >
                 {/* Streak Card */}
-                <div className="rounded-2xl border border-pink-500/20 bg-[#09090b]/85 p-5 backdrop-blur-md shadow-[0_0_15px_rgba(236,72,153,0.05)] hover:border-pink-500/50 hover:shadow-[0_0_20px_rgba(236,72,153,0.12)] transition-all duration-300 flex flex-col justify-center">
+                <div className="rounded-2xl border border-zinc-200 dark:border-pink-500/20 bg-white/80 dark:bg-[#09090b]/85 p-5 backdrop-blur-md shadow-[0_0_15px_rgba(236,72,153,0.05)] hover:border-pink-500/50 hover:shadow-[0_0_20px_rgba(236,72,153,0.12)] transition-all duration-300 flex flex-col justify-center">
                   <div className="flex items-center gap-4">
                     <span className="grid size-12 place-items-center rounded-xl bg-gradient-to-br from-pink-500 to-rose-600 text-white shadow-lg shadow-pink-500/20">
                       <Flame size={22} className="animate-pulse" />
                     </span>
                     <div className="text-left">
-                      <h3 className="text-2xl font-black tracking-tight text-white">{streak} Hari</h3>
+                      <h3 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-white">{streak} Hari</h3>
                       <p className="text-xs font-bold text-pink-400/80 uppercase tracking-wider mt-0.5">Current Streak</p>
                     </div>
                   </div>
                 </div>
 
                 {/* Total Points Card */}
-                <div className="rounded-2xl border border-yellow-500/20 bg-[#09090b]/85 p-5 backdrop-blur-md shadow-[0_0_15px_rgba(234,179,8,0.05)] hover:border-yellow-500/50 hover:shadow-[0_0_20px_rgba(234,179,8,0.12)] transition-all duration-300 flex flex-col justify-center">
+                <div className="rounded-2xl border border-zinc-200 dark:border-yellow-500/20 bg-white/80 dark:bg-[#09090b]/85 p-5 backdrop-blur-md shadow-[0_0_15px_rgba(234,179,8,0.05)] hover:border-yellow-500/50 hover:shadow-[0_0_20px_rgba(234,179,8,0.12)] transition-all duration-300 flex flex-col justify-center">
                   <div className="flex items-center gap-4">
                     <span className="grid size-12 place-items-center rounded-xl bg-gradient-to-br from-yellow-400 to-amber-650 text-white shadow-lg shadow-yellow-500/20">
                       <Star size={22} />
                     </span>
                     <div className="text-left">
-                      <h3 className="text-2xl font-black tracking-tight text-white">{points} pts</h3>
+                      <h3 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-white">{points} pts</h3>
                       <p className="text-xs font-bold text-yellow-400/80 uppercase tracking-wider mt-0.5">Total Points</p>
                     </div>
                   </div>
                 </div>
 
                 {/* Achievements Progress Card */}
-                <div className="rounded-2xl border border-lime-500/20 bg-[#09090b]/85 p-5 backdrop-blur-md shadow-[0_0_15px_rgba(132,204,22,0.05)] hover:border-lime-500/50 hover:shadow-[0_0_20px_rgba(132,204,22,0.12)] transition-all duration-300 flex flex-col justify-center">
+                <div className="rounded-2xl border border-zinc-200 dark:border-lime-500/20 bg-white/80 dark:bg-[#09090b]/85 p-5 backdrop-blur-md shadow-[0_0_15px_rgba(132,204,22,0.05)] hover:border-lime-500/50 hover:shadow-[0_0_20px_rgba(132,204,22,0.12)] transition-all duration-300 flex flex-col justify-center">
                   <div className="flex items-center gap-4">
                     <span className="grid size-12 place-items-center rounded-xl bg-gradient-to-br from-emerald-500 to-lime-650 text-white shadow-lg shadow-emerald-500/20">
                       <TrendingUp size={22} />
@@ -653,9 +653,9 @@ const LearningExperience = () => {
                         <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-gradient-to-r ${getBadgeColor(points)}`}>
                           {getBadgeTitle(points)}
                         </span>
-                        <span className="text-xs font-bold text-zinc-500">1000 pts</span>
+                        <span className="text-xs font-bold text-zinc-500 dark:text-zinc-400">1000 pts</span>
                       </div>
-                      <div className="mt-2.5 h-2 w-full overflow-hidden rounded-full bg-zinc-900">
+                      <div className="mt-2.5 h-2 w-full overflow-hidden rounded-full bg-zinc-150 dark:bg-zinc-900">
                         <motion.div
                           initial={{ width: 0 }}
                           animate={{ width: `${progressPercent}%` }}
@@ -672,7 +672,7 @@ const LearningExperience = () => {
         </div>
 
         {/* Separator */}
-        <div className="border-t border-zinc-800/40 my-8" />
+        <div className="border-t border-zinc-250 dark:border-zinc-800/40 my-8" />
 
         {/* Bottom Section: Quiz List */}
         <div className="w-full">
@@ -680,13 +680,13 @@ const LearningExperience = () => {
             <div className="mb-4 flex items-center justify-between">
               <div className="flex items-center gap-2.5">
                 <BookOpen size={20} className="text-pink-500" />
-                <h2 className="text-xl font-black uppercase tracking-wider text-white drop-shadow-[0_0_6px_rgba(236,72,153,0.3)]">
+                <h2 className="text-xl font-black uppercase tracking-wider text-zinc-950 dark:text-white drop-shadow-[0_0_6px_rgba(236,72,153,0.3)]">
                   Daftar Kuis Tersedia
                 </h2>
               </div>
               <button
                 onClick={refreshQuizzes}
-                className="grid size-9 place-items-center rounded-xl border border-pink-500/30 bg-black hover:bg-pink-500/10 text-pink-400 transition-colors shadow-sm"
+                className="grid size-9 place-items-center rounded-xl border border-zinc-200 dark:border-pink-500/30 bg-white dark:bg-black hover:bg-pink-500/10 text-pink-400 transition-colors shadow-sm"
                 title="Muat Ulang"
               >
                 <RefreshCw size={14} />
@@ -695,7 +695,7 @@ const LearningExperience = () => {
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {quizzes.length === 0 ? (
-                <div className="col-span-full flex flex-col items-center gap-4 py-16 text-center border border-dashed border-zinc-800 rounded-3xl bg-[#09090b]/40">
+                <div className="col-span-full flex flex-col items-center gap-4 py-16 text-center border border-dashed border-zinc-200 dark:border-zinc-800 rounded-3xl bg-white/40 dark:bg-[#09090b]/40">
                   <BookOpen size={44} className="text-zinc-700" />
                   <p className="text-sm font-medium text-zinc-500">Belum ada kuis yang ditambahkan admin.</p>
                 </div>
@@ -711,7 +711,7 @@ const LearningExperience = () => {
                       whileHover={{ scale: 1.01, y: -4 }}
                       whileTap={{ scale: 0.99 }}
                       onClick={() => startQuiz(quiz)}
-                      className="group relative flex flex-col justify-between rounded-2xl border border-pink-500/10 bg-[#09090b]/85 p-5 text-left backdrop-blur-sm transition-all hover:border-pink-500/50 hover:shadow-[0_0_20px_rgba(236,72,153,0.12)] shadow-sm"
+                      className="group relative flex flex-col justify-between rounded-2xl border border-zinc-200 dark:border-pink-500/10 bg-white/80 dark:bg-[#09090b]/85 p-5 text-left backdrop-blur-sm transition-all hover:border-pink-500/50 hover:shadow-[0_0_20px_rgba(236,72,153,0.12)] shadow-sm dark:border-white/5"
                     >
                       <div>
                         <div className="mb-4 flex items-center justify-between">
@@ -723,14 +723,14 @@ const LearningExperience = () => {
                             {quiz.difficulty}
                           </span>
                         </div>
-                        <h3 className="text-base font-bold text-white group-hover:text-pink-400 transition-colors">
+                        <h3 className="text-base font-bold text-zinc-900 dark:text-white group-hover:text-pink-400 transition-colors">
                           {quiz.title}
                         </h3>
-                        <p className="mt-2 text-xs text-zinc-400 line-clamp-2 leading-relaxed">
+                        <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400 line-clamp-2 leading-relaxed">
                           {quiz.description}
                         </p>
                       </div>
-                      <div className="mt-4 flex items-center justify-between border-t border-zinc-900 pt-3 text-[11px] font-bold text-zinc-500">
+                      <div className="mt-4 flex items-center justify-between border-t border-zinc-150 dark:border-zinc-900 pt-3 text-[11px] font-bold text-zinc-500">
                         <span>{quiz.totalQuestions} Pertanyaan</span>
                         <span className="flex items-center gap-1 text-pink-500 opacity-0 group-hover:opacity-100 transition-all">
                           Mulai Kuis <ChevronRight size={12} />

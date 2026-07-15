@@ -451,7 +451,7 @@ const Admin = () => {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white pt-28 pb-16 relative transition-colors duration-200">
+    <div className="min-h-screen bg-zinc-50 dark:bg-[#07080b] text-zinc-900 dark:text-white pt-28 pb-16 relative transition-colors duration-200">
       {/* Cyberpunk Glow Backgrounds */}
       <div className="absolute top-0 right-0 -z-10 size-[450px] rounded-full bg-pink-500/10 blur-[130px] opacity-80" />
       <div className="absolute bottom-0 left-0 -z-10 size-[450px] rounded-full bg-lime-500/10 blur-[130px] opacity-80" />
@@ -461,7 +461,7 @@ const Admin = () => {
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
           <Link
             to="/learning-experience"
-            className="mb-4 inline-flex items-center gap-1.5 text-xs font-bold text-pink-400 hover:text-pink-300 transition-colors border border-pink-500/20 bg-pink-500/5 rounded-xl px-3 py-1.5"
+            className="mb-4 inline-flex items-center gap-1.5 text-xs font-bold text-pink-450 hover:text-pink-400 transition-colors border border-pink-500/20 bg-pink-500/5 rounded-xl px-3 py-1.5"
           >
             <ArrowLeft size={14} />
             <span>Kembali ke Belajar</span>
@@ -472,10 +472,10 @@ const Admin = () => {
               <ShieldCheck size={24} />
             </span>
             <div className="text-left">
-              <h1 className="text-3xl font-black uppercase tracking-wider text-white drop-shadow-[0_0_10px_rgba(236,72,153,0.5)]">
+              <h1 className="text-3xl font-black uppercase tracking-wider text-zinc-950 dark:text-white drop-shadow-[0_0_10px_rgba(236,72,153,0.5)]">
                 Dashboard Admin
               </h1>
-              <p className="text-sm text-zinc-400 mt-1 font-medium">
+              <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1 font-medium">
                 Panel pengelolaan kuis, materi tambahan, terminal belajar, akun pengguna, dan log sistem.
               </p>
             </div>
@@ -505,7 +505,7 @@ const Admin = () => {
                 className={`inline-flex items-center gap-2 rounded-xl px-5 py-3 text-xs font-bold transition-all border ${
                   active
                     ? 'bg-pink-600 text-white border-pink-500 shadow-[0_0_15px_rgba(236,72,153,0.35)]'
-                    : 'bg-[#09090b]/80 text-zinc-400 border-pink-500/10 hover:border-pink-500/40 hover:text-pink-500 shadow-sm'
+                    : 'bg-white/80 dark:bg-[#09090b]/80 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-pink-500/10 hover:border-pink-500/40 hover:text-pink-500 shadow-sm'
                 }`}
               >
                 <Icon size={14} />
