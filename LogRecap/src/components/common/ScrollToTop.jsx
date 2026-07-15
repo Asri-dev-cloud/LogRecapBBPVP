@@ -27,8 +27,8 @@ const ScrollToTop = () => {
       type="button"
       onClick={handleClick}
       aria-label="Scroll ke atas"
-      className={`fixed bottom-5 right-5 z-50 grid size-12 place-items-center rounded-full border border-zinc-200 bg-zinc-950 text-white shadow-2xl shadow-zinc-900/20 transition-all duration-300 hover:-translate-y-1 hover:bg-pink-500 dark:border-white/10 dark:bg-white dark:text-zinc-950 dark:hover:bg-lime-300 ${
-        isVisible ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-4 opacity-0'
+      className={`fixed bottom-6 right-6 z-50 grid size-12 place-items-center rounded-full bg-gradient-to-tr from-pink-500 to-amber-500 text-white shadow-xl shadow-pink-500/25 transition-all duration-300 hover:-translate-y-1.5 hover:scale-105 active:scale-95 dark:from-lime-400 dark:to-emerald-500 dark:text-zinc-950 dark:shadow-emerald-500/25 ${
+        isVisible ? 'translate-y-0 opacity-100 scale-100' : 'pointer-events-none translate-y-4 opacity-0 scale-90'
       }`}
     >
       <ArrowUp size={21} />

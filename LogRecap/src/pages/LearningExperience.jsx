@@ -547,67 +547,6 @@ const LearningExperience = () => {
           </div>
         </motion.div>
 
-        {/* Stats Dashboard */}
-        {isAuthenticated && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.05 }}
-            className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3"
-          >
-            {/* Streak Card */}
-            <div className="rounded-2xl border border-pink-500/20 bg-[#09090b]/85 p-5 backdrop-blur-md shadow-[0_0_15px_rgba(236,72,153,0.05)] hover:border-pink-500/50 hover:shadow-[0_0_20px_rgba(236,72,153,0.12)] transition-all duration-300">
-              <div className="flex items-center gap-4">
-                <span className="grid size-12 place-items-center rounded-xl bg-gradient-to-br from-pink-500 to-rose-600 text-white shadow-lg shadow-pink-500/20">
-                  <Flame size={22} className="animate-pulse" />
-                </span>
-                <div className="text-left">
-                  <h3 className="text-2xl font-black tracking-tight text-white">{streak} Hari</h3>
-                  <p className="text-xs font-bold text-pink-400/80 uppercase tracking-wider mt-0.5">Current Streak</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Total Points Card */}
-            <div className="rounded-2xl border border-yellow-500/20 bg-[#09090b]/85 p-5 backdrop-blur-md shadow-[0_0_15px_rgba(234,179,8,0.05)] hover:border-yellow-500/50 hover:shadow-[0_0_20px_rgba(234,179,8,0.12)] transition-all duration-300">
-              <div className="flex items-center gap-4">
-                <span className="grid size-12 place-items-center rounded-xl bg-gradient-to-br from-yellow-400 to-amber-650 text-white shadow-lg shadow-yellow-500/20">
-                  <Star size={22} />
-                </span>
-                <div className="text-left">
-                  <h3 className="text-2xl font-black tracking-tight text-white">{points} pts</h3>
-                  <p className="text-xs font-bold text-yellow-400/80 uppercase tracking-wider mt-0.5">Total Points</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Achievements Progress Card */}
-            <div className="rounded-2xl border border-lime-500/20 bg-[#09090b]/85 p-5 backdrop-blur-md shadow-[0_0_15px_rgba(132,204,22,0.05)] hover:border-lime-500/50 hover:shadow-[0_0_20px_rgba(132,204,22,0.12)] transition-all duration-300">
-              <div className="flex items-center gap-4">
-                <span className="grid size-12 place-items-center rounded-xl bg-gradient-to-br from-emerald-500 to-lime-650 text-white shadow-lg shadow-emerald-500/20">
-                  <TrendingUp size={22} />
-                </span>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-gradient-to-r ${getBadgeColor(points)}`}>
-                      {getBadgeTitle(points)}
-                    </span>
-                    <span className="text-xs font-bold text-zinc-500">1000 pts</span>
-                  </div>
-                  <div className="mt-2.5 h-2 w-full overflow-hidden rounded-full bg-zinc-900">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: `${progressPercent}%` }}
-                      transition={{ duration: 1, ease: 'easeOut' }}
-                      className="h-full rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )}
-
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
           {/* Quiz List */}
           <div className="lg:col-span-2">
@@ -738,6 +677,67 @@ const LearningExperience = () => {
             </motion.div>
           </div>
         </div>
+
+        {/* Stats Dashboard */}
+        {isAuthenticated && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.05 }}
+            className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3"
+          >
+            {/* Streak Card */}
+            <div className="rounded-2xl border border-pink-500/20 bg-[#09090b]/85 p-5 backdrop-blur-md shadow-[0_0_15px_rgba(236,72,153,0.05)] hover:border-pink-500/50 hover:shadow-[0_0_20px_rgba(236,72,153,0.12)] transition-all duration-300">
+              <div className="flex items-center gap-4">
+                <span className="grid size-12 place-items-center rounded-xl bg-gradient-to-br from-pink-500 to-rose-600 text-white shadow-lg shadow-pink-500/20">
+                  <Flame size={22} className="animate-pulse" />
+                </span>
+                <div className="text-left">
+                  <h3 className="text-2xl font-black tracking-tight text-white">{streak} Hari</h3>
+                  <p className="text-xs font-bold text-pink-400/80 uppercase tracking-wider mt-0.5">Current Streak</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Total Points Card */}
+            <div className="rounded-2xl border border-yellow-500/20 bg-[#09090b]/85 p-5 backdrop-blur-md shadow-[0_0_15px_rgba(234,179,8,0.05)] hover:border-yellow-500/50 hover:shadow-[0_0_20px_rgba(234,179,8,0.12)] transition-all duration-300">
+              <div className="flex items-center gap-4">
+                <span className="grid size-12 place-items-center rounded-xl bg-gradient-to-br from-yellow-400 to-amber-650 text-white shadow-lg shadow-yellow-500/20">
+                  <Star size={22} />
+                </span>
+                <div className="text-left">
+                  <h3 className="text-2xl font-black tracking-tight text-white">{points} pts</h3>
+                  <p className="text-xs font-bold text-yellow-400/80 uppercase tracking-wider mt-0.5">Total Points</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Achievements Progress Card */}
+            <div className="rounded-2xl border border-lime-500/20 bg-[#09090b]/85 p-5 backdrop-blur-md shadow-[0_0_15px_rgba(132,204,22,0.05)] hover:border-lime-500/50 hover:shadow-[0_0_20px_rgba(132,204,22,0.12)] transition-all duration-300">
+              <div className="flex items-center gap-4">
+                <span className="grid size-12 place-items-center rounded-xl bg-gradient-to-br from-emerald-500 to-lime-650 text-white shadow-lg shadow-emerald-500/20">
+                  <TrendingUp size={22} />
+                </span>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between">
+                    <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-gradient-to-r ${getBadgeColor(points)}`}>
+                      {getBadgeTitle(points)}
+                    </span>
+                    <span className="text-xs font-bold text-zinc-500">1000 pts</span>
+                  </div>
+                  <div className="mt-2.5 h-2 w-full overflow-hidden rounded-full bg-zinc-900">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${progressPercent}%` }}
+                      transition={{ duration: 1, ease: 'easeOut' }}
+                      className="h-full rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
       </div>
 
       {/* Quiz Modal */}

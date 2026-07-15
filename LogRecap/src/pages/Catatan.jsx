@@ -582,37 +582,42 @@ const Catatan = () => {
   )
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
+    <div className="relative min-h-screen overflow-x-hidden bg-zinc-50 dark:bg-[#07080b]">
+      {/* Background Decorative Glows */}
+      <div className="absolute right-0 top-0 -z-10 size-[350px] rounded-full bg-pink-500/10 blur-[120px] dark:bg-pink-500/[0.07]" />
+      <div className="absolute left-0 bottom-0 -z-10 size-[350px] rounded-full bg-lime-500/10 blur-[120px] dark:bg-lime-500/[0.07]" />
+
       <div className="mx-auto w-full max-w-6xl px-4 pb-16 pt-28 sm:px-6 sm:pt-32">
-        {/* Header */}
+        {/* Header Back Link */}
         <Link
           to="/"
-          className="mb-5 inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-500 transition hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-white"
+          className="mb-6 inline-flex items-center gap-1.5 rounded-full border border-zinc-200/80 bg-white/50 px-3.5 py-1.5 text-xs font-bold text-zinc-500 transition hover:bg-zinc-150 hover:text-zinc-800 dark:border-white/10 dark:bg-white/[0.02] dark:text-zinc-400 dark:hover:bg-white/5 dark:hover:text-white"
         >
-          <ArrowLeft size={14} />
-          Kembali ke beranda
+          <ArrowLeft size={13} />
+          Kembali ke Beranda
         </Link>
 
-        <div className="mb-8 flex flex-col gap-5 rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:p-8 dark:border-white/10 dark:bg-zinc-900">
+        {/* Dashboard Title & Action Button */}
+        <div className="mb-8 flex flex-col gap-5 rounded-3xl border border-zinc-250/70 bg-white/80 p-6 shadow-sm backdrop-blur-md sm:flex-row sm:items-center sm:justify-between sm:p-8 dark:border-white/10 dark:bg-[#0a0c10]/90">
           <div className="flex items-start gap-4">
             <span className="hidden h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-zinc-900 text-white sm:flex dark:bg-white dark:text-zinc-900">
               <FileText size={20} />
             </span>
-            <div>
-              <h1 className="text-2xl font-bold text-zinc-900 sm:text-3xl dark:text-white">Catatan</h1>
+            <div className="text-left">
+              <h1 className="text-2xl font-black text-zinc-950 sm:text-3xl dark:text-white">Catatan</h1>
               <p className="mt-1 max-w-md text-sm text-zinc-500 dark:text-zinc-400">
                 Log bahasan, foto, tabel, dan cuplikan terminal selama belajar web development.
               </p>
               {notes.length > 0 && (
-                <p className="mt-2 text-xs font-semibold text-zinc-400 dark:text-zinc-500">
-                  {notes.length} catatan tersimpan
-                </p>
+                <div className="mt-2 inline-block rounded-full bg-zinc-100 px-2.5 py-0.5 text-3xs font-black uppercase tracking-wider text-zinc-500 dark:bg-white/5 dark:text-zinc-400">
+                  {notes.length} Catatan Tersimpan
+                </div>
               )}
             </div>
           </div>
           <button
             onClick={handleAddClick}
-            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-zinc-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-zinc-800 active:scale-[0.98] dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-200"
+            className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-pink-500 to-amber-500 px-5 py-3 text-sm font-black text-white shadow-lg shadow-pink-500/20 transition-all hover:shadow-xl hover:shadow-pink-500/30 active:scale-[0.98]"
           >
             <Plus size={16} />
             Tambah Catatan
@@ -621,41 +626,41 @@ const Catatan = () => {
 
         {/* Notes grid */}
         {sortedNotes.length === 0 ? (
-          <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-zinc-300 bg-white px-6 py-20 text-center dark:border-white/15 dark:bg-white/5">
+          <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-zinc-250 bg-white/50 px-6 py-24 text-center dark:border-white/10 dark:bg-[#0a0c10]/40">
             <NotebookEmptyIcon />
-            <p className="mt-4 font-semibold text-zinc-700 dark:text-zinc-200">Belum ada catatan</p>
-            <p className="mt-1 max-w-sm text-sm text-zinc-500 dark:text-zinc-400">
-              Klik &ldquo;Tambah Catatan&rdquo; untuk mulai mencatat bahasan, foto, tabel, atau cuplikan terminal.
+            <p className="mt-4 text-base font-black text-zinc-800 dark:text-zinc-200">Belum ada catatan</p>
+            <p className="mt-1.5 max-w-xs text-xs text-zinc-500 dark:text-zinc-400">
+              Klik &ldquo;Tambah Catatan&rdquo; untuk mulai mencatat bahasan kuis, foto, tabel, atau cuplikan terminal.
             </p>
           </div>
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
             {sortedNotes.map((note) => {
               const meta = TYPE_META[note.type]
               const Icon = meta?.icon ?? FileText
               return (
                 <div
                   key={note.id}
-                  className="flex flex-col gap-3 rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-white/10 dark:bg-zinc-900"
+                  className="group flex flex-col gap-4 rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-pink-500/30 hover:shadow-[0_0_20px_rgba(236,72,153,0.08)] dark:border-white/10 dark:bg-[#090b0f]/80 dark:hover:border-pink-500/40"
                 >
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex items-center gap-2.5">
+                  <div className="flex items-start justify-between gap-2 border-b border-zinc-150 pb-3 dark:border-white/5">
+                    <div className="flex items-center gap-3">
                       <span
-                        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${meta?.badge ?? 'bg-zinc-100 text-zinc-700 dark:bg-white/10 dark:text-zinc-200'}`}
+                        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-transform group-hover:scale-105 ${meta?.badge ?? 'bg-zinc-100 text-zinc-700 dark:bg-white/10 dark:text-zinc-200'}`}
                       >
                         <Icon size={16} />
                       </span>
-                      <div>
-                        <p className="font-bold leading-tight text-zinc-900 dark:text-white">{note.title}</p>
-                        <p className="text-xs text-zinc-400">{formatDate(note.createdAt)}</p>
+                      <div className="text-left">
+                        <p className="font-black leading-snug text-zinc-900 dark:text-white">{note.title}</p>
+                        <p className="text-[10px] font-semibold text-zinc-400 mt-0.5">{formatDate(note.createdAt)}</p>
                       </div>
                     </div>
                     <button
                       onClick={() => handleDeleteClick(note.id)}
-                      className="shrink-0 rounded-lg p-1.5 text-zinc-400 transition hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-500/10"
+                      className="shrink-0 rounded-xl border border-zinc-200/50 p-1.5 text-zinc-400 transition hover:border-red-500/20 hover:bg-red-50 hover:text-red-500 dark:border-white/5 dark:hover:bg-red-500/10"
                       title="Hapus catatan"
                     >
-                      <Trash2 size={16} />
+                      <Trash2 size={14} />
                     </button>
                   </div>
                   <NoteContent note={note} />
