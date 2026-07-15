@@ -540,35 +540,20 @@ function NoteContent({ note }) {
 
 const Catatan = () => {
   const [notes, setNotes] = useState(() => loadNotes())
-  const [gate, setGate] = useState(null) // 'add' | 'delete' | null
-  const [pendingDeleteId, setPendingDeleteId] = useState(null)
   const [showAddModal, setShowAddModal] = useState(false)
 
   useEffect(() => {
     persistNotes(notes)
   }, [notes])
 
-  const handleAddClick = () => setGate('add')
+  const handleAddClick = () => {
+    setShowAddModal(true)
+  }
 
   const handleDeleteClick = (id) => {
-    setPendingDeleteId(id)
-    setGate('delete')
-  }
-
-  const handleGateConfirm = () => {
-    if (gate === 'add') {
-      setGate(null)
-      setShowAddModal(true)
-    } else if (gate === 'delete') {
-      setNotes((prev) => prev.filter((n) => n.id !== pendingDeleteId))
-      setGate(null)
-      setPendingDeleteId(null)
+    if (window.confirm('Apakah Anda yakin ingin menghapus catatan ini?')) {
+      setNotes((prev) => prev.filter((n) => n.id !== id))
     }
-  }
-
-  const handleGateCancel = () => {
-    setGate(null)
-    setPendingDeleteId(null)
   }
 
   const handleSaveNote = (note) => {
@@ -671,24 +656,6 @@ const Catatan = () => {
         )}
       </div>
 
-      {gate === 'add' && (
-        <PasswordGate
-          key="gate-add"
-          title="Tambah Catatan"
-          description="Masukkan password untuk menambah catatan baru."
-          onConfirm={handleGateConfirm}
-          onCancel={handleGateCancel}
-        />
-      )}
-      {gate === 'delete' && (
-        <PasswordGate
-          key="gate-delete"
-          title="Hapus Catatan"
-          description="Masukkan password untuk menghapus catatan ini."
-          onConfirm={handleGateConfirm}
-          onCancel={handleGateCancel}
-        />
-      )}
       {showAddModal && (
         <AddNoteModal onClose={() => setShowAddModal(false)} onSave={handleSaveNote} />
       )}

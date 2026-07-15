@@ -153,9 +153,9 @@ const Home = () => {
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.45 }}
-                className="mb-5 inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white/85 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-zinc-700 shadow-sm backdrop-blur dark:border-zinc-850 dark:bg-zinc-900/30 dark:text-zinc-300"
+                className="mb-5 inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white/85 px-3 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs font-black uppercase tracking-wider sm:tracking-[0.18em] text-zinc-700 shadow-sm backdrop-blur dark:border-zinc-850 dark:bg-zinc-900/30 dark:text-zinc-300"
               >
-                <BookOpenCheck size={15} />
+                <BookOpenCheck size={14} />
                 Portfolio Materi Web Development
               </motion.div>
 
@@ -163,17 +163,17 @@ const Home = () => {
                 initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.08, duration: 0.55 }}
-                className="text-5xl font-black leading-tight tracking-normal text-zinc-950 dark:text-white sm:text-6xl lg:text-7xl"
+                className="text-[2.2rem] xs:text-5xl font-black leading-none tracking-tight text-zinc-950 dark:text-white sm:text-6xl lg:text-7xl"
               >
                 LogbookBBPVP2
-                <span className="block gradient-text">belajar web dev.</span>
+                <span className="block gradient-text mt-2">belajar web dev.</span>
               </motion.h1>
 
               <motion.p
                 initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.16, duration: 0.55 }}
-                className="mt-6 max-w-2xl text-base font-semibold leading-8 text-zinc-600 dark:text-zinc-300 sm:text-lg"
+                className="mt-6 max-w-2xl text-sm font-semibold leading-relaxed text-zinc-600 dark:text-zinc-300 sm:text-lg"
               >
                 Catatan belajar dari UI/UX, HTML, CSS, JavaScript, React, database, sampai
                 deployment VPS. Semua materi dibuat ringkas, runtut, dan siap dibuka per topik.
@@ -195,15 +195,15 @@ const Home = () => {
                 initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.32, duration: 0.5 }}
-                className="mt-9 grid max-w-xl grid-cols-3 gap-3"
+                className="mt-9 grid max-w-xl grid-cols-3 gap-2 sm:gap-4 text-center sm:text-left"
               >
                 {stats.map((item) => (
                   <div
                     key={item.label}
-                    className="rounded-2xl border border-zinc-200 bg-white/80 px-4 py-3 shadow-sm backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/40"
+                    className="rounded-2xl border border-zinc-200 bg-white/80 px-2.5 sm:px-4 py-2.5 sm:py-3.5 shadow-sm backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/40"
                   >
-                    <p className="text-2xl font-black text-zinc-950 dark:text-white">{item.value}</p>
-                    <p className="text-xs font-bold uppercase tracking-[0.14em] text-zinc-500 dark:text-zinc-400">
+                    <p className="text-xl sm:text-3xl font-black text-zinc-950 dark:text-white">{item.value}</p>
+                    <p className="text-[9px] sm:text-xs font-bold uppercase tracking-wider sm:tracking-[0.14em] text-zinc-500 dark:text-zinc-400 mt-0.5">
                       {item.label}
                     </p>
                   </div>
