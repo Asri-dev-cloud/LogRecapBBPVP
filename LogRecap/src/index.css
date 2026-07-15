@@ -27,8 +27,8 @@ body {
     "LogRecap Local", Inter, Poppins, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", sans-serif;
   background:
-    radial-gradient(circle at 12% 12%, rgba(244, 114, 182, 0.1), transparent 26rem),
-    radial-gradient(circle at 86% 8%, rgba(132, 204, 22, 0.12), transparent 22rem),
+    radial-gradient(circle at 15% 15%, rgba(244, 63, 94, 0.04), transparent 30rem),
+    radial-gradient(circle at 85% 15%, rgba(59, 130, 246, 0.04), transparent 30rem),
     #f8fafc;
   color: #18181b;
   font-synthesis: none;
@@ -39,9 +39,10 @@ body {
 
 .dark body {
   background:
-    radial-gradient(circle at 12% 12%, rgba(244, 114, 182, 0.12), transparent 26rem),
-    radial-gradient(circle at 86% 8%, rgba(132, 204, 22, 0.13), transparent 22rem),
-    #050505;
+    radial-gradient(circle at 15% 15%, rgba(244, 63, 94, 0.08), transparent 35rem),
+    radial-gradient(circle at 85% 15%, rgba(59, 130, 246, 0.08), transparent 35rem),
+    radial-gradient(circle at 50% 85%, rgba(168, 85, 247, 0.06), transparent 40rem),
+    #0c0d12;
   color: #f8fafc;
 }
 
@@ -51,24 +52,24 @@ a {
 }
 
 ::selection {
-  background: rgba(244, 114, 182, 0.32);
+  background: rgba(244, 63, 94, 0.25);
 }
 
 .gradient-text {
-  @apply bg-gradient-to-r from-pink-500 via-lime-400 to-cyan-400 bg-clip-text text-transparent;
+  @apply bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent;
 }
 
 .soft-grid {
   background-image:
-    linear-gradient(rgba(24, 24, 27, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(24, 24, 27, 0.08) 1px, transparent 1px);
-  background-size: 28px 28px;
+    linear-gradient(rgba(24, 24, 27, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(24, 24, 27, 0.03) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
 
 .dark .soft-grid {
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
 }
 
 /* Transisi tema global supaya dark mode terasa halus. */

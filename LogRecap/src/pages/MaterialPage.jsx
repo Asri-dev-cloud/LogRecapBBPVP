@@ -44,7 +44,7 @@ const MaterialPage = ({ material, topic }) => {
   return (
     <PageTransition className="pb-16">
       <section className="mx-auto w-full max-w-7xl px-4 sm:px-6">
-        <div className="relative overflow-hidden rounded-2xl border border-zinc-200 bg-white/[0.78] px-5 py-12 shadow-xl shadow-zinc-900/5 backdrop-blur dark:border-white/10 dark:bg-white/[0.045] sm:px-8 lg:px-12">
+        <div className="relative overflow-hidden rounded-2xl border border-zinc-200 bg-white/70 px-5 py-12 shadow-xl shadow-zinc-900/5 backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/25 sm:px-8 lg:px-12">
           <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${topic.accent}`} />
           <SectionHeading eyebrow={`Materi ${topic.code}`} title={material.title} description={material.subtitle} />
           
@@ -52,8 +52,8 @@ const MaterialPage = ({ material, topic }) => {
             {material.overview.map((item, idx) => {
               const Icon = overviewIcons[idx % overviewIcons.length]
               return (
-                <div key={item} className="group relative w-full max-w-[15rem] flex-1 basis-56 overflow-hidden rounded-2xl border border-zinc-200 bg-white/82 p-5 shadow-sm backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:shadow-lg dark:border-white/10 dark:bg-zinc-950/40">
-                  <span aria-hidden="true" className="pointer-events-none absolute -right-3 -top-5 select-none text-7xl font-black text-zinc-100 transition-colors duration-300 group-hover:text-zinc-200 dark:text-white/[0.04] dark:group-hover:text-white/[0.07]">
+                <div key={item} className="group relative w-full max-w-[15rem] flex-1 basis-56 overflow-hidden rounded-2xl border border-zinc-200 bg-white/80 p-5 shadow-sm backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 hover:shadow-lg dark:border-zinc-800 dark:bg-zinc-900/20 dark:hover:border-zinc-700">
+                  <span aria-hidden="true" className="pointer-events-none absolute -right-3 -top-5 select-none text-7xl font-black text-zinc-100 transition-colors duration-300 group-hover:text-zinc-200 dark:text-white/[0.02] dark:group-hover:text-white/[0.05]">
                     {String(idx + 1).padStart(2, '0')}
                   </span>
                   <span className={`relative mb-4 grid size-10 place-items-center rounded-xl bg-gradient-to-br ${topic.accent} text-zinc-950 shadow-md`}>

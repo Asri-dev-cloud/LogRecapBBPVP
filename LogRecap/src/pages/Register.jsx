@@ -310,19 +310,34 @@ const Register = () => {
             className="fixed inset-0 z-[100] flex items-center justify-center bg-zinc-950/80 backdrop-blur-md"
           >
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
+              initial={{ scale: 0.92, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ type: 'spring', damping: 20 }}
-              className="mx-4 w-full max-w-sm rounded-[32px] border border-white/10 bg-zinc-900 p-10 text-center shadow-2xl"
+              exit={{ scale: 0.92, opacity: 0 }}
+              transition={{ type: 'spring', damping: 22, stiffness: 150 }}
+              className="relative mx-4 w-full max-w-md overflow-hidden rounded-[36px] border border-white/10 bg-zinc-950/85 p-12 text-center shadow-2xl backdrop-blur-2xl dark:bg-zinc-950/90"
             >
-              <div className="mb-4 text-center select-none">
-                <span className="inline-block animate-bounce text-7xl">👋</span>
+              {/* Premium Glow effect */}
+              <div className="absolute -top-12 left-1/2 -translate-x-1/2 size-48 rounded-full bg-gradient-to-r from-pink-500/20 via-purple-500/20 to-blue-500/20 blur-3xl opacity-75" />
+
+              <div className="relative mb-6 text-center select-none">
+                <motion.span
+                  className="inline-block text-8xl"
+                  animate={{ rotate: [0, 14, -8, 14, -8, 0] }}
+                  transition={{
+                    repeat: Infinity,
+                    repeatType: "loop",
+                    duration: 2.0,
+                    ease: "easeInOut",
+                    delay: 0.15
+                  }}
+                >
+                  👋
+                </motion.span>
               </div>
-              <h2 className="text-2xl font-black tracking-tight text-white">
+              <h2 className="relative text-3xl font-black tracking-tight text-white">
                 Halo, {popupName}!
               </h2>
-              <p className="mt-2 text-sm text-zinc-400 font-medium">
+              <p className="relative mt-3 text-sm text-zinc-400 font-semibold leading-relaxed">
                 Pendaftaran berhasil! Mengalihkan ke halaman belajar...
               </p>
             </motion.div>

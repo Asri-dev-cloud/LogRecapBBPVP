@@ -189,6 +189,21 @@ const QuizManager = ({ onClose, onQuizUpdate }) => {
     e.target.value = '';
   };
 
+  const downloadTemplate = () => {
+    const csvContent = "data:text/csv;charset=utf-8," 
+      + "soal,a,b,c,d,jawaban\n"
+      + "\"Siapakah pencipta JavaScript?\",\"Brendan Eich\",\"John Resig\",\"Guido van Rossum\",\"Bjarne Stroustrup\",\"A\"\n"
+      + "\"Apa singkatan dari HTML?\",\"Hyper Text Markup Language\",\"High Tech Markup Language\",\"Hyper Text Machine Language\",\"Hyper Text Multi Language\",\"A\"\n"
+      + "\"Manakah CSS selector untuk id?\",\"#\",\"*\",\".\",\":\",\"A\"\n";
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "templat_soal_quiz.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const handleSave = async () => {
     if (!formData.title.trim()) {
       setError('Judul wajib diisi.');
@@ -362,6 +377,10 @@ const QuizManager = ({ onClose, onQuizUpdate }) => {
             className="flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 px-4 py-2 text-xs font-bold text-white shadow-lg transition-all hover:shadow-xl">
             <Plus size={14} /> Buat Quiz
           </button>
+          <button type="button" onClick={downloadTemplate}
+            className="flex items-center gap-1.5 rounded-xl border border-zinc-200 px-4 py-2 text-xs font-bold text-zinc-600 transition-colors hover:bg-zinc-150 dark:border-white/10 dark:text-zinc-400 dark:hover:bg-zinc-800">
+            Unduh Templat
+          </button>
           <label className="flex cursor-pointer items-center gap-1.5 rounded-xl border border-zinc-200 px-4 py-2 text-xs font-bold text-zinc-600 transition-colors hover:bg-zinc-100 dark:border-white/10 dark:text-zinc-400 dark:hover:bg-zinc-800">
             <Upload size={14} /> Impor CSV
             <input type="file" accept=".csv,.tsv,.txt" className="hidden" onChange={(e) => { resetForm(); setShowForm(true); handleCsvImport(e); }} />
@@ -374,6 +393,9 @@ const QuizManager = ({ onClose, onQuizUpdate }) => {
         {showForm && (
           <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden border-b border-zinc-200 dark:border-white/10">
             <div className="space-y-4 p-5">
+              <div className="rounded-xl bg-amber-500/10 p-3.5 border border-amber-500/20 text-xs text-amber-700 dark:text-amber-300 leading-relaxed font-semibold">
+                💡 <b>Petunjuk Impor CSV:</b> Pastikan header kolom adalah <code className="bg-amber-500/15 px-1 rounded">soal, a, b, c, d, jawaban</code>. Baris berikutnya berisi pertanyaan Anda. Kolom <code className="bg-amber-500/15 px-1 rounded">jawaban</code> diisi huruf <code className="bg-amber-500/15 px-1 rounded">A, B, C, atau D</code> sesuai opsi yang benar.
+              </div>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
                   <label className="mb-1 block text-xs font-bold text-zinc-600 dark:text-zinc-400">Judul</label>
@@ -408,6 +430,9 @@ const QuizManager = ({ onClose, onQuizUpdate }) => {
                 <div className="mb-2 flex items-center justify-between">
                   <label className="text-xs font-bold text-zinc-600 dark:text-zinc-400">Soal ({questions.length})</label>
                   <div className="flex gap-2">
+                    <button type="button" onClick={downloadTemplate} className="flex items-center gap-1 rounded-lg bg-zinc-100 px-3 py-1.5 text-[11px] font-bold text-zinc-700 transition-colors hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700">
+                      Unduh Templat
+                    </button>
                     <label className="flex cursor-pointer items-center gap-1 rounded-lg bg-zinc-100 px-3 py-1.5 text-[11px] font-bold text-zinc-700 transition-colors hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700">
                       <Upload size={12} /> Impor CSV
                       <input type="file" accept=".csv,.tsv,.txt" className="hidden" onChange={handleCsvImport} />

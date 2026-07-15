@@ -7,7 +7,7 @@ export const topics = [
     "route": "/uiux",
     "icon": "Palette",
     "summary": "Design thinking dari riset user sampai usability testing.",
-    "accent": "from-pink-400 via-lime-300 to-cyan-300",
+    "accent": "from-pink-500 via-purple-500 to-rose-500",
   },
   {
     "code": "B",
@@ -17,7 +17,7 @@ export const topics = [
     "route": "/html",
     "icon": "FileCode2",
     "summary": "Struktur dokumen, form, iframe, dan semantic HTML.",
-    "accent": "from-orange-400 via-pink-300 to-yellow-300",
+    "accent": "from-orange-500 via-red-500 to-yellow-500",
   },
   {
     "code": "C",
@@ -27,7 +27,7 @@ export const topics = [
     "route": "/css-vanilla",
     "icon": "Brush",
     "summary": "Selector, box model, dan specificity CSS lengkap.",
-    "accent": "from-sky-400 via-lime-300 to-pink-300",
+    "accent": "from-pink-500 via-rose-500 to-purple-500",
   },
   {
     "code": "D",
@@ -37,7 +37,7 @@ export const topics = [
     "route": "/nodejs",
     "icon": "SquareTerminal",
     "summary": "Node.js, npm, CLI, dan pondasi JavaScript.",
-    "accent": "from-lime-400 via-emerald-300 to-cyan-300",
+    "accent": "from-emerald-500 via-teal-500 to-green-500",
   },
   {
     "code": "E",
@@ -47,7 +47,7 @@ export const topics = [
     "route": "/modern-js",
     "icon": "Sparkles",
     "summary": "ES6+, promise, async/await, module, dan array method.",
-    "accent": "from-yellow-300 via-pink-300 to-cyan-300",
+    "accent": "from-yellow-500 via-orange-500 to-amber-500",
   },
   {
     "code": "F",
@@ -57,7 +57,7 @@ export const topics = [
     "route": "/dom",
     "icon": "Network",
     "summary": "DOM tree, selector, manipulasi element, dan event.",
-    "accent": "from-cyan-300 via-lime-300 to-pink-300",
+    "accent": "from-purple-500 via-indigo-500 to-blue-500",
   },
   {
     "code": "G",
@@ -67,6 +67,7 @@ export const topics = [
     "route": "/tailwind",
     "icon": "Wind",
     "summary": "Utility-first, responsive, dark mode, dan workflow komponen.",
+    "accent": "from-cyan-500 via-sky-500 to-blue-500",
   },
   {
     "code": "H",
@@ -76,6 +77,7 @@ export const topics = [
     "route": "/react",
     "icon": "Atom",
     "summary": "Vite setup, component, props, state, effect, dan JSX.",
+    "accent": "from-sky-500 via-blue-500 to-indigo-500",
   },
   {
     "code": "I",
@@ -85,7 +87,7 @@ export const topics = [
     "route": "/hostinger-vps",
     "icon": "Server",
     "summary": "Order VPS, SSH, Nginx, deploy app, domain, dan SSL.",
-    "accent": "from-pink-400 via-yellow-300 to-lime-300",
+    "accent": "from-green-500 via-emerald-500 to-teal-500",
   },
   {
     "code": "J",
@@ -95,7 +97,7 @@ export const topics = [
     "route": "/putty",
     "icon": "KeyRound",
     "summary": "SSH ke VPS dari Windows dan command dasar server.",
-    "accent": "from-lime-300 via-cyan-300 to-pink-300",
+    "accent": "from-slate-500 via-zinc-500 to-neutral-500",
   },
   {
     "code": "K",
@@ -105,6 +107,6 @@ export const topics = [
     "route": "/mysql-workbench",
     "icon": "Database",
     "summary": "Install, koneksi, tipe data, function, operator, statement, dan studi kasus.",
-    "accent": "from-blue-300 via-yellow-300 to-pink-300",
+    "accent": "from-blue-500 via-indigo-500 to-cyan-500",
   }
 ]

@@ -451,28 +451,31 @@ const Admin = () => {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-white pt-28 pb-16 relative transition-colors duration-200">
-      <div className="absolute top-0 right-0 -z-10 size-[400px] rounded-full bg-amber-500/5 blur-[120px]" />
-      <div className="absolute bottom-0 left-0 -z-10 size-[400px] rounded-full bg-blue-500/5 blur-[120px]" />
+    <div className="min-h-screen bg-black text-white pt-28 pb-16 relative transition-colors duration-200">
+      {/* Cyberpunk Glow Backgrounds */}
+      <div className="absolute top-0 right-0 -z-10 size-[450px] rounded-full bg-pink-500/10 blur-[130px] opacity-80" />
+      <div className="absolute bottom-0 left-0 -z-10 size-[450px] rounded-full bg-lime-500/10 blur-[130px] opacity-80" />
 
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         {/* Back and Title */}
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
           <Link
             to="/learning-experience"
-            className="mb-4 inline-flex items-center gap-1.5 text-xs font-bold text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors"
+            className="mb-4 inline-flex items-center gap-1.5 text-xs font-bold text-pink-400 hover:text-pink-300 transition-colors border border-pink-500/20 bg-pink-500/5 rounded-xl px-3 py-1.5"
           >
             <ArrowLeft size={14} />
             <span>Kembali ke Belajar</span>
           </Link>
 
-          <div className="flex items-center gap-4 mt-2">
-            <span className="grid size-12 place-items-center rounded-2xl bg-gradient-to-tr from-amber-500 to-yellow-500 text-zinc-950 shadow-lg shadow-yellow-500/10">
+          <div className="flex items-center gap-4 mt-4">
+            <span className="grid size-12 place-items-center rounded-2xl bg-gradient-to-tr from-pink-500 via-purple-500 to-blue-500 text-white shadow-lg shadow-pink-500/25">
               <ShieldCheck size={24} />
             </span>
             <div className="text-left">
-              <h1 className="text-3xl font-black tracking-tight text-zinc-900 dark:text-white">Dashboard Admin</h1>
-              <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-0.5">
+              <h1 className="text-3xl font-black uppercase tracking-wider text-white drop-shadow-[0_0_10px_rgba(236,72,153,0.5)]">
+                Dashboard Admin
+              </h1>
+              <p className="text-sm text-zinc-400 mt-1 font-medium">
                 Panel pengelolaan kuis, materi tambahan, terminal belajar, akun pengguna, dan log sistem.
               </p>
             </div>
@@ -480,7 +483,7 @@ const Admin = () => {
         </motion.div>
 
         {/* Tab Selector */}
-        <div className="mb-8 flex flex-wrap gap-2 border-b border-zinc-200 dark:border-white/5 pb-5">
+        <div className="mb-8 flex flex-wrap gap-2 border-b border-pink-500/20 pb-5">
           {TABS.map((t) => {
             const Icon = t.icon;
             const active = tab === t.key;
@@ -490,8 +493,8 @@ const Admin = () => {
                 onClick={() => setTab(t.key)}
                 className={`inline-flex items-center gap-2 rounded-xl px-5 py-3 text-xs font-bold transition-all border ${
                   active
-                    ? 'bg-zinc-900 dark:bg-white text-white dark:text-zinc-950 border-zinc-900 dark:border-white shadow-md'
-                    : 'bg-white dark:bg-zinc-900/40 text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-white/5 hover:border-zinc-350 dark:hover:border-white/10 hover:text-zinc-950 dark:hover:text-white shadow-sm'
+                    ? 'bg-pink-600 text-white border-pink-500 shadow-[0_0_15px_rgba(236,72,153,0.35)]'
+                    : 'bg-[#09090b]/80 text-zinc-400 border-pink-500/10 hover:border-pink-500/40 hover:text-pink-500 shadow-sm'
                 }`}
               >
                 <Icon size={14} />
@@ -510,7 +513,7 @@ const Admin = () => {
               exit={{ opacity: 0, height: 0 }}
               className="mb-4 overflow-hidden"
             >
-              <div className="flex items-center gap-2.5 rounded-xl border border-emerald-500/20 bg-emerald-50 dark:bg-emerald-950/30 px-4 py-3 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+              <div className="flex items-center gap-2.5 rounded-xl border border-emerald-500/20 bg-[#09090b]/80 px-4 py-3 text-xs font-semibold text-emerald-400">
                 <CheckCircle size={16} />
                 <span>{actionSuccess}</span>
               </div>
@@ -524,7 +527,7 @@ const Admin = () => {
               exit={{ opacity: 0, height: 0 }}
               className="mb-4 overflow-hidden"
             >
-              <div className="flex items-center gap-2.5 rounded-xl border border-red-500/20 bg-red-50 dark:bg-red-950/30 px-4 py-3 text-xs font-semibold text-red-650 dark:text-red-400">
+              <div className="flex items-center gap-2.5 rounded-xl border border-red-500/20 bg-[#09090b]/80 px-4 py-3 text-xs font-semibold text-red-400">
                 <AlertTriangle size={16} />
                 <span>{actionError}</span>
               </div>
@@ -533,7 +536,7 @@ const Admin = () => {
         </AnimatePresence>
 
         {/* Content Area */}
-        <div className="rounded-3xl border border-zinc-200 dark:border-white/5 bg-white dark:bg-zinc-900/30 p-6 backdrop-blur-md shadow-sm">
+        <div className="rounded-3xl border border-pink-500/15 bg-[#09090b]/80 p-6 backdrop-blur-md shadow-[0_0_20px_rgba(236,72,153,0.06)]">
           {/* TAB: QUIZ */}
           {tab === 'quiz' && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>

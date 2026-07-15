@@ -442,21 +442,24 @@ const LearningExperience = () => {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-55 dark:bg-zinc-950 pt-28 pb-16 text-zinc-900 dark:text-white relative transition-colors duration-200">
-      <div className="absolute top-0 left-0 -z-10 size-[500px] rounded-full bg-blue-600/5 blur-[120px]" />
-      <div className="absolute bottom-0 right-0 -z-10 size-[500px] rounded-full bg-purple-600/5 blur-[120px]" />
+    <div className="min-h-screen bg-black text-white pt-28 pb-16 relative transition-colors duration-200">
+      {/* Cyberpunk Glow Backgrounds */}
+      <div className="absolute top-0 left-0 -z-10 size-[500px] rounded-full bg-pink-500/10 blur-[130px] opacity-80" />
+      <div className="absolute bottom-0 right-0 -z-10 size-[500px] rounded-full bg-lime-500/10 blur-[130px] opacity-80" />
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-zinc-200 dark:border-white/10 pb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-pink-500/20 pb-6">
             <div className="flex items-center gap-4">
-              <span className="grid size-12 place-items-center rounded-2xl bg-gradient-to-tr from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/20">
+              <span className="grid size-12 place-items-center rounded-2xl bg-gradient-to-tr from-pink-500 via-purple-500 to-blue-500 text-white shadow-lg shadow-pink-500/30">
                 <BrainCircuit size={24} />
               </span>
-              <div>
-                <h1 className="text-3xl font-black tracking-tight">Learning Experience</h1>
-                <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-0.5">
+              <div className="text-left">
+                <h1 className="text-3xl font-black uppercase tracking-wider text-white drop-shadow-[0_0_10px_rgba(236,72,153,0.5)]">
+                  Learning Experience
+                </h1>
+                <p className="text-sm text-zinc-400 mt-1 font-medium">
                   {isAuthenticated
                     ? `Selamat datang kembali, ${user?.fullName || user?.username}!`
                     : 'Masuk akun untuk menyimpan progress belajar & mengklaim sertifikat.'}
@@ -467,12 +470,12 @@ const LearningExperience = () => {
               <div className="flex flex-wrap items-center gap-2">
                 <button
                   onClick={() => setShowHistory(true)}
-                  className="flex items-center gap-1.5 rounded-xl border border-zinc-200 dark:border-white/10 bg-white dark:bg-white/5 px-4 py-2.5 text-xs font-bold text-zinc-650 dark:text-zinc-300 transition-all hover:bg-zinc-50 dark:hover:bg-white/10"
+                  className="flex items-center gap-1.5 rounded-xl border border-pink-500/30 bg-black/60 px-4 py-2.5 text-xs font-bold text-pink-400 transition-all hover:bg-pink-500/10 hover:shadow-[0_0_15px_rgba(236,72,153,0.15)]"
                 >
                   <History size={14} />
                   <span>Riwayat Sertifikat</span>
                   {certificateHistory.length > 0 && (
-                    <span className="rounded-full bg-amber-500/20 px-1.5 py-0.5 text-[10px] font-bold text-amber-600 dark:text-amber-400">
+                    <span className="rounded-full bg-pink-500/20 px-1.5 py-0.5 text-[10px] font-bold text-pink-400">
                       {certificateHistory.length}
                     </span>
                   )}
@@ -491,35 +494,35 @@ const LearningExperience = () => {
             className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3"
           >
             {/* Streak Card */}
-            <div className="rounded-2xl border border-zinc-200 bg-white dark:border-white/5 dark:bg-zinc-900/50 p-5 backdrop-blur-md shadow-sm">
+            <div className="rounded-2xl border border-pink-500/20 bg-[#09090b]/85 p-5 backdrop-blur-md shadow-[0_0_15px_rgba(236,72,153,0.05)] hover:border-pink-500/50 hover:shadow-[0_0_20px_rgba(236,72,153,0.12)] transition-all duration-300">
               <div className="flex items-center gap-4">
-                <span className="grid size-12 place-items-center rounded-xl bg-gradient-to-br from-orange-500 to-red-600 text-white shadow-lg shadow-orange-500/20">
+                <span className="grid size-12 place-items-center rounded-xl bg-gradient-to-br from-pink-500 to-rose-600 text-white shadow-lg shadow-pink-500/20">
                   <Flame size={22} className="animate-pulse" />
                 </span>
-                <div>
-                  <h3 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-white">{streak} Hari</h3>
-                  <p className="text-xs font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mt-0.5">Current Streak</p>
+                <div className="text-left">
+                  <h3 className="text-2xl font-black tracking-tight text-white">{streak} Hari</h3>
+                  <p className="text-xs font-bold text-pink-400/80 uppercase tracking-wider mt-0.5">Current Streak</p>
                 </div>
               </div>
             </div>
 
             {/* Total Points Card */}
-            <div className="rounded-2xl border border-zinc-200 bg-white dark:border-white/5 dark:bg-zinc-900/50 p-5 backdrop-blur-md shadow-sm">
+            <div className="rounded-2xl border border-yellow-500/20 bg-[#09090b]/85 p-5 backdrop-blur-md shadow-[0_0_15px_rgba(234,179,8,0.05)] hover:border-yellow-500/50 hover:shadow-[0_0_20px_rgba(234,179,8,0.12)] transition-all duration-300">
               <div className="flex items-center gap-4">
-                <span className="grid size-12 place-items-center rounded-xl bg-gradient-to-br from-yellow-500 to-amber-600 text-white shadow-lg shadow-yellow-500/20">
+                <span className="grid size-12 place-items-center rounded-xl bg-gradient-to-br from-yellow-400 to-amber-650 text-white shadow-lg shadow-yellow-500/20">
                   <Star size={22} />
                 </span>
-                <div>
-                  <h3 className="text-2xl font-black tracking-tight text-zinc-900 dark:text-white">{points} pts</h3>
-                  <p className="text-xs font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mt-0.5">Total Points</p>
+                <div className="text-left">
+                  <h3 className="text-2xl font-black tracking-tight text-white">{points} pts</h3>
+                  <p className="text-xs font-bold text-yellow-400/80 uppercase tracking-wider mt-0.5">Total Points</p>
                 </div>
               </div>
             </div>
 
             {/* Achievements Progress Card */}
-            <div className="rounded-2xl border border-zinc-200 bg-white dark:border-white/5 dark:bg-zinc-900/50 p-5 backdrop-blur-md shadow-sm">
+            <div className="rounded-2xl border border-lime-500/20 bg-[#09090b]/85 p-5 backdrop-blur-md shadow-[0_0_15px_rgba(132,204,22,0.05)] hover:border-lime-500/50 hover:shadow-[0_0_20px_rgba(132,204,22,0.12)] transition-all duration-300">
               <div className="flex items-center gap-4">
-                <span className="grid size-12 place-items-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/20">
+                <span className="grid size-12 place-items-center rounded-xl bg-gradient-to-br from-emerald-500 to-lime-650 text-white shadow-lg shadow-emerald-500/20">
                   <TrendingUp size={22} />
                 </span>
                 <div className="flex-1 min-w-0">
@@ -527,14 +530,14 @@ const LearningExperience = () => {
                     <span className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-gradient-to-r ${getBadgeColor(points)}`}>
                       {getBadgeTitle(points)}
                     </span>
-                    <span className="text-xs font-bold text-zinc-400 dark:text-zinc-500">1000 pts</span>
+                    <span className="text-xs font-bold text-zinc-500">1000 pts</span>
                   </div>
-                  <div className="mt-2.5 h-2 w-full overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-800">
+                  <div className="mt-2.5 h-2 w-full overflow-hidden rounded-full bg-zinc-900">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${progressPercent}%` }}
                       transition={{ duration: 1, ease: 'easeOut' }}
-                      className="h-full rounded-full bg-gradient-to-r from-blue-500 to-indigo-500"
+                      className="h-full rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500"
                     />
                   </div>
                 </div>
@@ -549,12 +552,14 @@ const LearningExperience = () => {
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
               <div className="mb-4 flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
-                  <BookOpen size={20} className="text-blue-500 dark:text-blue-400" />
-                  <h2 className="text-xl font-black text-zinc-900 dark:text-white">Daftar Kuis Tersedia</h2>
+                  <BookOpen size={20} className="text-pink-500" />
+                  <h2 className="text-xl font-black uppercase tracking-wider text-white drop-shadow-[0_0_6px_rgba(236,72,153,0.3)]">
+                    Daftar Kuis Tersedia
+                  </h2>
                 </div>
                 <button
                   onClick={refreshQuizzes}
-                  className="grid size-9 place-items-center rounded-xl border border-zinc-200 dark:border-white/10 bg-white dark:bg-zinc-900/50 hover:bg-zinc-50 dark:hover:bg-zinc-850 text-zinc-450 dark:text-zinc-400 transition-colors shadow-sm"
+                  className="grid size-9 place-items-center rounded-xl border border-pink-500/30 bg-black hover:bg-pink-500/10 text-pink-400 transition-colors shadow-sm"
                   title="Muat Ulang"
                 >
                   <RefreshCw size={14} />
@@ -563,9 +568,9 @@ const LearningExperience = () => {
 
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 {quizzes.length === 0 ? (
-                  <div className="col-span-full flex flex-col items-center gap-4 py-16 text-center border border-dashed border-zinc-250 dark:border-white/10 rounded-3xl bg-zinc-50 dark:bg-zinc-900/20">
-                    <BookOpen size={44} className="text-zinc-300 dark:text-zinc-700" />
-                    <p className="text-sm font-medium text-zinc-400 dark:text-zinc-550">Belum ada kuis yang ditambahkan admin.</p>
+                  <div className="col-span-full flex flex-col items-center gap-4 py-16 text-center border border-dashed border-zinc-800 rounded-3xl bg-[#09090b]/40">
+                    <BookOpen size={44} className="text-zinc-700" />
+                    <p className="text-sm font-medium text-zinc-500">Belum ada kuis yang ditambahkan admin.</p>
                   </div>
                 ) : (
                   quizzes.map((quiz, idx) => {
@@ -576,14 +581,14 @@ const LearningExperience = () => {
                         initial={{ opacity: 0, y: 15 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.03 * idx }}
-                        whileHover={{ scale: 1.02, y: -4 }}
-                        whileTap={{ scale: 0.98 }}
+                        whileHover={{ scale: 1.01, y: -4 }}
+                        whileTap={{ scale: 0.99 }}
                         onClick={() => startQuiz(quiz)}
-                        className="group relative flex flex-col justify-between rounded-2xl border border-zinc-200 bg-white p-5 text-left backdrop-blur-sm transition-all hover:border-blue-400 dark:border-white/5 dark:bg-zinc-900/40 dark:hover:border-blue-500/30 shadow-sm"
+                        className="group relative flex flex-col justify-between rounded-2xl border border-pink-500/10 bg-[#09090b]/85 p-5 text-left backdrop-blur-sm transition-all hover:border-pink-500/50 hover:shadow-[0_0_20px_rgba(236,72,153,0.12)] shadow-sm"
                       >
                         <div>
                           <div className="mb-4 flex items-center justify-between">
-                            <span className="grid size-11 place-items-center rounded-xl bg-blue-500/10 text-blue-500 dark:text-blue-400 shadow-inner group-hover:scale-110 transition-transform">
+                            <span className="grid size-11 place-items-center rounded-xl bg-pink-500/10 text-pink-400 shadow-inner group-hover:scale-110 transition-transform">
                               <Zap size={20} />
                             </span>
                             <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${dColor.bg}`}>
@@ -591,16 +596,16 @@ const LearningExperience = () => {
                               {quiz.difficulty}
                             </span>
                           </div>
-                          <h3 className="text-base font-bold text-zinc-900 dark:text-white group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors">
+                          <h3 className="text-base font-bold text-white group-hover:text-pink-400 transition-colors">
                             {quiz.title}
                           </h3>
-                          <p className="mt-2 text-xs text-zinc-550 dark:text-zinc-450 line-clamp-2 leading-relaxed">
+                          <p className="mt-2 text-xs text-zinc-400 line-clamp-2 leading-relaxed">
                             {quiz.description}
                           </p>
                         </div>
-                        <div className="mt-4 flex items-center justify-between border-t border-zinc-100 dark:border-white/5 pt-3 text-[11px] font-bold text-zinc-400 dark:text-zinc-500">
+                        <div className="mt-4 flex items-center justify-between border-t border-zinc-900 pt-3 text-[11px] font-bold text-zinc-500">
                           <span>{quiz.totalQuestions} Pertanyaan</span>
-                          <span className="flex items-center gap-1 text-blue-500 dark:text-blue-400 opacity-0 group-hover:opacity-100 transition-all">
+                          <span className="flex items-center gap-1 text-pink-500 opacity-0 group-hover:opacity-100 transition-all">
                             Mulai Kuis <ChevronRight size={12} />
                           </span>
                         </div>
@@ -621,30 +626,32 @@ const LearningExperience = () => {
               className="lg:sticky lg:top-28"
             >
               <div className="mb-4 flex items-center gap-2.5">
-                <Medal size={20} className="text-amber-500 dark:text-amber-400" />
-                <h2 className="text-xl font-black text-zinc-900 dark:text-white">Leaderboard Global</h2>
+                <Medal size={20} className="text-lime-400" />
+                <h2 className="text-xl font-black uppercase tracking-wider text-white drop-shadow-[0_0_6px_rgba(132,204,22,0.3)]">
+                  Leaderboard Global
+                </h2>
               </div>
               
-              <div className="rounded-2xl border border-zinc-200 dark:border-white/5 bg-white dark:bg-zinc-900/50 backdrop-blur-md overflow-hidden shadow-sm">
+              <div className="rounded-2xl border border-lime-500/10 bg-[#09090b]/85 backdrop-blur-md overflow-hidden shadow-[0_0_15px_rgba(132,204,22,0.05)]">
                 {leaderboard.length === 0 ? (
                   <div className="flex flex-col items-center gap-2 py-16 text-center">
-                    <User size={36} className="text-zinc-300 dark:text-zinc-700" />
-                    <p className="text-xs font-semibold text-zinc-400 dark:text-zinc-555">Belum ada skor tercatat.</p>
+                    <User size={36} className="text-zinc-700" />
+                    <p className="text-xs font-semibold text-zinc-500">Belum ada skor tercatat.</p>
                   </div>
                 ) : (
-                  <div className="divide-y divide-zinc-100 dark:divide-white/5">
+                  <div className="divide-y divide-zinc-900">
                     {leaderboard.map((entry, index) => (
                       <motion.div
                         key={entry.id || index}
-                        whileHover={{ x: 3, backgroundColor: 'rgba(0,0,0,0.01)' }}
-                        className="flex items-center gap-4 px-4 py-3.5 transition-colors"
+                        whileHover={{ x: 3, backgroundColor: 'rgba(132,204,22,0.04)' }}
+                        className="flex items-center gap-4 px-4 py-3.5 transition-colors border-b border-zinc-900/40 last:border-b-0"
                       >
                         <span
                           className={`grid size-7 shrink-0 place-items-center rounded-lg text-xs font-black ${
                             index === 0 ? 'bg-gradient-to-br from-yellow-400 to-amber-500 text-amber-950 shadow-md'
                             : index === 1 ? 'bg-gradient-to-br from-slate-300 to-slate-400 text-slate-950 shadow-md'
                             : index === 2 ? 'bg-gradient-to-br from-orange-400 to-amber-500 text-orange-950 shadow-md'
-                            : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 border border-zinc-200 dark:border-white/5'
+                            : 'bg-[#0e0e11] text-zinc-400 border border-zinc-900'
                           }`}
                         >
                           {index + 1}

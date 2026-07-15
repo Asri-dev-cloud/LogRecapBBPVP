@@ -35,17 +35,17 @@ const iconMap = {
 }
 
 const paletteBySlug = {
-  uiux: 'from-rose-500 via-fuchsia-500 to-amber-300',
-  html: 'from-orange-500 via-rose-500 to-fuchsia-500',
-  'css-vanilla': 'from-sky-500 via-cyan-400 to-lime-300',
-  nodejs: 'from-emerald-500 via-lime-400 to-teal-400',
-  'modern-js': 'from-amber-300 via-orange-400 to-rose-500',
-  dom: 'from-violet-500 via-fuchsia-500 to-pink-500',
-  tailwind: 'from-cyan-400 via-sky-500 to-indigo-500',
-  react: 'from-sky-400 via-cyan-400 to-blue-600',
-  'hostinger-vps': 'from-lime-400 via-emerald-400 to-cyan-500',
-  putty: 'from-zinc-700 via-emerald-500 to-lime-300',
-  'mysql-workbench': 'from-blue-500 via-cyan-400 to-amber-300',
+  uiux: 'from-pink-500 via-purple-500 to-rose-500',
+  html: 'from-orange-500 via-red-500 to-yellow-500',
+  'css-vanilla': 'from-pink-500 via-rose-500 to-purple-500',
+  nodejs: 'from-emerald-500 via-teal-500 to-green-500',
+  'modern-js': 'from-yellow-500 via-orange-500 to-amber-500',
+  dom: 'from-purple-500 via-indigo-500 to-blue-500',
+  tailwind: 'from-cyan-500 via-sky-500 to-blue-500',
+  react: 'from-sky-500 via-blue-500 to-indigo-500',
+  'hostinger-vps': 'from-green-500 via-emerald-500 to-teal-500',
+  putty: 'from-slate-500 via-zinc-500 to-neutral-500',
+  'mysql-workbench': 'from-blue-500 via-indigo-500 to-cyan-500',
 }
 
 const cardMetaBySlug = {
@@ -117,6 +117,20 @@ const cardMetaBySlug = {
   },
 }
 
+const schemeClassesBySlug = {
+  uiux: 'hover:border-pink-500/50 hover:shadow-pink-500/10 dark:hover:border-pink-500/40 dark:hover:shadow-pink-500/15 text-pink-500',
+  html: 'hover:border-orange-500/50 hover:shadow-orange-500/10 dark:hover:border-orange-500/40 dark:hover:shadow-orange-500/15 text-orange-500',
+  'css-vanilla': 'hover:border-pink-500/50 hover:shadow-pink-500/10 dark:hover:border-pink-500/40 dark:hover:shadow-pink-500/15 text-pink-500',
+  nodejs: 'hover:border-emerald-500/50 hover:shadow-emerald-500/10 dark:hover:border-emerald-500/40 dark:hover:shadow-emerald-500/15 text-emerald-500',
+  'modern-js': 'hover:border-yellow-500/50 hover:shadow-yellow-500/10 dark:hover:border-yellow-500/40 dark:hover:shadow-yellow-500/15 text-yellow-500',
+  dom: 'hover:border-purple-500/50 hover:shadow-purple-500/10 dark:hover:border-purple-500/40 dark:hover:shadow-purple-500/15 text-purple-500',
+  tailwind: 'hover:border-cyan-500/50 hover:shadow-cyan-500/10 dark:hover:border-cyan-500/40 dark:hover:shadow-cyan-500/15 text-cyan-500',
+  react: 'hover:border-sky-500/50 hover:shadow-sky-500/10 dark:hover:border-sky-500/40 dark:hover:shadow-sky-500/15 text-sky-500',
+  'hostinger-vps': 'hover:border-emerald-500/50 hover:shadow-emerald-500/10 dark:hover:border-emerald-500/40 dark:hover:shadow-emerald-500/15 text-emerald-500',
+  putty: 'hover:border-slate-500/50 hover:shadow-slate-500/10 dark:hover:border-slate-500/40 dark:hover:shadow-slate-500/15 text-slate-400',
+  'mysql-workbench': 'hover:border-blue-500/50 hover:shadow-blue-500/10 dark:hover:border-blue-500/40 dark:hover:shadow-blue-500/15 text-blue-500'
+}
+
 const stats = [
   { value: topics.length, label: 'Materi' },
   { value: '80+', label: 'Subtopik' },
@@ -127,10 +141,11 @@ const Home = () => {
   return (
     <PageTransition className="pb-16">
       <section className="mx-auto w-full max-w-7xl px-4 sm:px-6">
-        <div className="relative overflow-hidden rounded-[2rem] border border-zinc-200 bg-gradient-to-br from-white via-emerald-50/70 to-sky-50 px-5 py-10 shadow-xl shadow-zinc-900/5 dark:border-white/10 dark:from-zinc-950 dark:via-emerald-950/20 dark:to-sky-950/20 sm:px-8 lg:px-12">
+        <div className="relative overflow-hidden rounded-[2rem] border border-zinc-200 bg-white/70 px-5 py-12 shadow-xl shadow-zinc-900/5 dark:border-zinc-800/60 dark:bg-zinc-900/25 sm:px-8 lg:px-12">
           <div className="absolute inset-0 soft-grid opacity-35" />
-          <div className="absolute -right-28 top-12 size-72 rounded-full bg-cyan-300/20 blur-3xl" />
-          <div className="absolute bottom-0 left-1/3 size-72 rounded-full bg-lime-300/20 blur-3xl" />
+          <div className="absolute -left-20 -top-20 size-80 rounded-full bg-pink-500/10 blur-3xl opacity-60" />
+          <div className="absolute -right-20 -top-20 size-80 rounded-full bg-blue-500/10 blur-3xl opacity-60" />
+          <div className="absolute bottom-0 left-1/3 size-96 rounded-full bg-purple-500/8 blur-3xl opacity-50" />
 
           <div className="relative">
             <div className="max-w-4xl">
@@ -138,7 +153,7 @@ const Home = () => {
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.45 }}
-                className="mb-5 inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white/85 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-zinc-700 shadow-sm backdrop-blur dark:border-white/10 dark:bg-white/[0.08] dark:text-zinc-200"
+                className="mb-5 inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white/85 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-zinc-700 shadow-sm backdrop-blur dark:border-zinc-850 dark:bg-zinc-900/30 dark:text-zinc-300"
               >
                 <BookOpenCheck size={15} />
                 Portfolio Materi Web Development
@@ -185,7 +200,7 @@ const Home = () => {
                 {stats.map((item) => (
                   <div
                     key={item.label}
-                    className="rounded-2xl border border-zinc-200 bg-white/80 px-4 py-3 shadow-sm backdrop-blur dark:border-white/10 dark:bg-white/[0.06]"
+                    className="rounded-2xl border border-zinc-200 bg-white/80 px-4 py-3 shadow-sm backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/40"
                   >
                     <p className="text-2xl font-black text-zinc-950 dark:text-white">{item.value}</p>
                     <p className="text-xs font-bold uppercase tracking-[0.14em] text-zinc-500 dark:text-zinc-400">
@@ -200,8 +215,8 @@ const Home = () => {
       </section>
 
       <section className="relative mt-12 overflow-hidden py-12">
-        <div className="absolute inset-0 -z-10 bg-[linear-gradient(120deg,#f7fee7,#ecfeff_46%,#fff7ed)] dark:bg-[linear-gradient(120deg,#050505,#082f49_46%,#1c1917)]" />
-        <div className="absolute inset-0 -z-10 bg-[linear-gradient(135deg,rgba(24,24,27,0.055)_1px,transparent_1px)] bg-[length:24px_24px] opacity-70 dark:opacity-20" />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-zinc-50/50 via-white to-zinc-50 dark:from-zinc-950 dark:via-[#0c0d12]/50 dark:to-zinc-950" />
+        <div className="absolute inset-0 -z-10 bg-[linear-gradient(135deg,rgba(24,24,27,0.02)_1px,transparent_1px)] dark:bg-[linear-gradient(135deg,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[length:24px_24px] opacity-70" />
 
         <div className="mx-auto w-full max-w-7xl px-4 sm:px-6">
           <motion.div
@@ -212,7 +227,7 @@ const Home = () => {
             className="mb-10 flex flex-col justify-between gap-4 sm:flex-row sm:items-end"
           >
             <div>
-              <p className="text-xs font-black uppercase tracking-[0.2em] text-zinc-500 dark:text-lime-300">
+              <p className="text-xs font-black uppercase tracking-[0.2em] text-pink-500 dark:text-pink-400">
                 Daftar Materi
               </p>
               <h2 className="mt-2 text-4xl font-black tracking-tight text-zinc-950 dark:text-white sm:text-5xl">
@@ -243,7 +258,7 @@ const Home = () => {
                 >
                   <Link
                     to={topic.route}
-                    className="relative flex h-full min-h-[28rem] flex-col overflow-hidden rounded-3xl border border-white/70 bg-white/88 p-4 shadow-xl shadow-zinc-900/8 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 hover:border-white hover:shadow-2xl hover:shadow-zinc-900/14 dark:border-white/10 dark:bg-white/[0.065] dark:hover:border-white/20"
+                    className={`relative flex h-full min-h-[28rem] flex-col overflow-hidden rounded-3xl border border-zinc-200 bg-white/90 p-4 shadow-lg shadow-zinc-900/5 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1 ${schemeClassesBySlug[topic.slug]} hover:shadow-2xl dark:border-zinc-800 dark:bg-zinc-900/30`}
                   >
                     <div className={`absolute -right-20 -top-20 size-44 rounded-full bg-gradient-to-br ${palette} opacity-18 blur-2xl transition-opacity duration-300 group-hover:opacity-32`} />
 
@@ -286,7 +301,7 @@ const Home = () => {
                       >
                         <Icon size={24} />
                       </span>
-                      <span className="rounded-full border border-zinc-200 bg-white/75 px-3 py-1 text-xs font-black uppercase tracking-[0.12em] text-zinc-500 dark:border-white/10 dark:bg-white/8 dark:text-zinc-400">
+                      <span className="rounded-full border border-zinc-200 bg-white/75 px-3 py-1 text-xs font-black uppercase tracking-[0.12em] text-zinc-500 dark:border-zinc-800 dark:bg-zinc-900/40 dark:text-zinc-300">
                         {topic.code}
                       </span>
                     </div>
@@ -307,14 +322,14 @@ const Home = () => {
                       {meta.tags.map((tag) => (
                         <span
                           key={tag}
-                          className="rounded-full border border-zinc-200 bg-white/70 px-3 py-1.5 text-xs font-bold text-zinc-600 dark:border-white/10 dark:bg-white/8 dark:text-zinc-300"
+                          className="rounded-full border border-zinc-200 bg-white/70 px-3 py-1.5 text-xs font-bold text-zinc-600 dark:border-zinc-800 dark:bg-zinc-900/40 dark:text-zinc-300"
                         >
                           {tag}
                         </span>
                       ))}
                     </div>
 
-                    <div className="relative mt-6 flex items-center justify-between border-t border-zinc-200 pt-4 dark:border-white/10">
+                    <div className="relative mt-6 flex items-center justify-between border-t border-zinc-200 pt-4 dark:border-zinc-800">
                       <span className="text-sm font-black text-zinc-950 dark:text-white">
                         Mulai eksplorasi
                       </span>

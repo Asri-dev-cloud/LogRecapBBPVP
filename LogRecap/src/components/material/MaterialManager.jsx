@@ -225,16 +225,16 @@ const MaterialManager = ({ topicSlug, onSectionsChange }) => {
   }
 
   return (
-    <section className="rounded-2xl border border-dashed border-zinc-300 bg-white/75 p-5 shadow-lg shadow-zinc-900/5 backdrop-blur dark:border-white/15 dark:bg-white/[0.045] sm:p-6">
+    <section className="rounded-2xl border border-dashed border-pink-500/20 bg-[#09090b]/60 p-5 shadow-lg backdrop-blur sm:p-6">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <div>
-          <p className="text-xs font-black uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400">
+        <div className="text-left">
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-pink-400">
             Tambahan (Admin)
           </p>
-          <h2 className="mt-2 text-2xl font-black text-zinc-950 dark:text-white">
+          <h2 className="mt-2 text-2xl font-black text-white">
             Tambah materi atau terminal
           </h2>
-          <p className="mt-2 max-w-2xl text-sm font-medium leading-7 text-zinc-600 dark:text-zinc-400">
+          <p className="mt-2 max-w-2xl text-sm font-medium leading-7 text-zinc-400">
             Materi & terminal yang ditambahkan akan tersimpan di server dan muncul untuk semua user.
           </p>
         </div>
@@ -243,7 +243,7 @@ const MaterialManager = ({ topicSlug, onSectionsChange }) => {
           <button
             type="button"
             onClick={() => openEditor('material')}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-zinc-950 px-4 py-3 text-sm font-black text-white shadow-lg shadow-zinc-900/10 transition-all duration-300 hover:-translate-y-0.5 hover:bg-pink-500 dark:bg-white dark:text-zinc-950 dark:hover:bg-lime-300"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-pink-600 px-4 py-3 text-sm font-black text-white shadow-lg shadow-pink-500/10 transition-all duration-300 hover:-translate-y-0.5 hover:bg-pink-500"
           >
             <Plus size={18} />
             Tambah Materi
@@ -251,7 +251,7 @@ const MaterialManager = ({ topicSlug, onSectionsChange }) => {
           <button
             type="button"
             onClick={() => openEditor('terminal')}
-            className="inline-flex items-center justify-center gap-2 rounded-xl border border-zinc-300 bg-white px-4 py-3 text-sm font-black text-zinc-900 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-pink-300 dark:border-white/15 dark:bg-white/8 dark:text-white dark:hover:border-lime-300/40"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-pink-500/20 bg-[#0c0d12] px-4 py-3 text-sm font-black text-zinc-300 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-pink-500/60 hover:text-white"
           >
             <SquareTerminal size={18} />
             Tambah Terminal

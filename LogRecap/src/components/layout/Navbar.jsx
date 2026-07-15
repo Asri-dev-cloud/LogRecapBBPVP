@@ -51,17 +51,17 @@ const Navbar = () => {
   }, [])
 
   const linkBase = ({ isActive }) =>
-    `flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-bold transition-all duration-200 ${
+    `flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-bold transition-all duration-300 ${
       isActive
-        ? 'bg-zinc-900 text-white shadow dark:bg-white dark:text-zinc-900'
-        : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800/60 dark:hover:text-white'
+        ? 'bg-zinc-100 text-zinc-950 shadow-sm dark:bg-white/10 dark:text-white'
+        : 'text-zinc-600 hover:bg-gradient-to-r hover:from-pink-500 hover:via-purple-500 hover:via-blue-500 hover:to-emerald-500 hover:text-white dark:text-zinc-400 dark:hover:text-white hover:shadow-md hover:shadow-purple-500/10'
     }`
 
   const iconBtn = ({ isActive }) =>
     `grid size-9 place-items-center rounded-xl border text-xs font-bold transition-all duration-200 ${
       isActive
-        ? 'border-zinc-900 bg-zinc-900 text-white shadow dark:border-white dark:bg-white dark:text-zinc-900'
-        : 'border-zinc-200/60 bg-white/80 text-zinc-600 backdrop-blur hover:border-zinc-300 hover:bg-white hover:text-zinc-900 dark:border-zinc-700/50 dark:bg-zinc-800/40 dark:text-zinc-400 dark:hover:border-zinc-500 dark:hover:bg-zinc-700/60 dark:hover:text-white'
+        ? 'border-zinc-300 bg-zinc-100 text-zinc-950 shadow-sm dark:border-zinc-700 dark:bg-white/10 dark:text-white'
+        : 'border-zinc-200/60 bg-white/80 text-zinc-600 backdrop-blur hover:border-zinc-300 hover:bg-white hover:text-zinc-900 dark:border-zinc-800/50 dark:bg-zinc-900/30 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:bg-zinc-800/60 dark:hover:text-white'
     }`
 
   return (
@@ -83,7 +83,7 @@ const Navbar = () => {
           <Link
             to="/"
             onClick={() => setIsOpen(false)}
-            className="flex shrink-0 items-center gap-2 rounded-xl px-2 py-1 transition-all hover:bg-zinc-100 dark:hover:bg-zinc-800/60"
+            className="flex shrink-0 items-center gap-2 rounded-xl px-2 py-1 transition-all hover:bg-zinc-100 dark:hover:bg-zinc-850"
           >
             <span className="grid size-9 place-items-center rounded-xl bg-zinc-900 text-white shadow dark:bg-white dark:text-zinc-900">
               <img src="/assets/logo.svg" alt="Logo" className="size-[30px] object-contain" />

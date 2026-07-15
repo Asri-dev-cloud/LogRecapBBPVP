@@ -15,17 +15,17 @@ const Footer = () => {
             <Link
               to="/catatan"
               title="Klik Catatan"
-              className="group inline-flex items-center gap-2 rounded-2xl bg-zinc-900 px-4 py-2.5 font-semibold text-white shadow-sm transition hover:bg-zinc-800 hover:shadow-lg active:scale-[0.98] dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-200"
+              className="group inline-flex items-center gap-2 rounded-2xl border border-zinc-200 bg-white px-4 py-2.5 font-semibold text-zinc-850 shadow-sm transition-all duration-300 hover:border-pink-500/50 hover:bg-gradient-to-r hover:from-pink-500/5 hover:to-blue-500/5 hover:text-pink-600 dark:border-zinc-800 dark:bg-zinc-900/60 dark:text-zinc-300 dark:hover:border-pink-500/40 dark:hover:text-pink-400"
             >
               <NotebookPen size={16} />
               Catatan
               <ArrowRight size={14} className="transition group-hover:translate-x-0.5" />
             </Link>
-            <span className="inline-flex cursor-default items-center gap-2 rounded-2xl border border-zinc-200 bg-white px-3 py-2 font-semibold text-zinc-700 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-white/10 dark:bg-white/5 dark:text-zinc-200">
+            <span className="inline-flex cursor-default items-center gap-2 rounded-2xl border border-zinc-200 bg-white px-3 py-2 font-semibold text-zinc-700 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900/40 dark:text-zinc-300">
               <Rocket size={16} />
               Vite + React
             </span>
-            <span className="inline-flex cursor-default items-center gap-2 rounded-2xl border border-zinc-200 bg-white px-3 py-2 font-semibold text-zinc-700 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-white/10 dark:bg-white/5 dark:text-zinc-200">
+            <span className="inline-flex cursor-default items-center gap-2 rounded-2xl border border-zinc-200 bg-white px-3 py-2 font-semibold text-zinc-700 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-zinc-800 dark:bg-zinc-900/40 dark:text-zinc-300">
               <BookOpen size={16} />
               Ready
             </span>
