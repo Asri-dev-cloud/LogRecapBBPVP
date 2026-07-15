@@ -37,7 +37,13 @@ async function migrate() {
       throw new Error(`File LogRecap.sql not found at ${sqlPath}`);
     }
 
-    const sqlContent = fs.readFileSync(sqlPath, 'utf8');
+    let sqlContent = fs.readFileSync(sqlPath, 'utf8');
+
+    // Clean SQL: mysql2 multipleStatements does not support DELIMITER commands
+    // Remove "DELIMITER //" and "DELIMITER ;"
+    sqlContent = sqlContent.replace(/DELIMITER\s+\/\/|DELIMITER\s+;/gi, '');
+    // Replace "//" with ";" at the end of procedures
+    sqlContent = sqlContent.replace(/\/\//g, ';');
 
     console.log('Executing LogRecap.sql queries...');
     await connection.query(sqlContent);
