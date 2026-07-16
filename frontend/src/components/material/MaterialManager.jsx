@@ -3,7 +3,7 @@ import { Lock, Plus, Save, SquareTerminal, Trash2, X } from 'lucide-react'
 import { readCustomMaterial, writeCustomMaterial } from '../../utils/customMaterialStorage'
 import { useAuth } from '../../context/AuthContext'
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+const API_BASE = import.meta.env.VITE_API_URL || (window.location.hostname.includes('localhost') ? 'http://localhost:5000/api' : 'http://187.77.126.26:5000/api');
 // Passcode gerbang UI (sama seperti sebelumnya). Validasi asli tetap
 // di backend (x-admin-passcode header). Ini hanya gerbang tampilan.
 const ADMIN_PASSCODE = '20424014'

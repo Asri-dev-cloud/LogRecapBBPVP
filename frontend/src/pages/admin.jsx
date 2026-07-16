@@ -21,7 +21,7 @@ import QuizManager from '../components/quiz/QuizManager';
 import MaterialManager from '../components/material/MaterialManager';
 import { topics } from './topicRegistry';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_BASE = import.meta.env.VITE_API_URL || (window.location.hostname.includes('localhost') ? 'http://localhost:5000/api' : 'http://187.77.126.26:5000/api');
 
 const TABS = [
   { key: 'quiz', label: 'Kelola Kuis', icon: ListChecks },
