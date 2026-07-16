@@ -21,8 +21,8 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
-const API_BASE = import.meta.env.VITE_API_URL || (window.location.hostname.includes('localhost') ? 'http://localhost:5000/api' : 'http://187.77.126.26:5000/api');
-const SOCKET_URL = (import.meta.env.VITE_API_URL || (window.location.hostname.includes('localhost') ? 'http://localhost:5000/api' : 'http://187.77.126.26:5000/api')).replace('/api', '');
+const API_BASE = import.meta.env.VITE_API_URL || (window.location.hostname.includes('localhost') ? 'http://localhost:5000/api' : '/api');
+const SOCKET_URL = (import.meta.env.VITE_API_URL || (window.location.hostname.includes('localhost') ? 'http://localhost:5000/api' : '/api')).replace('/api', '');
 
 const LiveQuiz = () => {
   const navigate = useNavigate();
@@ -541,8 +541,8 @@ const LiveQuiz = () => {
                           <div
                             key={p.socketId || idx}
                             className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-left border ${p.username === user.username
-                                ? 'bg-pink-500/10 border-pink-500/20 text-pink-500'
-                                : 'bg-zinc-50/50 dark:bg-zinc-900/30 border-transparent'
+                              ? 'bg-pink-500/10 border-pink-500/20 text-pink-500'
+                              : 'bg-zinc-50/50 dark:bg-zinc-900/30 border-transparent'
                               }`}
                           >
                             <span className="text-2xs font-black">{idx + 1}</span>
@@ -683,9 +683,9 @@ const LiveQuiz = () => {
                     >
                       <span
                         className={`grid size-7 shrink-0 place-items-center rounded-lg text-xs font-black ${idx === 0 ? 'bg-gradient-to-br from-yellow-400 to-amber-500 text-amber-950 shadow'
-                            : idx === 1 ? 'bg-gradient-to-br from-slate-300 to-slate-400 text-slate-950 shadow'
-                              : idx === 2 ? 'bg-gradient-to-br from-orange-400 to-amber-500 text-orange-950 shadow'
-                                : 'bg-zinc-100 dark:bg-zinc-900 text-zinc-500 border border-zinc-200 dark:border-zinc-800'
+                          : idx === 1 ? 'bg-gradient-to-br from-slate-300 to-slate-400 text-slate-950 shadow'
+                            : idx === 2 ? 'bg-gradient-to-br from-orange-400 to-amber-500 text-orange-950 shadow'
+                              : 'bg-zinc-100 dark:bg-zinc-900 text-zinc-500 border border-zinc-200 dark:border-zinc-800'
                           }`}
                       >
                         {idx + 1}

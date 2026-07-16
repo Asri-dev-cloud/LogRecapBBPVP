@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 
 const AuthContext = createContext(null);
 
-const API_BASE = import.meta.env.VITE_API_URL || (window.location.hostname.includes('localhost') ? 'http://localhost:5000/api' : 'http://187.77.126.26:5000/api');
+const API_BASE = import.meta.env.VITE_API_URL || (window.location.hostname.includes('localhost') ? 'http://localhost:5000/api' : '/api');
 
 // Local fallback storage for when server is not available
 const LOCAL_USERS_KEY = 'logrecap_local_users';
@@ -118,8 +118,14 @@ export const AuthProvider = ({ children }) => {
         setUser(data.user);
         setIsAuthenticated(true);
         return data;
+      } else {
+        const errorData = await res.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Gagal mendaftar.');
       }
-    } catch {
+    } catch (err) {
+      if (err.message && err.message !== 'Failed to fetch') {
+        throw err;
+      }
       // Server not available, save locally
     }
 

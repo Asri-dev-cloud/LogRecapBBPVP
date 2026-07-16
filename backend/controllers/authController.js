@@ -40,7 +40,7 @@ export const register = async (req, res) => {
     // Periksa apakah email sudah terdaftar di database
     const [userByEmail] = await db.query('SELECT id FROM users WHERE email = ?', [email]);
     if (userByEmail.length > 0) {
-      return res.status(409).json({ message: 'Email already registered' });
+      return res.status(409).json({ message: 'email sudah terdaftar' });
     }
 
     // Hash password dengan bcrypt (salt rounds: 10)
@@ -109,7 +109,7 @@ export const login = async (req, res) => {
     // Panggil stored procedure untuk otentikasi login user (mengambil password & role)
     const [storedProcResult] = await db.query('CALL sp_get_user_for_login(?)', [email]);
     const usersList = storedProcResult[0];
-    
+
     if (!usersList || usersList.length === 0) {
       return res.status(401).json({ message: 'Invalid email/username or password' });
     }
