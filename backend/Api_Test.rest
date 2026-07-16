@@ -1,0 +1,62 @@
+### Variabel Konfigurasi Global
+@baseUrl = http://localhost:5000/api
+@authToken = YOUR_JWT_TOKEN_HERE
+
+### Health Check API
+GET {{baseUrl}}/health
+Accept: application/json
+
+###
+
+### 1. Register User Baru
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "fullName": "Test User",
+  "email": "testuser@email.com",
+  "password": "Password123"
+}
+
+###
+
+### 2. Login User
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "testuser@email.com",
+  "password": "Password123"
+}
+
+###
+
+### 3. Get User Profile (Butuh AuthToken)
+GET {{baseUrl}}/user/profile
+Authorization: Bearer {{authToken}}
+Accept: application/json
+
+###
+
+### 4. Ambal Semua Kuis
+GET {{baseUrl}}/quiz
+Accept: application/json
+
+###
+
+### 5. Ambil Detail Kuis Berdasarkan ID (Misal ID 1)
+GET {{baseUrl}}/quiz/1
+Accept: application/json
+
+###
+
+### 6. Ambil Leaderboard Global
+GET {{baseUrl}}/leaderboard
+Accept: application/json
+
+###
+
+### 7. Ambil Custom Materials (Misal Topik nodejs)
+GET {{baseUrl}}/materials/nodejs
+Accept: application/json
