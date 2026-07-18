@@ -9,8 +9,8 @@ const getApiBase = () => {
 };
 
 export const API_BASE = getApiBase();
-// If running on Vercel (where API_BASE defaults to '/api'), connect socket directly to VPS IP
+// If running on Vercel (where API_BASE defaults to '/api'), connect socket directly to the secure VPS domain
 // since Vercel's rewrite proxies do not support WebSocket connections.
 export const SOCKET_URL = API_BASE === '/api'
-  ? 'http://187.77.126.26:5000'
+  ? 'https://aciversebbpvp.duckdns.org'
   : API_BASE.replace('/api', '');
