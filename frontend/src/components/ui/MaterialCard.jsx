@@ -79,7 +79,7 @@ const MaterialCard = ({ section, index }) => {
   return (
     <article
       id={section.id}
-      className={`scroll-mt-36 group relative overflow-hidden rounded-2xl border border-zinc-200/70 bg-white/92 p-6 shadow-lg shadow-zinc-900/5 backdrop-blur-lg transition-all duration-300 hover:-translate-y-1 ${scheme.hoverBorder} hover:shadow-2xl ${scheme.hoverShadow} dark:border-zinc-800/60 dark:bg-zinc-900/30 sm:p-8`}
+      className={`scroll-mt-36 group relative overflow-hidden rounded-3xl border border-zinc-200/50 bg-white/80 p-6 shadow-xl shadow-zinc-900/5 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 hover:scale-[1.003] ${scheme.hoverBorder} hover:shadow-2xl ${scheme.hoverShadow} dark:border-white/[0.04] dark:bg-[#090b0f]/75 sm:p-8`}
     >
       <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${scheme.gradient}`} />
 
@@ -168,7 +168,7 @@ const MaterialCard = ({ section, index }) => {
         </div>
       ) : (
         section.points?.length > 0 && (
-          <ul className="mb-6 grid gap-3 rounded-xl bg-zinc-50/80 p-4 dark:bg-zinc-950/25">
+          <ul className="mb-6 grid gap-3 rounded-2xl border border-zinc-200/40 bg-zinc-50/50 p-5 dark:border-white/[0.02] dark:bg-zinc-950/30">
             {section.points.map((point, idx) => (
               <li
                 key={`${section.id}-point-${idx}`}

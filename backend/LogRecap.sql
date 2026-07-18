@@ -181,6 +181,7 @@ CREATE TABLE IF NOT EXISTS quiz_questions (
     question TEXT NOT NULL,
     options JSON NOT NULL,
     correct INT NOT NULL,
+    image LONGTEXT DEFAULT NULL,
     FOREIGN KEY (quiz_id) REFERENCES quizzes(id) ON DELETE CASCADE
 );
 
@@ -206,6 +207,17 @@ CREATE TABLE IF NOT EXISTS activity_logs (
     action VARCHAR(255) NOT NULL,
     details TEXT,
     created_at TIMESTAMP DEFAULT (CURRENT_TIMESTAMP + INTERVAL 7 HOUR)
+);
+
+-- 7. Table: notes
+CREATE TABLE IF NOT EXISTS notes (
+    id VARCHAR(100) PRIMARY KEY,
+    user_id INT NOT NULL,
+    type VARCHAR(50) NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    content JSON NOT NULL,
+    created_at TIMESTAMP DEFAULT (CURRENT_TIMESTAMP + INTERVAL 7 HOUR),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 -- Stored Procedure to Log Activity

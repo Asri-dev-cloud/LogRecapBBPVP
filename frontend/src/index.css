@@ -1,36 +1,34 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap');
+
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
-
-@font-face {
-  font-family: "LogRecap Local";
-  src:
-    local("Segoe UI Variable"),
-    local("Segoe UI"),
-    local("Inter"),
-    local("Poppins");
-  font-display: swap;
-  font-style: normal;
-  font-weight: 100 900;
-}
 
 html {
   scroll-behavior: smooth;
 }
 
+/* Base typography overrides */
+body, button, input, select, textarea {
+  font-family: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6, .font-heading {
+  font-family: "Outfit", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+/* Premium dynamic mesh gradients */
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  /* Kalau punya file font sendiri, simpan di public/fonts lalu ganti src @font-face ke url("/fonts/nama-font.woff2"). */
-  font-family:
-    "LogRecap Local", Inter, Poppins, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", sans-serif;
   background:
-    radial-gradient(circle at 15% 15%, rgba(244, 63, 94, 0.04), transparent 30rem),
-    radial-gradient(circle at 85% 15%, rgba(59, 130, 246, 0.04), transparent 30rem),
+    radial-gradient(circle at 10% 15%, rgba(244, 63, 94, 0.04), transparent 45rem),
+    radial-gradient(circle at 90% 10%, rgba(59, 130, 246, 0.04), transparent 45rem),
+    radial-gradient(circle at 50% 85%, rgba(132, 204, 22, 0.03), transparent 40rem),
     #f8fafc;
-  color: #18181b;
+  color: #0f172a; /* Slate 900 for high-end text contrast */
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -39,11 +37,26 @@ body {
 
 .dark body {
   background:
-    radial-gradient(circle at 15% 15%, rgba(244, 63, 94, 0.08), transparent 35rem),
-    radial-gradient(circle at 85% 15%, rgba(59, 130, 246, 0.08), transparent 35rem),
-    radial-gradient(circle at 50% 85%, rgba(168, 85, 247, 0.06), transparent 40rem),
-    #0c0d12;
-  color: #f8fafc;
+    radial-gradient(circle at 10% 15%, rgba(244, 63, 94, 0.075), transparent 45rem),
+    radial-gradient(circle at 90% 15%, rgba(59, 130, 246, 0.075), transparent 45rem),
+    radial-gradient(circle at 50% 85%, rgba(168, 85, 247, 0.05), transparent 40rem),
+    #050609; /* Premium deep space dark */
+  color: #f1f5f9; /* Off-white text */
+}
+
+/* Unified transitions for theme switches */
+body,
+body *,
+.theme-transition {
+  transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1), 
+              border-color 300ms cubic-bezier(0.4, 0, 0.2, 1), 
+              color 300ms cubic-bezier(0.4, 0, 0.2, 1), 
+              box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Disable transition on code lines/containers to prevent sluggish render */
+pre, code, pre *, code * {
+  transition: none !important;
 }
 
 button,
@@ -51,29 +64,93 @@ a {
   -webkit-tap-highlight-color: transparent;
 }
 
-::selection {
-  background: rgba(244, 63, 94, 0.25);
+/* Premium narrow scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
 
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.25);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.45);
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+/* Custom premium text selection */
+::selection {
+  background: rgba(244, 63, 94, 0.18);
+  color: inherit;
+}
+
+.dark ::selection {
+  background: rgba(244, 63, 94, 0.3);
+  color: #ffffff;
+}
+
+/* Helper Gradient Utilities */
 .gradient-text {
   @apply bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 bg-clip-text text-transparent;
 }
 
+.dark .gradient-text {
+  @apply bg-gradient-to-r from-pink-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent;
+}
+
 .soft-grid {
   background-image:
-    linear-gradient(rgba(24, 24, 27, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(24, 24, 27, 0.03) 1px, transparent 1px);
+    linear-gradient(rgba(15, 23, 42, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 23, 42, 0.02) 1px, transparent 1px);
   background-size: 24px 24px;
 }
 
 .dark .soft-grid {
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+    linear-gradient(rgba(255, 255, 255, 0.012) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
 }
 
-/* Transisi tema global supaya dark mode terasa halus. */
-body,
-body * {
-  @apply transition-colors duration-300;
+/* Premium Card Glassmorphism and shadow system */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(16px) saturate(120%);
+  border: 1px solid rgba(226, 232, 240, 0.7);
+  box-shadow: 0 8px 30px 0 rgba(31, 38, 135, 0.02);
+}
+
+.dark .glass-panel {
+  background: rgba(8, 9, 13, 0.65);
+  backdrop-filter: blur(16px) saturate(120%);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.35);
+}
+
+/* Glowing decorative mesh background */
+@keyframes pulse-mesh {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1) translate(0px, 0px);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05) translate(8px, -5px);
+  }
+}
+
+.mesh-glow {
+  animation: pulse-mesh 10s ease-in-out infinite;
 }

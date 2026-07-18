@@ -32,6 +32,10 @@ const material = {
         "UI lebih banyak melibatkan desain grafis dan estetika, sementara UX melibatkan riset, analisis kebutuhan pengguna, hingga pengujian atau testing.",
         "UI dan UX saling melengkapi: tampilan yang indah tanpa pengalaman yang baik akan sulit digunakan, begitu juga sebaliknya."
       ],
+      "image": true,
+      "imageSrc": "/assets/x.png",
+      "imageLabel": "SISIPKAN GAMBAR: contoh user story, dan tabel user journey map lengkap dengan tahapan serta emosi pengguna.",
+
       "id": "uiux-1-apa-itu-ui-dan-ux"
     },
     {
@@ -224,7 +228,7 @@ const material = {
         "Gunakan mode Present atau Share prototype untuk menjalankan hasil desain layaknya aplikasi asli, lalu lakukan testing langsung dari tampilan tersebut."
       ],
       "image": true,
-            "imageSrc": "/assets/i.png",
+      "imageSrc": "/assets/i.png",
       "imageLabel": "SISIPKAN GAMBAR: tampilan dashboard Figma, proses membuat wireframe, dan mode present/testing prototype.",
       "id": "uiux-15-tools-figma"
     },

@@ -1,8 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { API_BASE } from '../utils/api';
 
 const AuthContext = createContext(null);
-
-const API_BASE = import.meta.env.VITE_API_URL || (window.location.hostname.includes('localhost') ? 'http://localhost:5000/api' : '/api');
 
 // Local fallback storage for when server is not available
 const LOCAL_USERS_KEY = 'logrecap_local_users';

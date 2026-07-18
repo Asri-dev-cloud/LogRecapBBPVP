@@ -31,23 +31,23 @@ const Sidebar = ({ sections = [], topicSlug }) => {
   ]
 
   return (
-    <aside className="sticky top-24 z-20 rounded-2xl border border-zinc-200 bg-white/90 p-3 shadow-lg shadow-zinc-900/5 backdrop-blur-xl dark:border-zinc-800 dark:bg-zinc-950/80">
-      <div className="mb-3 flex items-center justify-between gap-3 px-1">
-        <p className="text-xs font-black uppercase tracking-[0.18em] text-zinc-500 dark:text-zinc-400">
+    <aside className="sticky top-24 z-20 rounded-3xl border border-zinc-200/50 bg-white/70 p-4 shadow-xl shadow-zinc-900/5 backdrop-blur-xl dark:border-white/[0.04] dark:bg-[#090b0f]/75">
+      <div className="mb-4 flex items-center justify-between gap-3 px-1">
+        <p className="text-xs font-black uppercase tracking-[0.18em] text-zinc-400 dark:text-zinc-500">
           Peta Materi
         </p>
-        <span className="rounded-full bg-zinc-100 px-3 py-1 text-[11px] font-black text-zinc-600 dark:bg-zinc-800 dark:text-zinc-300">
+        <span className="rounded-full bg-zinc-150/60 px-3 py-1 text-[11px] font-black text-zinc-600 dark:bg-white/5 dark:text-zinc-300">
           {filteredSections.length} Materi
         </span>
       </div>
 
-      <nav className="grid grid-cols-1 gap-2 sm:grid-cols-[repeat(auto-fit,minmax(11rem,1fr))]">
+      <nav className="grid grid-cols-1 gap-2.5 sm:grid-cols-[repeat(auto-fit,minmax(11rem,1fr))]">
         {/* Tombol Materi Pa Septi */}
         {showMateriPaSepti && (
           <a
             href="#materi-pa-septi"
             onClick={(e) => handleScroll(e, 'materi-pa-septi')}
-            className="group flex w-full items-center gap-3 rounded-xl border border-red-500/50 bg-red-50 px-3 py-2 text-left text-sm font-bold text-red-600 transition-all duration-300 hover:-translate-y-0.5 hover:border-red-500 hover:bg-red-500 hover:text-white hover:shadow-md dark:border-red-500/40 dark:bg-red-500/10 dark:text-red-400 dark:hover:bg-red-500 dark:hover:text-white"
+            className="group flex w-full items-center gap-3 rounded-xl border border-red-500/40 bg-red-50/50 px-3 py-2.5 text-left text-sm font-bold text-red-600 transition-all duration-300 hover:-translate-y-0.5 hover:border-red-500 hover:bg-red-500 hover:text-white hover:shadow-md dark:border-red-500/30 dark:bg-red-500/5 dark:text-red-400 dark:hover:bg-red-500 dark:hover:text-white"
           >
             <span className="grid size-7 shrink-0 place-items-center rounded-lg bg-red-500 text-white transition-colors group-hover:bg-white group-hover:text-red-600">
               <Webhook size={14} />
@@ -64,9 +64,9 @@ const Sidebar = ({ sections = [], topicSlug }) => {
               key={section.id || index}
               href={`#${section.id}`}
               onClick={(e) => handleScroll(e, section.id)}
-              className={`group flex w-full items-center gap-3 rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-left text-sm font-bold text-zinc-700 transition-all duration-300 hover:-translate-y-0.5 ${scheme.border} hover:bg-white hover:text-zinc-950 hover:shadow-md dark:border-zinc-800/60 dark:bg-zinc-900/30 dark:text-zinc-300 dark:hover:bg-zinc-900/60 dark:hover:text-white`}
+              className={`group flex w-full items-center gap-3 rounded-xl border border-zinc-200/40 bg-zinc-50/50 px-3 py-2.5 text-left text-sm font-bold text-zinc-600 transition-all duration-300 hover:-translate-y-0.5 ${scheme.border} hover:bg-white hover:text-zinc-950 hover:shadow-lg dark:border-white/[0.02] dark:bg-zinc-950/20 dark:text-zinc-400 dark:hover:bg-zinc-950/50 dark:hover:text-white`}
             >
-              <span className={`grid size-7 shrink-0 place-items-center rounded-lg bg-zinc-950 text-[11px] font-black text-white transition-colors ${scheme.bg} dark:bg-zinc-800 dark:text-zinc-200`}>
+              <span className={`grid size-7 shrink-0 place-items-center rounded-lg bg-zinc-950 text-[11px] font-black text-white transition-colors ${scheme.bg} dark:bg-zinc-900 dark:text-zinc-300`}>
                 {index + 1}
               </span>
               <span className="line-clamp-2">{section.title}</span>

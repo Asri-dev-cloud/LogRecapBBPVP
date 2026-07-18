@@ -7,6 +7,7 @@ import quizRoutes from './routes/quiz.js';
 import leaderboardRoutes from './routes/leaderboard.js';
 import materialRoutes from './routes/material.js';
 import adminRoutes from './routes/admin.js';
+import noteRoutes from './routes/note.js';
 
 import http from 'http';
 import { initSocket } from './socket.js';
@@ -27,6 +28,7 @@ app.use('/api/quiz', quizRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
 app.use('/api/materials', materialRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/notes', noteRoutes);
 
 // Health check endpoint untuk memantau status server
 app.get('/api/health', (req, res) => {

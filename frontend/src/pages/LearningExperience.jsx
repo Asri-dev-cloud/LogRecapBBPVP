@@ -21,8 +21,7 @@ import {
   History,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-
-const API_BASE = import.meta.env.VITE_API_URL || (window.location.hostname.includes('localhost') ? 'http://localhost:5000/api' : '/api');
+import { API_BASE } from '../utils/api';
 
 const difficultyColors = {
   Easy: { bg: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20', dot: 'bg-emerald-500' },
@@ -805,6 +804,15 @@ const LearningExperience = () => {
                 <p className="mb-4 text-base font-bold leading-relaxed text-zinc-800 dark:text-zinc-100">
                   {activeQuiz.questions[currentQuestion].question}
                 </p>
+                {activeQuiz.questions[currentQuestion].image && (
+                  <div className="mb-4 overflow-hidden rounded-2xl border border-zinc-200 dark:border-white/10 max-h-60 flex justify-center bg-zinc-50 dark:bg-zinc-950/20">
+                    <img 
+                      src={activeQuiz.questions[currentQuestion].image} 
+                      alt="Soal Gambar" 
+                      className="max-h-60 object-contain"
+                    />
+                  </div>
+                )}
                 <div className="space-y-2">
                   {activeQuiz.questions[currentQuestion].options.map((option, idx) => {
                     const isCorrect = activeQuiz.questions[currentQuestion].correct === idx;

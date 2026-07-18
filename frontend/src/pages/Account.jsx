@@ -14,8 +14,7 @@ import {
   Clock,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-
-const API_BASE = import.meta.env.VITE_API_URL || (window.location.hostname.includes('localhost') ? 'http://localhost:5000/api' : '/api');
+import { API_BASE } from '../utils/api';
 
 const Account = () => {
   const navigate = useNavigate();

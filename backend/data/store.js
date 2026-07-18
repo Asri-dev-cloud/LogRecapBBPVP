@@ -189,6 +189,35 @@ export const logActivity = async (userId, username, action, details) => {
   }
 };
 
+// Ensure notes table exists and alter quiz_questions to add image column
+export const initDatabaseSchema = async () => {
+  try {
+    // 1. Ensure notes table exists
+    await db.query(`
+      CREATE TABLE IF NOT EXISTS notes (
+        id VARCHAR(100) PRIMARY KEY,
+        user_id INT NOT NULL,
+        type VARCHAR(50) NOT NULL,
+        title VARCHAR(255) NOT NULL,
+        content JSON NOT NULL,
+        created_at TIMESTAMP DEFAULT (CURRENT_TIMESTAMP + INTERVAL 7 HOUR),
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      )
+    `);
+    console.log('MySQL "notes" table verified/created.');
+
+    // 2. Ensure "image" column exists in "quiz_questions" table
+    const [columns] = await db.query("SHOW COLUMNS FROM quiz_questions LIKE 'image'");
+    if (columns.length === 0) {
+      console.log("Adding 'image' column to quiz_questions table...");
+      await db.query("ALTER TABLE quiz_questions ADD COLUMN image LONGTEXT DEFAULT NULL");
+      console.log("Added 'image' column successfully.");
+    }
+  } catch (err) {
+    console.warn('Failed to initialize database schema:', err.message);
+  }
+};
+
 // Seed function to insert default quizzes into MySQL database if empty
 export const seedQuizzesIfEmpty = async () => {
   try {
@@ -203,8 +232,8 @@ export const seedQuizzesIfEmpty = async () => {
         const quizId = res.insertId;
         for (const qst of q.questions) {
           await db.query(
-            'INSERT INTO quiz_questions (quiz_id, question, options, correct) VALUES (?, ?, ?, ?)',
-            [quizId, qst.question, JSON.stringify(qst.options), qst.correct]
+            'INSERT INTO quiz_questions (quiz_id, question, options, correct, image) VALUES (?, ?, ?, ?, ?)',
+            [quizId, qst.question, JSON.stringify(qst.options), qst.correct, qst.image || null]
           );
         }
       }
@@ -216,7 +245,11 @@ export const seedQuizzesIfEmpty = async () => {
 };
 
 // Initiate check in the background
-seedQuizzesIfEmpty();
+const runInit = async () => {
+  await initDatabaseSchema();
+  await seedQuizzesIfEmpty();
+};
+runInit();
 
 // ---- Quizzes ----
 export const getQuizzes = async () => {
@@ -228,7 +261,7 @@ export const getQuizById = async (id) => {
   const [quizzes] = await db.query('SELECT * FROM quizzes WHERE id = ?', [id]);
   if (quizzes.length === 0) return null;
   const quiz = quizzes[0];
-  const [questions] = await db.query('SELECT question, options, correct FROM quiz_questions WHERE quiz_id = ?', [id]);
+  const [questions] = await db.query('SELECT question, options, correct, image FROM quiz_questions WHERE quiz_id = ?', [id]);
 
   const formattedQuestions = questions.map((q) => {
     let opts = q.options;
@@ -243,6 +276,7 @@ export const getQuizById = async (id) => {
       question: q.question,
       options: Array.isArray(opts) ? opts : [],
       correct: q.correct,
+      image: q.image || '',
     };
   });
 
@@ -265,8 +299,8 @@ export const createQuiz = async (quiz) => {
   if (Array.isArray(quiz.questions)) {
     for (const q of quiz.questions) {
       await db.query(
-        'INSERT INTO quiz_questions (quiz_id, question, options, correct) VALUES (?, ?, ?, ?)',
-        [quizId, q.question, JSON.stringify(q.options), q.correct]
+        'INSERT INTO quiz_questions (quiz_id, question, options, correct, image) VALUES (?, ?, ?, ?, ?)',
+        [quizId, q.question, JSON.stringify(q.options), q.correct, q.image || null]
       );
     }
   }
@@ -292,8 +326,8 @@ export const updateQuiz = async (id, quiz) => {
     await db.query('DELETE FROM quiz_questions WHERE quiz_id = ?', [id]);
     for (const q of quiz.questions) {
       await db.query(
-        'INSERT INTO quiz_questions (quiz_id, question, options, correct) VALUES (?, ?, ?, ?)',
-        [id, q.question, JSON.stringify(q.options), q.correct]
+        'INSERT INTO quiz_questions (quiz_id, question, options, correct, image) VALUES (?, ?, ?, ?, ?)',
+        [id, q.question, JSON.stringify(q.options), q.correct, q.image || null]
       );
     }
   }
@@ -390,4 +424,46 @@ export const getCertificates = async (userId) => {
 export const getUserPointsAndStreak = async (userId) => {
   const [rows] = await db.query('SELECT last_quiz_at AS lastQuizAt, streak FROM users WHERE id = ?', [userId]);
   return rows[0] || null;
+};
+
+// ---- Notes (Catatan) ----
+export const getNotesByUserId = async (userId) => {
+  const [rows] = await db.query('SELECT * FROM notes WHERE user_id = ? ORDER BY created_at DESC', [userId]);
+  return rows.map((row) => {
+    let content = row.content;
+    if (typeof content === 'string') {
+      try {
+        content = JSON.parse(content);
+      } catch {
+        content = {};
+      }
+    }
+    return {
+      id: row.id,
+      type: row.type,
+      title: row.title,
+      createdAt: row.created_at,
+      content,
+    };
+  });
+};
+
+export const createNote = async (note) => {
+  await db.query(
+    'INSERT INTO notes (id, user_id, type, title, content, created_at) VALUES (?, ?, ?, ?, ?, ?)',
+    [
+      note.id,
+      note.userId,
+      note.type,
+      note.title,
+      JSON.stringify(note.content),
+      note.createdAt || new Date()
+    ]
+  );
+  return note;
+};
+
+export const deleteNote = async (id, userId) => {
+  const [res] = await db.query('DELETE FROM notes WHERE id = ? AND user_id = ?', [id, userId]);
+  return res.affectedRows > 0;
 };

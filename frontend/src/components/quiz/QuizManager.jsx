@@ -23,7 +23,16 @@ import {
   Upload,
 } from 'lucide-react';
 
-const API_BASE = import.meta.env.VITE_API_URL || (window.location.hostname.includes('localhost') ? 'http://localhost:5000/api' : '/api');
+import { API_BASE } from '../../utils/api';
+
+const fileToDataUrl = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+};
 // Passcode gerbang UI (sama seperti sebelumnya). Validasi asli tetap
 // di backend (x-admin-passcode header). Ini hanya gerbang tampilan.
 const ADMIN_PASSCODE = '20424014';
@@ -117,7 +126,7 @@ const QuizManager = ({ onClose, onQuizUpdate }) => {
   };
 
   const addQuestion = () => {
-    setQuestions((prev) => [...prev, { question: '', options: ['', '', '', ''], correct: 0 }]);
+    setQuestions((prev) => [...prev, { question: '', options: ['', '', '', ''], correct: 0, image: '' }]);
   };
 
   const removeQuestion = (index) => {
@@ -195,17 +204,19 @@ const QuizManager = ({ onClose, onQuizUpdate }) => {
         else if (p === 'c' || p === 'option3' || p === 'opt3') colMap.opt3 = i;
         else if (p === 'd' || p === 'option4' || p === 'opt4') colMap.opt4 = i;
         else if (p.includes('correct') || p.includes('answer') || p.includes('jawaban') || p.includes('benar')) colMap.correct = i;
+        else if (p.includes('image') || p.includes('gambar') || p.includes('img')) colMap.image = i;
       });
 
       for (let i = 1; i < parsedRows.length; i++) {
         const cols = parsedRows[i];
         if (cols.length <= 1 && cols[0] === '') continue; // Skip empty rows
         if (colMap.question === undefined || !cols[colMap.question]) continue;
-        const q = { question: cols[colMap.question] || '', options: ['', '', '', ''], correct: 0 };
+        const q = { question: cols[colMap.question] || '', options: ['', '', '', ''], correct: 0, image: '' };
         if (colMap.opt1 !== undefined) q.options[0] = cols[colMap.opt1] || '';
         if (colMap.opt2 !== undefined) q.options[1] = cols[colMap.opt2] || '';
         if (colMap.opt3 !== undefined) q.options[2] = cols[colMap.opt3] || '';
         if (colMap.opt4 !== undefined) q.options[3] = cols[colMap.opt4] || '';
+        if (colMap.image !== undefined) q.image = cols[colMap.image] || '';
         if (colMap.correct !== undefined) {
           const ans = (cols[colMap.correct] || '').toUpperCase();
           if (ans === 'A' || ans === '0') q.correct = 0;
@@ -226,10 +237,10 @@ const QuizManager = ({ onClose, onQuizUpdate }) => {
 
   const downloadTemplate = () => {
     const csvContent = "data:text/csv;charset=utf-8," 
-      + "soal,a,b,c,d,jawaban\n"
-      + "\"Siapakah pencipta JavaScript?\",\"Brendan Eich\",\"John Resig\",\"Guido van Rossum\",\"Bjarne Stroustrup\",\"A\"\n"
-      + "\"Apa singkatan dari HTML?\",\"Hyper Text Markup Language\",\"High Tech Markup Language\",\"Hyper Text Machine Language\",\"Hyper Text Multi Language\",\"A\"\n"
-      + "\"Manakah CSS selector untuk id?\",\"#\",\"*\",\".\",\":\",\"A\"\n";
+      + "soal,a,b,c,d,jawaban,gambar\n"
+      + "\"Siapakah pencipta JavaScript?\",\"Brendan Eich\",\"John Resig\",\"Guido van Rossum\",\"Bjarne Stroustrup\",\"A\",\"\"\n"
+      + "\"Apa singkatan dari HTML?\",\"Hyper Text Markup Language\",\"High Tech Markup Language\",\"Hyper Text Machine Language\",\"Hyper Text Multi Language\",\"A\",\"\"\n"
+      + "\"Manakah CSS selector untuk id?\",\"#\",\"*\",\".\",\":\",\"A\",\"https://raw.githubusercontent.com/otaviopace/css-selectors-cheatsheet/master/css-selectors-cheatsheet.png\"\n";
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
@@ -258,6 +269,7 @@ const QuizManager = ({ onClose, onQuizUpdate }) => {
         question: q.question,
         options: q.options,
         correct: q.correct,
+        image: q.image || '',
       })),
     };
 
@@ -341,6 +353,7 @@ const QuizManager = ({ onClose, onQuizUpdate }) => {
         question: q.question || '',
         options: Array.isArray(q.options) && q.options.length === 4 ? [...q.options] : ['', '', '', ''],
         correct: typeof q.correct === 'number' ? q.correct : 0,
+        image: q.image || '',
       }))
     );
     setShowForm(true);
@@ -489,6 +502,49 @@ const QuizManager = ({ onClose, onQuizUpdate }) => {
                           className="flex-1 rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-xs font-medium outline-none focus:border-blue-400 dark:border-white/10 dark:bg-zinc-800/50 dark:text-white" />
                         <button type="button" onClick={() => removeQuestion(qi)} className="text-red-400 hover:text-red-600"><Trash2 size={14} /></button>
                       </div>
+                      <div className="mb-2.5 flex items-center gap-3">
+                        <div className="flex-1">
+                          <input 
+                            type="text" 
+                            value={q.image || ''} 
+                            onChange={(e) => updateQuestion(qi, 'image', e.target.value)} 
+                            placeholder="URL Gambar Soal (Opsional)"
+                            className="w-full rounded-lg border border-zinc-200 bg-white px-3 py-1 text-[11px] font-medium outline-none focus:border-blue-400 dark:border-white/10 dark:bg-zinc-800/50 dark:text-white"
+                          />
+                        </div>
+                        <label className="flex cursor-pointer items-center gap-1 rounded-lg bg-zinc-150 px-2 py-1 text-[10px] font-bold text-zinc-700 hover:bg-zinc-250 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-750">
+                          <Upload size={10} /> Unggah
+                          <input 
+                            type="file" 
+                            accept="image/*" 
+                            className="hidden" 
+                            onChange={async (e) => {
+                              const file = e.target.files?.[0];
+                              if (!file) return;
+                              if (file.size > 2 * 1024 * 1024) {
+                                alert("Ukuran gambar maksimal 2MB");
+                                return;
+                              }
+                              const dataUrl = await fileToDataUrl(file);
+                              updateQuestion(qi, 'image', dataUrl);
+                            }} 
+                          />
+                        </label>
+                        {q.image && (
+                          <button 
+                            type="button" 
+                            onClick={() => updateQuestion(qi, 'image', '')} 
+                            className="text-red-400 hover:text-red-650 text-[10px] font-bold"
+                          >
+                            Hapus Gambar
+                          </button>
+                        )}
+                      </div>
+                      {q.image && (
+                        <div className="mb-2 max-w-[100px]">
+                          <img src={q.image} alt="Preview" className="max-h-16 rounded border object-contain" />
+                        </div>
+                      )}
                       <div className="grid grid-cols-2 gap-2">
                         {q.options.map((opt, oi) => (
                           <button key={oi} type="button" onClick={() => updateQuestion(qi, 'correct', oi)}

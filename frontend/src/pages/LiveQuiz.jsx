@@ -20,14 +20,19 @@ import {
   XCircle
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-
-const API_BASE = import.meta.env.VITE_API_URL || (window.location.hostname.includes('localhost') ? 'http://localhost:5000/api' : '/api');
-const SOCKET_URL = (import.meta.env.VITE_API_URL || (window.location.hostname.includes('localhost') ? 'http://localhost:5000/api' : '/api')).replace('/api', '');
+import { API_BASE, SOCKET_URL } from '../utils/api';
 
 const LiveQuiz = () => {
   const navigate = useNavigate();
-  const { user, isAuthenticated, token } = useAuth();
+  const { user, isAuthenticated, token, loading } = useAuth();
   const socketRef = useRef(null);
+
+  // Authenticate user redirect
+  useEffect(() => {
+    if (!loading && !isAuthenticated) {
+      navigate('/login', { state: { message: 'Silakan masuk terlebih dahulu untuk mengikuti Live Quiz.' } });
+    }
+  }, [loading, isAuthenticated, navigate]);
 
   // States
   const [quizzes, setQuizzes] = useState([]);
@@ -577,6 +582,16 @@ const LiveQuiz = () => {
                         <h2 className="text-lg font-bold text-zinc-900 dark:text-white text-left leading-relaxed">
                           {questions[currentIdx].question}
                         </h2>
+
+                        {questions[currentIdx].image && (
+                          <div className="mt-4 overflow-hidden rounded-2xl border border-zinc-200 dark:border-white/10 max-h-60 flex justify-center bg-zinc-50 dark:bg-zinc-950/20">
+                            <img 
+                              src={questions[currentIdx].image} 
+                              alt="Soal Gambar" 
+                              className="max-h-60 object-contain"
+                            />
+                          </div>
+                        )}
 
                         <div className="mt-8 space-y-3">
                           {questions[currentIdx].options.map((option, idx) => {

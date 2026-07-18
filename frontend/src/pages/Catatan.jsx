@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
+import { API_BASE } from '../utils/api'
 import {
   ArrowLeft,
   Plus,
@@ -539,26 +541,91 @@ function NoteContent({ note }) {
 /* ---------------------------------- */
 
 const Catatan = () => {
-  const [notes, setNotes] = useState(() => loadNotes())
+  const navigate = useNavigate()
+  const { user, isAuthenticated, token, loading } = useAuth()
+
+  const [notes, setNotes] = useState([])
+  const [notesLoading, setNotesLoading] = useState(true)
   const [showAddModal, setShowAddModal] = useState(false)
 
+  // Redirect if not authenticated
   useEffect(() => {
-    persistNotes(notes)
-  }, [notes])
+    if (!loading && !isAuthenticated) {
+      navigate('/login', { state: { message: 'Silakan masuk terlebih dahulu untuk mengakses catatan Anda.' } })
+    }
+  }, [loading, isAuthenticated, navigate])
+
+  // Fetch notes from backend
+  useEffect(() => {
+    if (!isAuthenticated || !token) return
+    const fetchNotes = async () => {
+      try {
+        const res = await fetch(`${API_BASE}/notes`, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+        if (res.ok) {
+          const data = await res.json()
+          setNotes(data.notes || [])
+        }
+      } catch (err) {
+        console.error('Gagal memuat catatan dari backend:', err)
+      } finally {
+        setNotesLoading(false)
+      }
+    }
+    fetchNotes()
+  }, [isAuthenticated, token])
 
   const handleAddClick = () => {
     setShowAddModal(true)
   }
 
-  const handleDeleteClick = (id) => {
+  const handleDeleteClick = async (id) => {
     if (window.confirm('Apakah Anda yakin ingin menghapus catatan ini?')) {
-      setNotes((prev) => prev.filter((n) => n.id !== id))
+      try {
+        const res = await fetch(`${API_BASE}/notes/${id}`, {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+        if (res.ok) {
+          setNotes((prev) => prev.filter((n) => n.id !== id))
+        } else {
+          const errData = await res.json().catch(() => ({}))
+          alert(errData.message || 'Gagal menghapus catatan.')
+        }
+      } catch (err) {
+        console.error('Error deleting note:', err)
+        alert('Terjadi kesalahan koneksi saat menghapus catatan.')
+      }
     }
   }
 
-  const handleSaveNote = (note) => {
-    setNotes((prev) => [note, ...prev])
-    setShowAddModal(false)
+  const handleSaveNote = async (note) => {
+    try {
+      const res = await fetch(`${API_BASE}/notes`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(note)
+      })
+      if (res.ok) {
+        const data = await res.json()
+        setNotes((prev) => [data.note, ...prev])
+        setShowAddModal(false)
+      } else {
+        const errData = await res.json().catch(() => ({}))
+        alert(errData.message || 'Gagal menyimpan catatan.')
+      }
+    } catch (err) {
+      console.error('Error saving note:', err)
+      alert('Terjadi kesalahan koneksi saat menyimpan catatan.')
+    }
   }
 
   const sortedNotes = useMemo(
@@ -610,7 +677,11 @@ const Catatan = () => {
         </div>
 
         {/* Notes grid */}
-        {sortedNotes.length === 0 ? (
+        {notesLoading ? (
+          <div className="flex items-center justify-center py-24">
+            <div className="size-8 animate-spin rounded-full border-4 border-zinc-200 border-t-pink-500" />
+          </div>
+        ) : sortedNotes.length === 0 ? (
           <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-zinc-250 bg-white/50 px-6 py-24 text-center dark:border-white/10 dark:bg-[#0a0c10]/40">
             <NotebookEmptyIcon />
             <p className="mt-4 text-base font-black text-zinc-800 dark:text-zinc-200">Belum ada catatan</p>
