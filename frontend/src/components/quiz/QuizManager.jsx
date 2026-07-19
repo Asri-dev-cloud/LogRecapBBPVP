@@ -306,6 +306,7 @@ const QuizManager = ({ onClose, onQuizUpdate }) => {
       const url = editingQuiz ? `${API_BASE}/quiz/${editingQuiz.id}` : `${API_BASE}/quiz`;
       const method = editingQuiz ? 'PUT' : 'POST';
       let success = false;
+      let useLocalStorage = false;
 
       try {
         const res = await fetch(url, {
@@ -333,7 +334,15 @@ const QuizManager = ({ onClose, onQuizUpdate }) => {
           throw new Error(err.message || 'Gagal menyimpan quiz.');
         }
       } catch (netErr) {
-        console.warn('Backend server offline, falling back to localStorage:', netErr);
+        if (netErr.name === 'TypeError' || netErr.message.includes('fetch')) {
+          console.warn('Backend server offline, falling back to localStorage:', netErr);
+          useLocalStorage = true;
+        } else {
+          throw netErr;
+        }
+      }
+
+      if (useLocalStorage) {
         const STORAGE_KEY = 'logrecap_custom_quizzes';
         let localQuizzes = [];
         try {
@@ -355,7 +364,7 @@ const QuizManager = ({ onClose, onQuizUpdate }) => {
           success = true;
         } catch (storageErr) {
           console.error('LocalStorage quota exceeded:', storageErr);
-          alert('Gagal menyimpan secara lokal karena memori browser penuh (limit 5MB). Harap aktifkan server database VPS Anda atau hapus kuis/gambar berukuran besar.');
+          alert('Gagal menyimpan secara lokal karena memori browser penuh (limit 5MB). Harap aktifkan server database VPS Anda atau kurangi jumlah kuis/gambar berukuran besar.');
           success = false;
         }
       }
