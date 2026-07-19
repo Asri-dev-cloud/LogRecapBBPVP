@@ -457,7 +457,7 @@ export const createNote = async (note) => {
       note.type,
       note.title,
       JSON.stringify(note.content),
-      note.createdAt || new Date()
+      note.createdAt ? new Date(note.createdAt) : new Date()
     ]
   );
   return note;
