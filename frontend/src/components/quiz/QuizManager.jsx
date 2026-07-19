@@ -319,6 +319,15 @@ const QuizManager = ({ onClose, onQuizUpdate }) => {
         });
         if (res.ok) {
           success = true;
+          const STORAGE_KEY = 'logrecap_custom_quizzes';
+          try {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            const localQuizzes = stored ? JSON.parse(stored) : [];
+            if (editingQuiz) {
+              const filtered = localQuizzes.filter((q) => q.id !== editingQuiz.id);
+              localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
+            }
+          } catch {}
         } else {
           const err = await res.json().catch(() => ({}));
           throw new Error(err.message || 'Gagal menyimpan quiz.');
