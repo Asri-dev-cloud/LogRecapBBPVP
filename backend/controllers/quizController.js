@@ -78,6 +78,12 @@ export const createQuiz = async (req, res) => {
  */
 export const updateQuiz = async (req, res) => {
   try {
+    console.log('--- Incoming updateQuiz body ---');
+    if (req.body && req.body.questions) {
+      req.body.questions.forEach((q, idx) => {
+        console.log(`Question ${idx} - image length:`, q.image ? q.image.length : 'none', 'value preview:', q.image ? q.image.substring(0, 50) : 'none');
+      });
+    }
     const { title, description, difficulty, icon, category, questions } = req.body;
     const existing = await store.getQuizById(req.params.id);
     if (!existing) {
