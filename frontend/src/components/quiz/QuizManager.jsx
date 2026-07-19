@@ -373,7 +373,7 @@ const QuizManager = ({ onClose, onQuizUpdate }) => {
     setError('');
   };
 
-  const handleEdit = (quiz) => {
+  const handleEdit = async (quiz) => {
     setEditingQuiz(quiz);
     setFormData({
       title: quiz.title,
@@ -383,8 +383,24 @@ const QuizManager = ({ onClose, onQuizUpdate }) => {
       icon: quiz.icon || 'Zap',
       category: quiz.category || 'general',
     });
+
+    let quizQs = quiz.questions || [];
+
+    // If server-side quiz has no questions pre-populated, fetch them
+    if (quizQs.length === 0 && typeof quiz.id === 'number' && quiz.id < 1000000000000) {
+      try {
+        const res = await fetch(`${API_BASE}/quiz/${quiz.id}`);
+        if (res.ok) {
+          const data = await res.json();
+          quizQs = data.questions || [];
+        }
+      } catch (err) {
+        console.error('Gagal memuat detail soal kuis dari server:', err);
+      }
+    }
+
     setQuestions(
-      (quiz.questions || []).map((q) => ({
+      quizQs.map((q) => ({
         question: q.question || '',
         options: Array.isArray(q.options) && q.options.length === 4 ? [...q.options] : ['', '', '', ''],
         correct: typeof q.correct === 'number' ? q.correct : 0,

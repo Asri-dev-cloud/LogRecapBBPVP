@@ -49,6 +49,7 @@ export const createQuiz = async (req, res) => {
       question: q.question,
       options: Array.isArray(q.options) ? q.options : [],
       correct: typeof q.correct === 'number' ? q.correct : 0,
+      image: q.image || null,
     }));
     const newQuiz = await store.createQuiz({
       title,
@@ -93,6 +94,7 @@ export const updateQuiz = async (req, res) => {
         question: q.question,
         options: Array.isArray(q.options) ? q.options : [],
         correct: typeof q.correct === 'number' ? q.correct : 0,
+        image: q.image || null,
       }));
       payload.totalQuestions = payload.questions.length;
     }
