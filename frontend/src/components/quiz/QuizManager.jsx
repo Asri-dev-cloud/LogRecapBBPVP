@@ -25,11 +25,40 @@ import {
 
 import { API_BASE } from '../../utils/api';
 
-const fileToDataUrl = (file) => {
+const compressImage = (file, maxWidth = 800, maxHeight = 800, quality = 0.7) => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = reject;
+    reader.onload = (readerEvent) => {
+      const image = new Image();
+      image.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = image.width;
+        let height = image.height;
+
+        if (width > height) {
+          if (width > maxWidth) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          }
+        } else {
+          if (height > maxHeight) {
+            width = Math.round((width * maxHeight) / height);
+            height = maxHeight;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(image, 0, 0, width, height);
+
+        const dataUrl = canvas.toDataURL('image/jpeg', quality);
+        resolve(dataUrl);
+      };
+      image.onerror = (err) => reject(err);
+      image.src = readerEvent.target.result;
+    };
+    reader.onerror = (err) => reject(err);
     reader.readAsDataURL(file);
   });
 };
@@ -312,8 +341,14 @@ const QuizManager = ({ onClose, onQuizUpdate }) => {
           const newId = Date.now();
           localQuizzes.push({ ...payload, id: newId });
         }
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(localQuizzes));
-        success = true;
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(localQuizzes));
+          success = true;
+        } catch (storageErr) {
+          console.error('LocalStorage quota exceeded:', storageErr);
+          alert('Gagal menyimpan secara lokal karena memori browser penuh (limit 5MB). Harap aktifkan server database VPS Anda atau hapus kuis/gambar berukuran besar.');
+          success = false;
+        }
       }
 
       if (success) {
@@ -521,12 +556,13 @@ const QuizManager = ({ onClose, onQuizUpdate }) => {
                             onChange={async (e) => {
                               const file = e.target.files?.[0];
                               if (!file) return;
-                              if (file.size > 2 * 1024 * 1024) {
-                                alert("Ukuran gambar maksimal 2MB");
-                                return;
+                              try {
+                                const dataUrl = await compressImage(file);
+                                updateQuestion(qi, 'image', dataUrl);
+                              } catch (compressErr) {
+                                console.error('Gagal kompres gambar:', compressErr);
+                                alert('Gagal memproses gambar. Pastikan file berupa gambar valid.');
                               }
-                              const dataUrl = await fileToDataUrl(file);
-                              updateQuestion(qi, 'image', dataUrl);
                             }} 
                           />
                         </label>
