@@ -42,7 +42,19 @@ const Login = () => {
       const data = await login(formData.email.trim(), formData.password);
       setPopupName(data.user.fullName || data.user.username);
       setShowPopup(true);
-      const targetPath = location.state?.from || '/learning-experience';
+      let targetPath = location.state?.from;
+      if (!targetPath) {
+        try {
+          targetPath = sessionStorage.getItem('logrecap_redirect_after_login');
+          if (targetPath) {
+            sessionStorage.removeItem('logrecap_redirect_after_login');
+          }
+        } catch (e) {}
+      }
+      if (!targetPath) {
+        targetPath = '/learning-experience';
+      }
+
       setTimeout(() => {
         setShowPopup(false);
         navigate(targetPath, { replace: true });
@@ -70,6 +82,9 @@ const Login = () => {
               <span className="text-3xl font-black tracking-widest bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
                 LogRecap
               </span>
+              <p className="max-w-xs text-sm font-semibold text-zinc-400 leading-relaxed">
+                Platform ringkasan modul pembelajaran dan kuis interaktif BBPVP.
+              </p>
             </div>
             <div className="absolute bottom-6 text-center text-[10px] text-zinc-550 font-medium">
               &copy; {new Date().getFullYear()} LogRecap Learning System.
@@ -77,77 +92,66 @@ const Login = () => {
           </div>
 
           {/* Right panel: Login form */}
-          <div className="flex flex-col justify-center px-6 py-12 sm:px-16 lg:col-span-7">
-            <div className="mx-auto w-full max-w-md">
-              <div className="mb-6 flex justify-center lg:hidden">
-                <div className="flex flex-col items-center gap-2">
-                  <img src="/assets/logo.svg" alt="LogRecap Logo" className="size-20 animate-pulse" />
-                  <span className="text-2xl font-black tracking-widest bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-                    LogRecap
-                  </span>
+          <div className="p-8 sm:p-12 lg:col-span-7 flex flex-col justify-center">
+            <div className="max-w-md mx-auto w-full">
+              <div className="mb-8">
+                <div className="inline-flex items-center gap-2 rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1 text-xs font-bold text-blue-400 mb-3">
+                  <ShieldCheck size={14} /> Autentikasi Pengguna
                 </div>
-              </div>
-
-              <div className="mb-8 text-center lg:text-left">
-                <h1 className="text-3xl font-black tracking-tight bg-gradient-to-r from-white via-zinc-100 to-zinc-400 bg-clip-text text-transparent">
-                  Selamat Datang
-                </h1>
-                <p className="mt-2 text-sm text-zinc-400">
-                  Silakan masuk untuk melanjutkan proses belajar Anda.
+                <h1 className="text-3xl font-black tracking-tight text-white sm:text-4xl">Masuk Akun</h1>
+                <p className="mt-2 text-sm font-medium text-zinc-400">
+                  Masukkan akun Anda untuk melanjutkan aktivitas belajar.
                 </p>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-5">
+              {error && (
+                <div className="mb-6 flex items-center gap-3 rounded-2xl border border-rose-500/20 bg-rose-500/10 p-4 text-xs font-semibold text-rose-400">
+                  <div className="size-2 rounded-full bg-rose-500 shrink-0" />
+                  <p className="flex-1">{error}</p>
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-zinc-400">
-                    Username / Email
+                  <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-zinc-400">
+                    Username atau Email
                   </label>
                   <div className="relative">
-                    <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500" />
+                    <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500" />
                     <input
                       type="text"
                       name="email"
                       value={formData.email}
                       onChange={handleChange}
-                      placeholder="username@email.com atau username"
-                      className="w-full rounded-2xl border border-white/10 bg-zinc-950/50 py-3.5 pl-12 pr-4 text-sm font-medium text-white outline-none transition-all placeholder:text-zinc-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                      placeholder="nama@email.com / username"
+                      className="w-full rounded-2xl border border-white/10 bg-zinc-950/60 py-3.5 pl-11 pr-4 text-sm font-medium text-white outline-none transition placeholder:text-zinc-600 focus:border-blue-500"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-zinc-400">
+                  <label className="mb-1.5 block text-xs font-bold uppercase tracking-wider text-zinc-400">
                     Password
                   </label>
                   <div className="relative">
-                    <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500" />
+                    <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500" />
                     <input
                       type={showPassword ? 'text' : 'password'}
                       name="password"
                       value={formData.password}
                       onChange={handleChange}
                       placeholder="••••••••"
-                      className="w-full rounded-2xl border border-white/10 bg-zinc-950/50 py-3.5 pl-12 pr-12 text-sm font-medium text-white outline-none transition-all placeholder:text-zinc-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                      className="w-full rounded-2xl border border-white/10 bg-zinc-950/60 py-3.5 pl-11 pr-11 text-sm font-medium text-white outline-none transition placeholder:text-zinc-600 focus:border-blue-500"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
                       className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300"
                     >
-                      {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
                   </div>
                 </div>
-
-                {error && (
-                  <motion.p
-                    initial={{ opacity: 0, y: -5 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="rounded-xl border border-red-500/20 bg-red-950/30 px-4 py-2.5 text-xs font-medium text-red-400"
-                  >
-                    {error}
-                  </motion.p>
-                )}
 
                 <motion.button
                   type="submit"
@@ -169,7 +173,7 @@ const Login = () => {
 
               <div className="mt-8 text-center text-sm text-zinc-500">
                 Belum memiliki akun?{' '}
-                <Link to="/register" className="font-semibold text-blue-400 hover:underline">
+                <Link to="/register" state={{ from: location.state?.from }} className="font-semibold text-blue-400 hover:underline">
                   Daftar Sekarang
                 </Link>
               </div>

@@ -44,10 +44,13 @@ const LiveQuiz = () => {
   const { user, isAuthenticated, token, loading } = useAuth();
   const socketRef = useRef(null);
 
-  // Authenticate user redirect with target return URL
+  // Authenticate user redirect with target return URL in state & sessionStorage
   useEffect(() => {
     if (!loading && !isAuthenticated) {
       const redirectUrl = location.pathname + location.search;
+      try {
+        sessionStorage.setItem('logrecap_redirect_after_login', redirectUrl);
+      } catch (e) {}
       navigate('/login', {
         state: {
           message: 'Silakan masuk terlebih dahulu untuk mengikuti Live Quiz.',
@@ -62,7 +65,8 @@ const LiveQuiz = () => {
     const params = new URLSearchParams(window.location.search);
     const codeParam = params.get('code');
     if (codeParam) {
-      setJoinCode(codeParam.toUpperCase());
+      const clean = codeParam.toUpperCase().trim();
+      setJoinCode(clean);
     }
   }, []);
 
@@ -184,6 +188,25 @@ const LiveQuiz = () => {
       }
     };
   }, [isAuthenticated]);
+
+  // Auto-join room when code parameter is in URL and user is authenticated
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const codeParam = params.get('code');
+    if (codeParam && isAuthenticated && user && gameState === 'setup' && socketRef.current) {
+      const timer = setTimeout(() => {
+        if (socketRef.current && gameState === 'setup') {
+          const cleanCode = codeParam.toUpperCase().trim();
+          setJoinCode(cleanCode);
+          socketRef.current.emit('join_room', {
+            roomCode: cleanCode,
+            user: user
+          });
+        }
+      }, 600);
+      return () => clearTimeout(timer);
+    }
+  }, [isAuthenticated, user, gameState]);
 
   const resetToSetup = () => {
     setRoomCode('');
