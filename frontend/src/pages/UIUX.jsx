@@ -127,7 +127,7 @@ const material = {
         "10 Prinsip Usability Nielsen (6-10): Recognition Rather Than Recall (kurangi kebutuhan mengingat), Flexibility and Efficiency (mendukung pengguna pemula dan mahir), Minimalist Design (hindari elemen yang tidak perlu), Error Recovery (pesan error harus jelas), dan Help and Documentation (sediakan bantuan jika diperlukan)."
       ],
       "image": true,
-      "imageSrc": "../assets/h.png",
+      "imageSrc": "/assets/h.png",
       "imageLabel": "SISIPKAN GAMBAR: ilustrasi UX strategy seperti user persona, user journey, accessibility, dan testing.",
       "id": "uiux-8-user-experience"
     },

@@ -107,10 +107,7 @@ export const updateProfile = async (req, res) => {
 export const getUserCertificates = async (req, res) => {
   try {
     const userId = req.user.id;
-
-    // Panggil stored procedure untuk mengambil data sertifikat user
-    const [storedProcResult] = await db.query('CALL sp_get_user_certificates(?)', [userId]);
-    const certificates = storedProcResult[0];
+    const certificates = await store.getCertificates(userId);
 
     res.status(200).json({ certificates: certificates || [] });
   } catch (error) {

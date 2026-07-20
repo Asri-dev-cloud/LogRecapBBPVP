@@ -2,6 +2,18 @@
 
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'JosephSophia';
+  src: url('/assets/josephsophia.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+.font-joseph-sophia {
+  font-family: 'JosephSophia', cursive, sans-serif;
+}
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 html {

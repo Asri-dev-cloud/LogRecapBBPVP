@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { io } from 'socket.io-client';
+import { QRCodeSVG } from 'qrcode.react';
 import {
   Users,
   Play,
@@ -17,10 +18,25 @@ import {
   GraduationCap,
   ArrowLeft,
   CheckCircle2,
-  XCircle
+  XCircle,
+  QrCode,
+  Maximize2,
+  X
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { API_BASE, SOCKET_URL } from '../utils/api';
+
+const getAvatarUrl = (identifier) => {
+  const avatars = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x'];
+  let str = String(identifier || 'participant');
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash << 5) - hash + str.charCodeAt(i);
+    hash |= 0;
+  }
+  const index = Math.abs(hash) % avatars.length;
+  return `/assets/${avatars[index]}.png`;
+};
 
 const LiveQuiz = () => {
   const navigate = useNavigate();
@@ -34,6 +50,15 @@ const LiveQuiz = () => {
     }
   }, [loading, isAuthenticated, navigate]);
 
+  // Read URL query parameter for room code auto-fill
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const codeParam = params.get('code');
+    if (codeParam) {
+      setJoinCode(codeParam.toUpperCase());
+    }
+  }, []);
+
   // States
   const [quizzes, setQuizzes] = useState([]);
   const [selectedQuizId, setSelectedQuizId] = useState('');
@@ -44,6 +69,7 @@ const LiveQuiz = () => {
   const [gameState, setGameState] = useState('setup'); // setup, lobby, playing, finished
   const [errorMsg, setErrorMsg] = useState('');
   const [copied, setCopied] = useState(false);
+  const [showQrModal, setShowQrModal] = useState(false);
 
   // Murid Gameplay States
   const [questions, setQuestions] = useState([]);
@@ -110,7 +136,17 @@ const LiveQuiz = () => {
     });
 
     socketRef.current.on('quiz_started', ({ quizTitle, questions: quizQs }) => {
-      setQuestions(quizQs);
+      const shuffleArray = (array) => {
+        if (!Array.isArray(array)) return [];
+        const arr = [...array];
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+      };
+
+      setQuestions(shuffleArray(quizQs));
       setCurrentIdx(0);
       setScore(0);
       setSelectedAnswer(null);
@@ -185,7 +221,7 @@ const LiveQuiz = () => {
 
   // Murid Gameplay Handling
   const handleAnswerOption = (optionIdx) => {
-    if (selectedAnswer !== null) return;
+    if (selectedAnswer !== null || !questions[currentIdx]) return;
     setSelectedAnswer(optionIdx);
 
     const isCorrect = optionIdx === questions[currentIdx].correct;
@@ -195,13 +231,14 @@ const LiveQuiz = () => {
       setScore(newScore);
     }
 
-    // Submit progress immediately
-    socketRef.current.emit('submit_progress', {
-      roomCode,
-      currentQuestion: currentIdx + 1,
-      score: newScore,
-      username: user.username
-    });
+    if (socketRef.current) {
+      socketRef.current.emit('submit_progress', {
+        roomCode,
+        currentQuestion: currentIdx + 1,
+        score: newScore,
+        username: user?.username || ''
+      });
+    }
   };
 
   const handleNextQuestion = () => {
@@ -209,19 +246,21 @@ const LiveQuiz = () => {
     if (currentIdx < questions.length - 1) {
       setCurrentIdx(currentIdx + 1);
     } else {
-      // Quiz finished for this player
       setQuizDone(true);
-      const percentage = Math.round((score / questions.length) * 100);
+      const totalQs = questions.length || 1;
+      const percentage = Math.round((score / totalQs) * 100);
       const passed = percentage >= 60;
 
-      socketRef.current.emit('player_finished', {
-        roomCode,
-        username: user.username,
-        score,
-        totalQuestions: questions.length,
-        percentage,
-        passed
-      });
+      if (socketRef.current) {
+        socketRef.current.emit('player_finished', {
+          roomCode,
+          username: user?.username || '',
+          score,
+          totalQuestions: totalQs,
+          percentage,
+          passed
+        });
+      }
     }
   };
 
@@ -375,18 +414,41 @@ const LiveQuiz = () => {
           >
             {/* Header info */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-zinc-200 dark:border-white/5">
-              <div className="text-left">
-                <p className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">KODE KELAS</p>
-                <div className="flex items-center gap-3 mt-1.5">
-                  <h1 className="text-4xl font-black tracking-widest text-zinc-900 dark:text-white">{roomCode}</h1>
-                  <button
-                    onClick={copyRoomCode}
-                    className="p-2 rounded-xl border border-zinc-200 hover:bg-zinc-50 dark:border-white/10 dark:hover:bg-zinc-900 text-zinc-500 transition-all"
-                  >
-                    {copied ? <Check size={16} className="text-emerald-500" /> : <Copy size={16} />}
-                  </button>
+              <div className="flex flex-wrap items-center gap-6">
+                <div className="text-left">
+                  <p className="text-xs font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest">KODE KELAS</p>
+                  <div className="flex items-center gap-3 mt-1.5">
+                    <h1 className="text-4xl font-black tracking-widest text-zinc-900 dark:text-white">{roomCode}</h1>
+                    <button
+                      onClick={copyRoomCode}
+                      title="Salin Kode Room"
+                      className="p-2 rounded-xl border border-zinc-200 hover:bg-zinc-50 dark:border-white/10 dark:hover:bg-zinc-900 text-zinc-500 transition-all"
+                    >
+                      {copied ? <Check size={16} className="text-emerald-500" /> : <Copy size={16} />}
+                    </button>
+                  </div>
                 </div>
+
+                {/* QR Code Mini Card */}
+                {roomCode && (
+                  <div className="flex items-center gap-3 bg-zinc-50 dark:bg-zinc-900/50 p-2.5 rounded-2xl border border-zinc-200 dark:border-white/10">
+                    <div className="bg-white p-1.5 rounded-xl shadow-sm">
+                      <QRCodeSVG value={`${window.location.origin}/live-quiz?code=${roomCode}`} size={56} level="M" />
+                    </div>
+                    <div className="text-left">
+                      <p className="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase">Scan QR Join</p>
+                      <button
+                        onClick={() => setShowQrModal(true)}
+                        className="mt-1 flex items-center gap-1 text-xs font-bold text-pink-600 dark:text-pink-400 hover:underline"
+                      >
+                        <Maximize2 size={12} />
+                        <span>Perbesar</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
+
               <div className="text-left md:text-right">
                 <span className="inline-block px-3 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-500 border border-amber-500/20">
                   Lobby Menunggu
@@ -421,7 +483,7 @@ const LiveQuiz = () => {
                       className="rounded-2xl border border-zinc-200 bg-zinc-50/50 p-4 dark:border-white/5 dark:bg-zinc-900/30 text-center hover:border-pink-500/30 transition-colors"
                     >
                       <div className="mx-auto mb-2.5 grid size-10 place-items-center rounded-xl overflow-hidden shadow border border-zinc-100 dark:border-white/5 bg-zinc-100">
-                        <img src="/assets/admin.png" alt="Avatar" className="size-10 object-cover" />
+                        <img src={getAvatarUrl(p.username || p.fullName || idx)} alt="Avatar" className="size-10 object-cover" />
                       </div>
                       <p className="text-sm font-bold text-zinc-900 dark:text-white truncate">{p.fullName}</p>
                       <p className="text-[10px] font-semibold text-zinc-400 dark:text-zinc-500 truncate">@{p.username}</p>
@@ -486,7 +548,7 @@ const LiveQuiz = () => {
                       >
                         <div className="flex items-center gap-3 min-w-[200px] text-left">
                           <div className="relative grid size-9 place-items-center rounded-xl overflow-hidden shadow border border-zinc-100 dark:border-white/5 bg-zinc-150">
-                            <img src="/assets/admin.png" alt="Avatar" className="size-9 object-cover" />
+                            <img src={getAvatarUrl(p.username || p.fullName || idx)} alt="Avatar" className="size-9 object-cover" />
                             {p.finished && (
                               <div className="absolute -bottom-1 -right-1 grid size-4.5 place-items-center rounded-full bg-emerald-500 text-white border border-white dark:border-zinc-950 shadow-sm">
                                 <CheckCircle2 size={10} />
@@ -706,7 +768,7 @@ const LiveQuiz = () => {
                         {idx + 1}
                       </span>
                       <div className="grid size-9 shrink-0 place-items-center rounded-xl overflow-hidden shadow border border-zinc-100 dark:border-white/5 bg-zinc-150">
-                        <img src="/assets/admin.png" alt="Avatar" className="size-9 object-cover" />
+                        <img src={getAvatarUrl(p.username || p.fullName || idx)} alt="Avatar" className="size-9 object-cover" />
                       </div>
                       <div className="min-w-0 flex-1">
                         <p className="truncate text-sm font-bold text-zinc-900 dark:text-white">{p.fullName}</p>
@@ -741,6 +803,49 @@ const LiveQuiz = () => {
             </div>
           </motion.div>
         )}
+
+        {/* QR Code Enlarged Modal */}
+        <AnimatePresence>
+          {showQrModal && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[100] flex items-center justify-center bg-zinc-950/90 p-4 backdrop-blur-md"
+            >
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                className="w-full max-w-md rounded-3xl border border-zinc-200 bg-white dark:border-white/10 dark:bg-zinc-900 p-8 shadow-2xl text-center relative"
+              >
+                <button
+                  onClick={() => setShowQrModal(false)}
+                  className="absolute right-4 top-4 p-2 rounded-xl text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+                >
+                  <X size={20} />
+                </button>
+
+                <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-2xl bg-pink-500/10 text-pink-500">
+                  <QrCode size={24} />
+                </div>
+                <h3 className="text-xl font-black text-zinc-900 dark:text-white">Pindai QR Code untuk Gabung</h3>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
+                  Kuis: <span className="font-bold text-zinc-800 dark:text-zinc-200">{roomData?.quizTitle || 'Live Quiz'}</span>
+                </p>
+
+                <div className="my-6 mx-auto inline-block rounded-2xl bg-white p-6 shadow-xl border border-zinc-200 dark:border-white/10">
+                  <QRCodeSVG value={`${window.location.origin}/live-quiz?code=${roomCode}`} size={220} level="H" includeMargin={true} />
+                </div>
+
+                <div className="rounded-2xl bg-zinc-100 dark:bg-zinc-950/60 p-4 border border-zinc-200 dark:border-white/5">
+                  <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider">KODE ROOM</p>
+                  <p className="text-3xl font-black tracking-widest text-zinc-900 dark:text-white mt-0.5">{roomCode}</p>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
       </div>
     </div>

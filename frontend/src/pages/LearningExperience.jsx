@@ -128,15 +128,35 @@ const LearningExperience = () => {
       localCerts = stored ? JSON.parse(stored) : [];
     } catch {}
 
+    const shuffleArray = (array) => {
+      if (!Array.isArray(array)) return [];
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    };
+
     const merged = [...serverCerts].map(cert => ({
       ...cert,
+      quizTitle: cert.quizTitle || cert.quiz_title || 'Kuis LogRecap',
+      quizId: cert.quizId || cert.quiz_id,
+      totalQuestions: cert.totalQuestions || cert.total_questions,
+      percentage: cert.percentage ?? 0,
+      date: cert.date || cert.created_at,
       userName: cert.userName || user?.fullName || user?.username || 'Learner'
     }));
 
     localCerts.forEach(lc => {
-      if (!merged.some(mc => mc.quizId === lc.quizId && mc.percentage === lc.percentage)) {
+      if (!merged.some(mc => (mc.quizId === lc.quizId || mc.quizId === lc.quiz_id) && mc.percentage === lc.percentage)) {
         merged.push({
           ...lc,
+          quizTitle: lc.quizTitle || lc.quiz_title || 'Kuis LogRecap',
+          quizId: lc.quizId || lc.quiz_id,
+          totalQuestions: lc.totalQuestions || lc.total_questions,
+          percentage: lc.percentage ?? 0,
+          date: lc.date || lc.created_at,
           userName: lc.userName || user?.fullName || user?.username || 'Learner'
         });
       }
@@ -190,6 +210,16 @@ const LearningExperience = () => {
       return;
     }
 
+    const shuffleArray = (array) => {
+      if (!Array.isArray(array)) return [];
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    };
+
     fetch(`${API_BASE}/quiz/${quiz.id}`)
       .then((res) => {
         if (res.ok) {
@@ -199,7 +229,7 @@ const LearningExperience = () => {
       })
       .then((data) => {
         if (data.questions) {
-          setActiveQuiz({ ...data.quiz, questions: data.questions });
+          setActiveQuiz({ ...data.quiz, questions: shuffleArray(data.questions) });
           setCurrentQuestion(0);
           setSelectedAnswer(null);
           setScore(0);
@@ -219,7 +249,7 @@ const LearningExperience = () => {
 
         const found = localQuizzes.find(q => q.id === quiz.id);
         if (found && Array.isArray(found.questions) && found.questions.length > 0) {
-          setActiveQuiz({ ...found });
+          setActiveQuiz({ ...found, questions: shuffleArray(found.questions) });
           setCurrentQuestion(0);
           setSelectedAnswer(null);
           setScore(0);
@@ -392,10 +422,16 @@ const LearningExperience = () => {
   };
 
   const certificateData = viewingHistoryEntry
-    ? { ...viewingHistoryEntry, userName: viewingHistoryEntry.userName || user?.fullName || user?.username || 'Learner' }
+    ? {
+        ...viewingHistoryEntry,
+        quizTitle: viewingHistoryEntry.quizTitle || viewingHistoryEntry.quiz_title || 'Kuis LogRecap',
+        userName: viewingHistoryEntry.userName || user?.fullName || user?.username || 'Learner',
+        percentage: viewingHistoryEntry.percentage ?? 0,
+        date: viewingHistoryEntry.date || viewingHistoryEntry.created_at || new Date().toISOString(),
+      }
     : activeQuiz
     ? {
-        quizTitle: activeQuiz.title,
+        quizTitle: activeQuiz.title || activeQuiz.quizTitle || 'Kuis LogRecap',
         userName: user?.fullName || user?.username || 'Learner',
         score,
         totalQuestions: activeQuiz.questions.length,
@@ -409,13 +445,23 @@ const LearningExperience = () => {
     setViewingHistoryEntry(null);
   };
 
+  const formatDateSafe = (dateVal) => {
+    try {
+      const d = new Date(dateVal || Date.now());
+      if (isNaN(d.getTime())) return '-';
+      return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+    } catch {
+      return '-';
+    }
+  };
+
   const handlePrintCertificate = () => {
     if (!certificateData) return;
     const pw = window.open('', '_blank');
     if (!pw) return;
 
     const { userName, quizTitle, percentage, date } = certificateData;
-    const dateStr = new Date(date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+    const dateStr = formatDateSafe(date);
     const imageUrl = `${window.location.origin}/assets/Sertif.png`;
 
     pw.document.write(`<!DOCTYPE html><html><head><title>Sertifikat - LogRecap</title>
@@ -429,10 +475,10 @@ const LearningExperience = () => {
       .cert-wrap { position: relative; width: 1000px; max-width: 100%; border: 4px solid #333; border-radius: 12px; overflow: hidden; }
       .cert-wrap img { width: 100%; display: block; }
       .cert-text { position: absolute; text-align: center; }
-      .cert-name { left: 50%; transform: translateX(-50%); top: 48%; width: 85%; font-size: 54px; font-family: 'Great Vibes', cursive; color: #dfb75c; text-shadow: 1px 1px 2px rgba(0,0,0,0.6); }
-      .cert-title { left: 50%; transform: translateX(-50%); top: 68%; width: 85%; font-size: 22px; font-weight: 700; color: #ffffff; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
-      .cert-score { left: 29%; transform: translateX(-50%); top: 78%; font-size: 18px; font-weight: 900; color: #ffffff; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
-      .cert-date { right: 29%; transform: translateX(50%); top: 78%; font-size: 16px; font-weight: 700; color: #ffffff; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
+      .cert-name { left: 50%; transform: translateX(-50%); top: 46.5%; width: 85%; font-size: 52px; font-family: 'Great Vibes', cursive; color: #dfb75c; text-shadow: 1px 1px 2px rgba(0,0,0,0.6); }
+      .cert-title { left: 50%; transform: translateX(-50%); top: 66.5%; width: 85%; font-size: 18px; font-weight: 800; color: #ffffff; text-transform: uppercase; letter-spacing: 1px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
+      .cert-score { left: 29%; transform: translateX(-50%); top: 77.5%; font-size: 18px; font-weight: 900; color: #ffffff; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
+      .cert-date { right: 29%; transform: translateX(50%); top: 77.5%; font-size: 15px; font-weight: 700; color: #ffffff; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
     </style></head>
     <body>
       <div class="cert-wrap">
@@ -450,7 +496,7 @@ const LearningExperience = () => {
   const handleDownloadCertificate = () => {
     if (!certificateData) return;
     const { userName, quizTitle, percentage, date } = certificateData;
-    const dateStr = new Date(date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+    const dateStr = formatDateSafe(date);
     const imageUrl = `/assets/Sertif.png`;
 
     const img = new Image();
@@ -465,7 +511,7 @@ const LearningExperience = () => {
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
       // 1. Receiver Name
-      const nameFontSize = Math.round(canvas.width * 0.055);
+      const nameFontSize = Math.round(canvas.width * 0.052);
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.font = `normal ${nameFontSize}px 'Great Vibes', cursive`;
@@ -474,7 +520,7 @@ const LearningExperience = () => {
       ctx.shadowBlur = 4;
       ctx.shadowOffsetX = 1;
       ctx.shadowOffsetY = 1;
-      ctx.fillText(userName, canvas.width / 2, canvas.height * 0.48);
+      ctx.fillText(userName, canvas.width / 2, canvas.height * 0.475);
 
       // Reset shadow for readability of standard texts
       ctx.shadowColor = 'transparent';
@@ -483,10 +529,10 @@ const LearningExperience = () => {
       ctx.shadowOffsetY = 0;
 
       // 2. Quiz Title
-      const titleFontSize = Math.round(canvas.width * 0.02);
-      ctx.font = `bold ${titleFontSize}px Georgia, serif`;
+      const titleFontSize = Math.round(canvas.width * 0.019);
+      ctx.font = `bold ${titleFontSize}px sans-serif`;
       ctx.fillStyle = '#ffffff';
-      ctx.fillText(quizTitle, canvas.width / 2, canvas.height * 0.68);
+      ctx.fillText(quizTitle.toUpperCase(), canvas.width / 2, canvas.height * 0.67);
 
       // 3. Score
       const scoreFontSize = Math.round(canvas.width * 0.016);
@@ -961,9 +1007,9 @@ const LearningExperience = () => {
                 <img src="/assets/Sertif.png" alt="Sertifikat" className="w-full select-none" draggable={false} />
 
                 {/* Receiver Name */}
-                <div className="absolute left-1/2 w-[85%] -translate-x-1/2 text-center" style={{ top: '48%' }}>
+                <div className="absolute left-1/2 w-[85%] -translate-x-1/2 text-center" style={{ top: '46.5%' }}>
                   <p
-                    className="text-4xl font-normal text-[#dfb75c] drop-shadow-md sm:text-5xl md:text-6xl"
+                    className="text-3xl font-normal text-[#dfb75c] drop-shadow-md sm:text-4xl md:text-5xl lg:text-6xl"
                     style={{ fontFamily: "'Great Vibes', cursive" }}
                   >
                     {certificateData.userName}
@@ -971,20 +1017,22 @@ const LearningExperience = () => {
                 </div>
 
                 {/* Quiz Title */}
-                <div className="absolute left-1/2 w-[85%] -translate-x-1/2 text-center" style={{ top: '68%' }}>
-                  <p className="text-xs font-bold text-white sm:text-sm md:text-lg">{certificateData.quizTitle}</p>
+                <div className="absolute left-1/2 w-[85%] -translate-x-1/2 text-center" style={{ top: '66.5%' }}>
+                  <p className="text-[10px] font-black uppercase tracking-wider text-amber-100 sm:text-xs md:text-sm lg:text-base drop-shadow-md">
+                    {certificateData.quizTitle}
+                  </p>
                 </div>
 
                 {/* Score */}
-                <div className="absolute left-[29%] -translate-x-1/2 text-center" style={{ top: '78%' }}>
+                <div className="absolute left-[29%] -translate-x-1/2 text-center" style={{ top: '77.5%' }}>
                   <span className="block text-xs font-black text-white sm:text-sm md:text-base">
                     {certificateData.percentage}
                   </span>
                 </div>
 
                 {/* Date */}
-                <div className="absolute right-[29%] translate-x-1/2 text-center" style={{ top: '78%' }}>
-                  <span className="block text-xs font-black text-white sm:text-sm md:text-base">
+                <div className="absolute right-[29%] translate-x-1/2 text-center" style={{ top: '77.5%' }}>
+                  <span className="block text-[10px] font-bold text-white sm:text-xs md:text-sm">
                     {new Date(certificateData.date).toLocaleDateString('id-ID', {
                       day: 'numeric',
                       month: 'short',

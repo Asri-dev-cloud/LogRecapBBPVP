@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   User,
   Mail,
@@ -12,6 +12,9 @@ import {
   Award,
   BookOpen,
   Clock,
+  Download,
+  Trophy,
+  Eye,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { API_BASE } from '../utils/api';
@@ -30,6 +33,118 @@ const Account = () => {
 
   const [activityHistory, setActivityHistory] = useState([]);
   const [certificates, setCertificates] = useState([]);
+  const [selectedCert, setSelectedCert] = useState(null);
+
+  const formatDateSafe = (dateVal) => {
+    try {
+      const d = new Date(dateVal || Date.now());
+      if (isNaN(d.getTime())) return '-';
+      return d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+    } catch {
+      return '-';
+    }
+  };
+
+  const handlePrintCertificate = (cert) => {
+    if (!cert) return;
+    const pw = window.open('', '_blank');
+    if (!pw) return;
+
+    const userName = cert.userName || user?.fullName || user?.username || 'Learner';
+    const quizTitle = cert.quizTitle || cert.quiz_title || 'Kuis LogRecap';
+    const percentage = cert.percentage ?? 0;
+    const dateStr = formatDateSafe(cert.date || cert.created_at);
+    const imageUrl = `${window.location.origin}/assets/Sertif.png`;
+
+    pw.document.write(`<!DOCTYPE html><html><head><title>Sertifikat - LogRecap</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+    <style>
+      @page { size: landscape; margin: 0; }
+      * { box-sizing: border-box; }
+      body { margin:0; padding:24px; display:flex; justify-content:center; align-items:center; min-height:100vh; background:#111; font-family: Georgia, 'Times New Roman', serif; }
+      .cert-wrap { position: relative; width: 1000px; max-width: 100%; border: 4px solid #333; border-radius: 12px; overflow: hidden; }
+      .cert-wrap img { width: 100%; display: block; }
+      .cert-text { position: absolute; text-align: center; }
+      .cert-name { left: 50%; transform: translateX(-50%); top: 46.5%; width: 85%; font-size: 52px; font-family: 'Great Vibes', cursive; color: #dfb75c; text-shadow: 1px 1px 2px rgba(0,0,0,0.6); }
+      .cert-title { left: 50%; transform: translateX(-50%); top: 66.5%; width: 85%; font-size: 18px; font-weight: 800; color: #ffffff; text-transform: uppercase; letter-spacing: 1px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
+      .cert-score { left: 29%; transform: translateX(-50%); top: 77.5%; font-size: 18px; font-weight: 900; color: #ffffff; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
+      .cert-date { right: 29%; transform: translateX(50%); top: 77.5%; font-size: 15px; font-weight: 700; color: #ffffff; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
+    </style></head>
+    <body>
+      <div class="cert-wrap">
+        <img src="${imageUrl}" alt="Sertifikat" />
+        <div class="cert-text cert-name">${userName}</div>
+        <div class="cert-text cert-title">${quizTitle}</div>
+        <div class="cert-text cert-score">${percentage}</div>
+        <div class="cert-text cert-date">${dateStr}</div>
+      </div>
+      <script>window.onload = function(){ window.print(); window.close(); };</script>
+    </body></html>`);
+    pw.document.close();
+  };
+
+  const handleDownloadCertificate = (cert) => {
+    if (!cert) return;
+    const userName = cert.userName || user?.fullName || user?.username || 'Learner';
+    const quizTitle = cert.quizTitle || cert.quiz_title || 'Kuis LogRecap';
+    const percentage = cert.percentage ?? 0;
+    const dateStr = formatDateSafe(cert.date || cert.created_at);
+    const imageUrl = `/assets/Sertif.png`;
+
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.src = imageUrl;
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = img.naturalWidth || 1000;
+      canvas.height = img.naturalHeight || 700;
+
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+      // Receiver Name
+      const nameFontSize = Math.round(canvas.width * 0.052);
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.font = `normal ${nameFontSize}px 'Great Vibes', cursive`;
+      ctx.fillStyle = '#dfb75c';
+      ctx.shadowColor = 'rgba(0,0,0,0.6)';
+      ctx.shadowBlur = 4;
+      ctx.shadowOffsetX = 1;
+      ctx.shadowOffsetY = 1;
+      ctx.fillText(userName, canvas.width / 2, canvas.height * 0.475);
+
+      ctx.shadowColor = 'transparent';
+      ctx.shadowBlur = 0;
+
+      // Quiz Title
+      const titleFontSize = Math.round(canvas.width * 0.019);
+      ctx.font = `bold ${titleFontSize}px sans-serif`;
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText(quizTitle.toUpperCase(), canvas.width / 2, canvas.height * 0.67);
+
+      // Score
+      const scoreFontSize = Math.round(canvas.width * 0.016);
+      ctx.font = `bold ${scoreFontSize}px sans-serif`;
+      ctx.fillText(`${percentage}`, canvas.width * 0.29, canvas.height * 0.78);
+
+      // Date
+      ctx.fillText(dateStr, canvas.width * 0.71, canvas.height * 0.78);
+
+      canvas.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Sertifikat-${userName.replace(/\s+/g, '_')}-${quizTitle.replace(/\s+/g, '_')}.png`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 'image/png');
+    };
+  };
 
   React.useEffect(() => {
     if (!isAuthenticated) return;
@@ -79,18 +194,30 @@ const Account = () => {
       }
 
       // Merge and remove duplicates
-      const mergedCerts = [...backendCerts];
+      const mergedCerts = backendCerts.map(bc => ({
+        id: bc.id,
+        quizId: bc.quizId || bc.quiz_id,
+        quizTitle: bc.quizTitle || bc.quiz_title || 'Kuis LogRecap',
+        score: bc.score,
+        totalQuestions: bc.totalQuestions || bc.total_questions,
+        percentage: bc.percentage ?? 0,
+        created_at: bc.created_at || bc.date,
+        date: bc.date || bc.created_at,
+        userName: user?.fullName || user?.username || 'Learner'
+      }));
+
       localCerts.forEach(lc => {
-        if (!mergedCerts.some(bc => bc.quizId === lc.quizId && bc.percentage === lc.percentage)) {
+        if (!mergedCerts.some(bc => (bc.quizId === lc.quizId || bc.quizId === lc.quiz_id) && bc.percentage === lc.percentage)) {
           mergedCerts.push({
             id: lc.id,
-            quizId: lc.quizId,
-            quizTitle: lc.quizTitle,
+            quizId: lc.quizId || lc.quiz_id,
+            quizTitle: lc.quizTitle || lc.quiz_title || 'Kuis LogRecap',
             score: lc.score,
-            totalQuestions: lc.totalQuestions,
-            percentage: lc.percentage,
+            totalQuestions: lc.totalQuestions || lc.total_questions,
+            percentage: lc.percentage ?? 0,
             created_at: lc.created_at || lc.date,
-            date: lc.date || lc.created_at
+            date: lc.date || lc.created_at,
+            userName: lc.userName || user?.fullName || user?.username || 'Learner'
           });
         }
       });
@@ -383,6 +510,44 @@ const Account = () => {
             </div>
           </div>
 
+          {/* Certificates Section */}
+          {certificates.length > 0 && (
+            <div className="rounded-2xl border border-zinc-200 bg-white/80 backdrop-blur dark:border-white/10 dark:bg-zinc-900/80 mb-6">
+              <div className="border-b border-zinc-200 px-6 py-4 dark:border-white/10 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Award size={18} className="text-amber-500" />
+                  <h2 className="font-black text-zinc-900 dark:text-white">Riwayat Sertifikat</h2>
+                </div>
+                <span className="text-xs font-bold text-zinc-400">{certificates.length} Sertifikat</span>
+              </div>
+              <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-3">
+                {certificates.map((cert, index) => (
+                  <div
+                    key={cert.id || index}
+                    className="flex items-center gap-3 rounded-xl border border-zinc-200 bg-zinc-50/50 p-3.5 dark:border-white/5 dark:bg-zinc-950/40 text-left"
+                  >
+                    <div className="grid size-10 shrink-0 place-items-center rounded-lg bg-amber-500/10 text-amber-500">
+                      <Trophy size={18} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-bold text-zinc-900 dark:text-white truncate">{cert.quizTitle}</p>
+                      <p className="text-[10px] font-semibold text-zinc-400 dark:text-zinc-500 mt-0.5">
+                        Nilai {cert.percentage}% · {new Date(cert.date || cert.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => setSelectedCert(cert)}
+                      className="flex items-center gap-1 rounded-lg bg-zinc-900 dark:bg-white px-3 py-1.5 text-xs font-bold text-white dark:text-zinc-950 hover:bg-zinc-800 dark:hover:bg-zinc-200 transition-colors shrink-0"
+                    >
+                      <Eye size={12} />
+                      <span>Lihat</span>
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Activity History */}
           <div className="rounded-2xl border border-zinc-200 bg-white/80 backdrop-blur dark:border-white/10 dark:bg-zinc-900/80">
             <div className="border-b border-zinc-200 px-6 py-4 dark:border-white/10">
@@ -440,6 +605,88 @@ const Account = () => {
           </div>
         </motion.div>
       </div>
+
+      {/* Certificate Modal */}
+      <AnimatePresence>
+        {selectedCert && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[95] flex items-center justify-center bg-zinc-950/90 p-4 backdrop-blur-md"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="w-full max-w-2xl rounded-3xl bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-white/10 p-5 shadow-2xl"
+            >
+              <div className="mb-2 text-right">
+                <span className="text-[10px] font-bold text-zinc-400 dark:text-zinc-550 uppercase">Preview Sertifikat Kelulusan</span>
+              </div>
+              <div className="relative mx-auto w-full overflow-hidden rounded-2xl border border-zinc-300 dark:border-white/15">
+                <img src="/assets/Sertif.png" alt="Sertifikat" className="w-full select-none" draggable={false} />
+
+                {/* Receiver Name */}
+                <div className="absolute left-1/2 w-[85%] -translate-x-1/2 text-center" style={{ top: '46.5%' }}>
+                  <p
+                    className="text-3xl font-normal text-[#dfb75c] drop-shadow-md sm:text-4xl md:text-5xl lg:text-6xl"
+                    style={{ fontFamily: "'Great Vibes', cursive" }}
+                  >
+                    {selectedCert.userName || user?.fullName || user?.username || 'Learner'}
+                  </p>
+                </div>
+
+                {/* Quiz Title */}
+                <div className="absolute left-1/2 w-[85%] -translate-x-1/2 text-center" style={{ top: '66.5%' }}>
+                  <p className="text-[10px] font-black uppercase tracking-wider text-amber-100 sm:text-xs md:text-sm lg:text-base drop-shadow-md">
+                    {selectedCert.quizTitle || selectedCert.quiz_title || 'Kuis LogRecap'}
+                  </p>
+                </div>
+
+                {/* Score */}
+                <div className="absolute left-[29%] -translate-x-1/2 text-center" style={{ top: '77.5%' }}>
+                  <span className="block text-xs font-black text-white sm:text-sm md:text-base">
+                    {selectedCert.percentage ?? 0}
+                  </span>
+                </div>
+
+                {/* Date */}
+                <div className="absolute right-[29%] translate-x-1/2 text-center" style={{ top: '77.5%' }}>
+                  <span className="block text-[10px] font-bold text-white sm:text-xs md:text-sm">
+                    {new Date(selectedCert.date || selectedCert.created_at).toLocaleDateString('id-ID', {
+                      day: 'numeric',
+                      month: 'short',
+                      year: 'numeric',
+                    })}
+                  </span>
+                </div>
+              </div>
+
+              <div className="mt-4 flex flex-wrap gap-2 justify-end">
+                <button
+                  onClick={() => handleDownloadCertificate(selectedCert)}
+                  className="flex items-center gap-1.5 rounded-xl bg-amber-500 hover:bg-amber-450 px-5 py-3 text-sm font-bold text-zinc-950 transition-all shadow-lg shadow-amber-500/10"
+                >
+                  <Download size={15} /> Unduh Sertifikat (PNG)
+                </button>
+                <button
+                  onClick={() => handlePrintCertificate(selectedCert)}
+                  className="rounded-xl border border-zinc-200 dark:border-white/10 bg-zinc-50 dark:bg-white/5 px-5 py-3 text-sm font-bold text-zinc-700 dark:text-white hover:bg-zinc-100 dark:hover:bg-white/10"
+                >
+                  Cetak / Print
+                </button>
+                <button
+                  onClick={() => setSelectedCert(null)}
+                  className="rounded-xl border border-zinc-200 dark:border-white/10 bg-zinc-50 dark:bg-white/5 px-5 py-3 text-sm font-bold text-zinc-700 dark:text-white hover:bg-zinc-100 dark:hover:bg-white/10"
+                >
+                  Tutup
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

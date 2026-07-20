@@ -113,12 +113,12 @@ const MaterialCard = ({ section, index }) => {
 
       {/* Render Image, Table, atau Points */}
       {section.image && (
-        <div className="mb-6 flex justify-center">
+        <div className="mb-6 flex justify-center w-full overflow-hidden rounded-2xl border border-zinc-200/60 dark:border-white/10 bg-zinc-50/50 dark:bg-zinc-950/40 p-2 sm:p-4 shadow-sm">
           {section.imageSrc ? (
             <img
               src={section.imageSrc}
               alt={section.imageAlt || section.imageLabel || section.title}
-              className="h-auto max-h-72 w-auto max-w-md rounded-lg object-contain sm:max-h-80 sm:max-w-lg"
+              className="h-auto max-h-72 sm:max-h-96 w-full max-w-full rounded-xl object-contain"
             />
           ) : (
             <ImagePlaceholder label={section.imageLabel || section.title} icon={ImagePlus} />

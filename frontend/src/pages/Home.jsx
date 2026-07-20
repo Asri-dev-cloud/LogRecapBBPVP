@@ -149,75 +149,77 @@ const Home = () => {
   return (
     <PageTransition className="pb-16">
       <section className="mx-auto w-full max-w-7xl px-4 sm:px-6">
-        <div className="relative overflow-hidden rounded-[2rem] border border-zinc-200 bg-white/70 px-5 py-12 shadow-xl shadow-zinc-900/5 dark:border-zinc-800/60 dark:bg-zinc-900/25 sm:px-8 lg:px-12">
-          <div className="absolute inset-0 soft-grid opacity-35" />
-          <div className="absolute -left-20 -top-20 size-80 rounded-full bg-pink-500/10 blur-3xl opacity-60" />
-          <div className="absolute -right-20 -top-20 size-80 rounded-full bg-blue-500/10 blur-3xl opacity-60" />
-          <div className="absolute bottom-0 left-1/3 size-96 rounded-full bg-purple-500/8 blur-3xl opacity-50" />
+        <div
+          className="relative overflow-hidden rounded-[2.5rem] border border-zinc-200/20 bg-zinc-950 px-6 py-14 shadow-2xl sm:px-10 lg:px-14 bg-cover bg-center bg-no-repeat min-h-[520px] flex items-center justify-end"
+          style={{ backgroundImage: "url('/assets/hero.png')" }}
+        >
+          {/* Subtle gradient overlay to enhance readability on the right while preserving building view on the left */}
+          <div className="absolute inset-0 bg-gradient-to-l from-zinc-950/90 via-zinc-950/60 to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/80 via-transparent to-transparent pointer-events-none sm:hidden" />
 
-          <div className="relative">
-            <div className="max-w-4xl">
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.45 }}
-                className="mb-5 inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white/85 px-3 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs font-black uppercase tracking-wider sm:tracking-[0.18em] text-zinc-700 shadow-sm backdrop-blur dark:border-zinc-850 dark:bg-zinc-900/30 dark:text-zinc-300"
-              >
-                <BookOpenCheck size={14} />
-                Portfolio Materi Web Development
-              </motion.div>
+          <div className="relative z-10 w-full max-w-xl lg:max-w-2xl ml-auto text-right flex flex-col items-end">
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.45 }}
+              className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/20 bg-zinc-950/60 px-4 py-2 text-[11px] sm:text-xs font-black uppercase tracking-wider text-white shadow-xl backdrop-blur-md"
+            >
+              <BookOpenCheck size={15} className="text-pink-400" />
+              <span>Portfolio Materi Web Development</span>
+            </motion.div>
 
-              <motion.h1
-                initial={{ opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.08, duration: 0.55 }}
-                className="text-[2.2rem] xs:text-5xl font-black leading-none tracking-tight text-zinc-950 dark:text-white sm:text-6xl lg:text-7xl"
-              >
-                LogbookBBPVP2
-                <span className="block gradient-text mt-2">belajar web dev.</span>
-              </motion.h1>
+            <motion.h1
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.08, duration: 0.55 }}
+              className="font-joseph-sophia text-[3.4rem] xs:text-6xl font-normal leading-tight tracking-wide text-white sm:text-7xl lg:text-8xl text-right drop-shadow-lg"
+            >
+              LogbookBBPVP2
+              <span className="block bg-gradient-to-r from-pink-400 via-purple-300 to-cyan-300 bg-clip-text text-transparent mt-1 text-right drop-shadow">
+                belajar web dev.
+              </span>
+            </motion.h1>
 
-              <motion.p
-                initial={{ opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.16, duration: 0.55 }}
-                className="mt-6 max-w-2xl text-sm font-semibold leading-relaxed text-zinc-600 dark:text-zinc-300 sm:text-lg"
-              >
-                Catatan belajar dari UI/UX, HTML, CSS, JavaScript, React, database, sampai
-                deployment VPS. Semua materi dibuat ringkas, runtut, dan siap dibuka per topik.
-              </motion.p>
+            <motion.p
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.16, duration: 0.55 }}
+              className="mt-5 max-w-xl text-sm sm:text-base lg:text-lg font-medium leading-relaxed text-zinc-200 text-right drop-shadow-md"
+            >
+              Catatan belajar dari UI/UX, HTML, CSS, JavaScript, React, database, sampai
+              deployment VPS. Semua materi dibuat ringkas, runtut, dan siap dibuka per topik.
+            </motion.p>
 
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.24, duration: 0.55 }}
-                className="mt-8 flex flex-col gap-3 sm:flex-row"
-              >
-                <Button to="/html">Mulai Belajar</Button>
-                <Button to="/react" variant="secondary" icon={Rocket}>
-                  Lihat React
-                </Button>
-              </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.24, duration: 0.55 }}
+              className="mt-8 flex flex-wrap gap-3 justify-end items-center"
+            >
+              <Button to="/html">Mulai Belajar</Button>
+              <Button to="/react" variant="secondary" icon={Rocket}>
+                Lihat React
+              </Button>
+            </motion.div>
 
-              <motion.div
-                initial={{ opacity: 0, y: 18 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.32, duration: 0.5 }}
-                className="mt-9 grid max-w-xl grid-cols-3 gap-2 sm:gap-4 text-center sm:text-left"
-              >
-                {stats.map((item) => (
-                  <div
-                    key={item.label}
-                    className="rounded-2xl border border-zinc-200 bg-white/80 px-2.5 sm:px-4 py-2.5 sm:py-3.5 shadow-sm backdrop-blur dark:border-zinc-800 dark:bg-zinc-900/40"
-                  >
-                    <p className="text-xl sm:text-3xl font-black text-zinc-950 dark:text-white">{item.value}</p>
-                    <p className="text-[9px] sm:text-xs font-bold uppercase tracking-wider sm:tracking-[0.14em] text-zinc-500 dark:text-zinc-400 mt-0.5">
-                      {item.label}
-                    </p>
-                  </div>
-                ))}
-              </motion.div>
-            </div>
+            <motion.div
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.32, duration: 0.5 }}
+              className="mt-9 grid grid-cols-3 gap-3 w-full max-w-md text-center"
+            >
+              {stats.map((item) => (
+                <div
+                  key={item.label}
+                  className="rounded-2xl border border-white/15 bg-zinc-950/65 px-3 py-3 shadow-xl backdrop-blur-md"
+                >
+                  <p className="text-xl sm:text-3xl font-black text-white">{item.value}</p>
+                  <p className="text-[9px] sm:text-xs font-bold uppercase tracking-wider text-zinc-300 mt-0.5">
+                    {item.label}
+                  </p>
+                </div>
+              ))}
+            </motion.div>
           </div>
         </div>
       </section>

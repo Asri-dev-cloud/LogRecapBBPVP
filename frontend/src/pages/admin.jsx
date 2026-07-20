@@ -379,7 +379,7 @@ const Admin = () => {
   }, [tab]);
 
   // Filter users based on query
-  const filteredUsers = usersList.filter((u) => {
+  const filteredUsers = (Array.isArray(usersList) ? usersList : []).filter((u) => {
     const query = searchQuery.toLowerCase();
     return (
       (u.username || '').toLowerCase().includes(query) ||
@@ -390,7 +390,7 @@ const Admin = () => {
   });
 
   // Filter logs based on query
-  const filteredLogs = logsList.filter((l) => {
+  const filteredLogs = (Array.isArray(logsList) ? logsList : []).filter((l) => {
     const query = searchLogQuery.toLowerCase();
     return (
       (l.username || '').toLowerCase().includes(query) ||

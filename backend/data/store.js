@@ -418,7 +418,17 @@ export const addCertificate = async (cert) => {
 
 export const getCertificates = async (userId) => {
   const [storedProcResult] = await db.query('CALL sp_get_user_certificates(?)', [userId]);
-  return storedProcResult[0] || [];
+  const certs = storedProcResult[0] || [];
+  return certs.map((cert) => ({
+    ...cert,
+    id: cert.id,
+    quizId: cert.quizId || cert.quiz_id,
+    quizTitle: cert.quizTitle || cert.quiz_title,
+    score: cert.score,
+    totalQuestions: cert.totalQuestions || cert.total_questions,
+    percentage: cert.percentage,
+    date: cert.date || cert.created_at,
+  }));
 };
 
 export const getUserPointsAndStreak = async (userId) => {
