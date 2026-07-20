@@ -27,7 +27,7 @@ import { useAuth } from '../context/AuthContext';
 import { API_BASE, SOCKET_URL } from '../utils/api';
 
 const getAvatarUrl = (identifier) => {
-  const avatars = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x'];
+  const avatars = ['ma', 'mi', 'mo'];
   let str = String(identifier || 'participant');
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
