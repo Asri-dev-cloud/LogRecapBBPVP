@@ -42,10 +42,11 @@ const Login = () => {
       const data = await login(formData.email.trim(), formData.password);
       setPopupName(data.user.fullName || data.user.username);
       setShowPopup(true);
+      const targetPath = location.state?.from || '/learning-experience';
       setTimeout(() => {
         setShowPopup(false);
-        navigate('/learning-experience');
-      }, 2000);
+        navigate(targetPath, { replace: true });
+      }, 1500);
     } catch (err) {
       setError(err.message || 'Terjadi kesalahan saat masuk.');
     } finally {

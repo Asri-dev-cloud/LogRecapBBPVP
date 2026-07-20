@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { Eye, EyeOff, UserPlus, Mail, Lock, User, UserCircle, CheckCircle2, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 
 const Register = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { register } = useAuth();
 
   const [formData, setFormData] = useState({
@@ -81,10 +82,11 @@ const Register = () => {
       });
       setPopupName(data.user.fullName || data.user.username);
       setShowPopup(true);
+      const targetPath = location.state?.from || '/learning-experience';
       setTimeout(() => {
         setShowPopup(false);
-        navigate('/learning-experience');
-      }, 2000);
+        navigate(targetPath, { replace: true });
+      }, 1500);
     } catch (err) {
       setError(err.message || 'Terjadi kesalahan saat pendaftaran.');
     } finally {

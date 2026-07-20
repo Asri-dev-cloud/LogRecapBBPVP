@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { io } from 'socket.io-client';
 import { QRCodeSVG } from 'qrcode.react';
@@ -40,15 +40,22 @@ const getAvatarUrl = (identifier) => {
 
 const LiveQuiz = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, isAuthenticated, token, loading } = useAuth();
   const socketRef = useRef(null);
 
-  // Authenticate user redirect
+  // Authenticate user redirect with target return URL
   useEffect(() => {
     if (!loading && !isAuthenticated) {
-      navigate('/login', { state: { message: 'Silakan masuk terlebih dahulu untuk mengikuti Live Quiz.' } });
+      const redirectUrl = location.pathname + location.search;
+      navigate('/login', {
+        state: {
+          message: 'Silakan masuk terlebih dahulu untuk mengikuti Live Quiz.',
+          from: redirectUrl
+        }
+      });
     }
-  }, [loading, isAuthenticated, navigate]);
+  }, [loading, isAuthenticated, navigate, location]);
 
   // Read URL query parameter for room code auto-fill
   useEffect(() => {
@@ -264,31 +271,35 @@ const LiveQuiz = () => {
     }
   };
 
-  // Excel (CSV) Recap Exporter
+  // Excel (CSV) Recap Exporter - High quality formatting with semicolon separator & UTF-8 BOM
   const handleExportCSV = () => {
     if (players.length === 0) return;
 
-    // Build headers
-    let csvContent = 'data:text/csv;charset=utf-8,';
-    csvContent += 'Peringkat,Nama Lengkap,Username,Jawaban Benar,Total Soal,Skor (Poin),Lulus\n';
-
     // Sort players by score descending
-    const sorted = [...players].sort((a, b) => b.score - a.score);
+    const sorted = [...players].sort((a, b) => (b.score || 0) - (a.score || 0));
+    const totalQs = roomData?.totalQuestions || questions.length || 10;
+
+    let csv = 'sep=;\n';
+    csv += 'Peringkat;Nama Lengkap;Username;Jawaban Benar;Total Soal;Skor (Poin);Status\n';
 
     sorted.forEach((p, idx) => {
-      const percentage = Math.round((p.score / (roomData?.totalQuestions || questions.length || 10)) * 100);
-      const passed = percentage >= 60 ? 'LULUS' : 'GAGAL';
-      const points = p.score * 10;
-      csvContent += `${idx + 1},"${p.fullName}","${p.username}",${p.score},${roomData?.totalQuestions || questions.length || 10},${points},${passed}\n`;
+      const percentage = Math.round(((p.score || 0) / (totalQs || 1)) * 100);
+      const passed = percentage >= 60 ? 'LULUS' : 'TIDAK LULUS';
+      const points = (p.score || 0) * 10;
+      const fullNameClean = String(p.fullName || '').replace(/;/g, ' ');
+      const usernameClean = String(p.username || '').replace(/;/g, ' ');
+      csv += `${idx + 1};"${fullNameClean}";"${usernameClean}";${p.score || 0};${totalQs};${points};${passed}\n`;
     });
 
-    const encodedUri = encodeURI(csvContent);
+    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
-    link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `Rekap_LiveQuiz_${roomCode}_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.href = url;
+    link.download = `Rekap_LiveQuiz_${roomCode}_${new Date().toISOString().slice(0, 10)}.csv`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -482,8 +493,8 @@ const LiveQuiz = () => {
                       animate={{ scale: 1, opacity: 1 }}
                       className="rounded-2xl border border-zinc-200 bg-zinc-50/50 p-4 dark:border-white/5 dark:bg-zinc-900/30 text-center hover:border-pink-500/30 transition-colors"
                     >
-                      <div className="mx-auto mb-2.5 grid size-10 place-items-center rounded-xl overflow-hidden shadow border border-zinc-100 dark:border-white/5 bg-zinc-100">
-                        <img src={getAvatarUrl(p.username || p.fullName || idx)} alt="Avatar" className="size-10 object-cover" />
+                      <div className="mx-auto mb-3 grid size-16 sm:size-20 place-items-center rounded-2xl overflow-hidden shadow-md border-2 border-white/20 bg-zinc-100 dark:bg-zinc-800">
+                        <img src={getAvatarUrl(p.username || p.fullName || idx)} alt="Avatar" className="size-16 sm:size-20 object-cover" />
                       </div>
                       <p className="text-sm font-bold text-zinc-900 dark:text-white truncate">{p.fullName}</p>
                       <p className="text-[10px] font-semibold text-zinc-400 dark:text-zinc-500 truncate">@{p.username}</p>
@@ -547,11 +558,11 @@ const LiveQuiz = () => {
                         className="rounded-2xl border border-zinc-200 bg-zinc-50/50 p-4 dark:border-white/5 dark:bg-zinc-900/30 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4"
                       >
                         <div className="flex items-center gap-3 min-w-[200px] text-left">
-                          <div className="relative grid size-9 place-items-center rounded-xl overflow-hidden shadow border border-zinc-100 dark:border-white/5 bg-zinc-150">
-                            <img src={getAvatarUrl(p.username || p.fullName || idx)} alt="Avatar" className="size-9 object-cover" />
+                          <div className="relative grid size-14 sm:size-16 shrink-0 place-items-center rounded-2xl overflow-hidden shadow-md border-2 border-white/20 bg-zinc-100 dark:bg-zinc-800">
+                            <img src={getAvatarUrl(p.username || p.fullName || idx)} alt="Avatar" className="size-14 sm:size-16 object-cover" />
                             {p.finished && (
-                              <div className="absolute -bottom-1 -right-1 grid size-4.5 place-items-center rounded-full bg-emerald-500 text-white border border-white dark:border-zinc-950 shadow-sm">
-                                <CheckCircle2 size={10} />
+                              <div className="absolute -bottom-1 -right-1 grid size-5 place-items-center rounded-full bg-emerald-500 text-white border-2 border-white dark:border-zinc-950 shadow-md">
+                                <CheckCircle2 size={12} />
                               </div>
                             )}
                           </div>
@@ -767,8 +778,8 @@ const LiveQuiz = () => {
                       >
                         {idx + 1}
                       </span>
-                      <div className="grid size-9 shrink-0 place-items-center rounded-xl overflow-hidden shadow border border-zinc-100 dark:border-white/5 bg-zinc-150">
-                        <img src={getAvatarUrl(p.username || p.fullName || idx)} alt="Avatar" className="size-9 object-cover" />
+                      <div className="grid size-14 sm:size-16 shrink-0 place-items-center rounded-2xl overflow-hidden shadow-md border-2 border-white/20 bg-zinc-100 dark:bg-zinc-800">
+                        <img src={getAvatarUrl(p.username || p.fullName || idx)} alt="Avatar" className="size-14 sm:size-16 object-cover" />
                       </div>
                       <div className="min-w-0 flex-1">
                         <p className="truncate text-sm font-bold text-zinc-900 dark:text-white">{p.fullName}</p>
