@@ -73,12 +73,15 @@ export const initSocket = (server) => {
         const existingIdx = room.players.findIndex(p => p.username === user.username);
         const playerInfo = {
           socketId: socket.id,
-          id: user.id || 0,
+          id: user.id || (existingIdx !== -1 ? room.players[existingIdx].id : 0),
           username: user.username,
           fullName: user.fullName || user.username || 'Murid',
-          score: 0,
-          currentQuestion: 0,
-          finished: false
+          score: existingIdx !== -1 ? room.players[existingIdx].score : 0,
+          currentQuestion: existingIdx !== -1 ? room.players[existingIdx].currentQuestion : 0,
+          finished: existingIdx !== -1 ? room.players[existingIdx].finished : false,
+          percentage: existingIdx !== -1 ? room.players[existingIdx].percentage : 0,
+          passed: existingIdx !== -1 ? room.players[existingIdx].passed : false,
+          connected: true
         };
 
         if (existingIdx !== -1) {
@@ -196,7 +199,7 @@ export const initSocket = (server) => {
 
           io.to(code).emit('progress_updated', room.players);
 
-          const allFinished = room.players.length > 0 && room.players.every(p => p.finished);
+          const allFinished = room.players.length > 0 && room.players.every(p => p.finished || !p.connected);
           if (allFinished) {
             room.status = 'finished';
             io.to(code).emit('quiz_finished', room.players);
@@ -227,11 +230,12 @@ export const initSocket = (server) => {
             rooms.delete(code);
             console.log(`Admin disconnected. Room ${code} deleted.`);
           } else {
-            const idx = room.players.findIndex(p => p.socketId === socket.id);
-            if (idx !== -1) {
-              room.players.splice(idx, 1);
+            const player = room.players.find(p => p.socketId === socket.id);
+            if (player) {
+              player.connected = false;
               io.to(code).emit('player_list_updated', room.players);
-              console.log(`Player left room ${code}. Remaining players: ${room.players.length}`);
+              io.to(code).emit('progress_updated', room.players);
+              console.log(`Player ${player.username} disconnected from room ${code}. Total retained players: ${room.players.length}`);
             }
           }
         }
@@ -251,10 +255,11 @@ const handleLeave = (io, socket, code) => {
     rooms.delete(code);
     console.log(`Admin left. Room ${code} deleted.`);
   } else {
-    const idx = room.players.findIndex(p => p.socketId === socket.id);
-    if (idx !== -1) {
-      room.players.splice(idx, 1);
+    const player = room.players.find(p => p.socketId === socket.id);
+    if (player) {
+      player.connected = false;
       io.to(code).emit('player_list_updated', room.players);
+      io.to(code).emit('progress_updated', room.players);
     }
   }
 };

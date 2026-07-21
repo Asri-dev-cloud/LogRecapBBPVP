@@ -49,6 +49,16 @@ async function migrate() {
     await connection.query(sqlContent);
     console.log('LogRecap.sql executed successfully.');
 
+    console.log('Updating created_at default timestamps for existing tables...');
+    const alterTables = ['users', 'certificates', 'quizzes', 'materials', 'activity_logs', 'notes'];
+    for (const tbl of alterTables) {
+      try {
+        await connection.query(`ALTER TABLE ${tbl} ALTER COLUMN created_at SET DEFAULT CURRENT_TIMESTAMP`);
+      } catch (e) {
+        // Ignore if table or column doesn't exist yet
+      }
+    }
+
     console.log('Database, tables, and stored procedures setup completed successfully!');
   } catch (err) {
     console.error('Migration failed:', err);

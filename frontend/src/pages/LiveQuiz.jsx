@@ -303,15 +303,16 @@ const LiveQuiz = () => {
     const totalQs = roomData?.totalQuestions || questions.length || 10;
 
     let csv = 'sep=;\n';
-    csv += 'Peringkat;Nama Lengkap;Username;Jawaban Benar;Total Soal;Skor (Poin);Status\n';
+    csv += 'Peringkat;Nama Lengkap;Username;Jawaban Benar;Total Soal;Skor (Poin);Status Kuis;Status Koneksi\n';
 
     sorted.forEach((p, idx) => {
       const percentage = Math.round(((p.score || 0) / (totalQs || 1)) * 100);
       const passed = percentage >= 60 ? 'LULUS' : 'TIDAK LULUS';
       const points = (p.score || 0) * 10;
+      const connectionStatus = p.connected === false ? 'Terputus (Offline)' : 'Terhubung';
       const fullNameClean = String(p.fullName || '').replace(/;/g, ' ');
       const usernameClean = String(p.username || '').replace(/;/g, ' ');
-      csv += `${idx + 1};"${fullNameClean}";"${usernameClean}";${p.score || 0};${totalQs};${points};${passed}\n`;
+      csv += `${idx + 1};"${fullNameClean}";"${usernameClean}";${p.score || 0};${totalQs};${points};${passed};${connectionStatus}\n`;
     });
 
     const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
@@ -591,7 +592,9 @@ const LiveQuiz = () => {
                           </div>
                           <div>
                             <p className="text-sm font-bold text-zinc-900 dark:text-white">{p.fullName}</p>
-                            <p className="text-[10px] font-semibold text-zinc-400 dark:text-zinc-500">@{p.username}</p>
+                            <p className="text-[10px] font-semibold text-zinc-400 dark:text-zinc-500">
+                              @{p.username} {p.connected === false && <span className="text-amber-500/80 font-medium italic">(Offline)</span>}
+                            </p>
                           </div>
                         </div>
 

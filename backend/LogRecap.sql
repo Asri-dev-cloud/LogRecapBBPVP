@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS users (
     last_quiz_at TIMESTAMP DEFAULT NULL,
     phone_number VARCHAR(20) DEFAULT NULL UNIQUE,
     role VARCHAR(20) DEFAULT 'user',
-    created_at TIMESTAMP DEFAULT (CURRENT_TIMESTAMP + INTERVAL 7 HOUR)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 
@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS certificates (
     score INT NOT NULL,
     total_questions INT NOT NULL,
     percentage INT NOT NULL,
-    created_at TIMESTAMP DEFAULT (CURRENT_TIMESTAMP + INTERVAL 7 HOUR),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
@@ -171,7 +171,7 @@ CREATE TABLE IF NOT EXISTS quizzes (
     totalQuestions INT DEFAULT 0,
     icon VARCHAR(100) DEFAULT 'Zap',
     category VARCHAR(100) DEFAULT 'general',
-    created_at TIMESTAMP DEFAULT (CURRENT_TIMESTAMP + INTERVAL 7 HOUR)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- 4. Table: quiz_questions
@@ -196,7 +196,7 @@ CREATE TABLE IF NOT EXISTS materials (
     code TEXT,
     language VARCHAR(50),
     code_title VARCHAR(100),
-    created_at TIMESTAMP DEFAULT (CURRENT_TIMESTAMP + INTERVAL 7 HOUR)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- 6. Table: activity_logs
@@ -206,7 +206,7 @@ CREATE TABLE IF NOT EXISTS activity_logs (
     username VARCHAR(100) NULL,
     action VARCHAR(255) NOT NULL,
     details TEXT,
-    created_at TIMESTAMP DEFAULT (CURRENT_TIMESTAMP + INTERVAL 7 HOUR)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- 7. Table: notes
@@ -216,7 +216,7 @@ CREATE TABLE IF NOT EXISTS notes (
     type VARCHAR(50) NOT NULL,
     title VARCHAR(255) NOT NULL,
     content JSON NOT NULL,
-    created_at TIMESTAMP DEFAULT (CURRENT_TIMESTAMP + INTERVAL 7 HOUR),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 

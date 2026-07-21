@@ -200,7 +200,7 @@ export const initDatabaseSchema = async () => {
         type VARCHAR(50) NOT NULL,
         title VARCHAR(255) NOT NULL,
         content JSON NOT NULL,
-        created_at TIMESTAMP DEFAULT (CURRENT_TIMESTAMP + INTERVAL 7 HOUR),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
       )
     `);
