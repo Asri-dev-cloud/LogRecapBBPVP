@@ -128,18 +128,9 @@ const LearningExperience = () => {
       localCerts = stored ? JSON.parse(stored) : [];
     } catch {}
 
-    const shuffleArray = (array) => {
-      if (!Array.isArray(array)) return [];
-      const arr = [...array];
-      for (let i = arr.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
-      return arr;
-    };
-
     const merged = [...serverCerts].map(cert => ({
       ...cert,
+      id: cert.id || Date.now(),
       quizTitle: cert.quizTitle || cert.quiz_title || 'Kuis LogRecap',
       quizId: cert.quizId || cert.quiz_id,
       totalQuestions: cert.totalQuestions || cert.total_questions,
@@ -149,7 +140,8 @@ const LearningExperience = () => {
     }));
 
     localCerts.forEach(lc => {
-      if (!merged.some(mc => (mc.quizId === lc.quizId || mc.quizId === lc.quiz_id) && mc.percentage === lc.percentage)) {
+      const lcQuizId = String(lc.quizId || lc.quiz_id || '');
+      if (!merged.some(mc => String(mc.quizId || mc.quiz_id || '') === lcQuizId && Number(mc.percentage) === Number(lc.percentage))) {
         merged.push({
           ...lc,
           quizTitle: lc.quizTitle || lc.quiz_title || 'Kuis LogRecap',
@@ -161,6 +153,37 @@ const LearningExperience = () => {
         });
       }
     });
+
+    // Auto-recover from local activity logs if certificate is missing in list
+    try {
+      const storedLogs = localStorage.getItem('logrecap_local_logs');
+      if (storedLogs) {
+        const logs = JSON.parse(storedLogs);
+        logs.forEach(log => {
+          if (log.action === 'SUBMIT_QUIZ' && log.details && log.details.includes('Passed: true')) {
+            const matchTitle = log.details.match(/Submitted quiz "(.*?)"/);
+            const matchPerc = log.details.match(/(\d+)%, Passed: true/);
+            if (matchTitle && matchPerc) {
+              const quizTitle = matchTitle[1];
+              const percentage = parseInt(matchPerc[1], 10);
+              if (!merged.some(m => m.quizTitle === quizTitle && Number(m.percentage) === percentage)) {
+                merged.push({
+                  id: log.id || Date.now(),
+                  quizTitle,
+                  percentage,
+                  score: Math.round((percentage / 100) * 10),
+                  totalQuestions: 10,
+                  date: log.createdAt || log.created_at || new Date().toISOString(),
+                  userName: user?.fullName || user?.username || 'Learner'
+                });
+              }
+            }
+          }
+        });
+      }
+    } catch (e) {
+      console.error('Error recovering certs from logs:', e);
+    }
 
     setCertificateHistory(merged);
   };
@@ -280,6 +303,35 @@ const LearningExperience = () => {
     setQuizFinished(true);
     setPassed(didPass);
 
+    // Save local certificate if passed (ALWAYS, so cert is never lost!)
+    if (didPass) {
+      const STORAGE_KEY_CERTS = 'logrecap_local_certificates';
+      let certs = [];
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY_CERTS);
+        certs = stored ? JSON.parse(stored) : [];
+      } catch {}
+      const newCert = {
+        id: Date.now(),
+        userId: user?.id || 1,
+        quizId: activeQuiz.id,
+        quizTitle: activeQuiz.title,
+        userName: user?.fullName || user?.username || 'Learner',
+        score: finalScore,
+        totalQuestions: total,
+        percentage,
+        created_at: new Date().toISOString(),
+        date: new Date().toISOString()
+      };
+      const filtered = certs.filter(c => !(String(c.quizId || c.quiz_id) === String(activeQuiz.id) && Number(c.percentage) === percentage));
+      const updatedLocalCerts = [newCert, ...filtered];
+      localStorage.setItem(STORAGE_KEY_CERTS, JSON.stringify(updatedLocalCerts));
+      setCertificateHistory(prev => {
+        const has = prev.some(c => String(c.quizId || c.quiz_id) === String(activeQuiz.id) && Number(c.percentage) === percentage);
+        return has ? prev : [newCert, ...prev];
+      });
+    }
+
     try {
       const authToken = token || localStorage.getItem('logrecap_token');
       const res = await fetch(`${API_BASE}/quiz/${activeQuiz.id}/submit`, {
@@ -363,30 +415,6 @@ const LearningExperience = () => {
         localStorage.setItem(STORAGE_KEY_USERS, JSON.stringify(localUsers));
       } catch (userErr) {
         console.error('Failed to update local user list:', userErr);
-      }
-
-      // Save local certificate if passed
-      if (didPass) {
-        const STORAGE_KEY_CERTS = 'logrecap_local_certificates';
-        let certs = [];
-        try {
-          const stored = localStorage.getItem(STORAGE_KEY_CERTS);
-          certs = stored ? JSON.parse(stored) : [];
-        } catch {}
-        const newCert = {
-          id: Date.now(),
-          userId: user?.id || 1,
-          quizId: activeQuiz.id,
-          quizTitle: activeQuiz.title,
-          userName: user?.fullName || user?.username || 'Learner',
-          score: finalScore,
-          totalQuestions: total,
-          percentage,
-          created_at: new Date().toISOString(),
-          date: new Date().toISOString()
-        };
-        localStorage.setItem(STORAGE_KEY_CERTS, JSON.stringify([newCert, ...certs]));
-        setCertificateHistory([newCert, ...certs]);
       }
 
       // Log user activity in local logs
@@ -594,7 +622,10 @@ const LearningExperience = () => {
             {isAuthenticated && (
               <div className="flex flex-wrap items-center gap-2">
                 <button
-                  onClick={() => setShowHistory(true)}
+                  onClick={() => {
+                    loadCertHistory();
+                    setShowHistory(true);
+                  }}
                   className="flex items-center gap-1.5 rounded-xl border border-pink-500/30 bg-white/70 dark:bg-black/60 px-4 py-2.5 text-xs font-bold text-pink-400 transition-all hover:bg-pink-500/10 hover:shadow-[0_0_15px_rgba(236,72,153,0.15)]"
                 >
                   <History size={14} />

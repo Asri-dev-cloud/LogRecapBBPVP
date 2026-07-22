@@ -207,7 +207,8 @@ const Account = () => {
       }));
 
       localCerts.forEach(lc => {
-        if (!mergedCerts.some(bc => (bc.quizId === lc.quizId || bc.quizId === lc.quiz_id) && bc.percentage === lc.percentage)) {
+        const lcQuizId = String(lc.quizId || lc.quiz_id || '');
+        if (!mergedCerts.some(bc => String(bc.quizId || bc.quiz_id || '') === lcQuizId && Number(bc.percentage) === Number(lc.percentage))) {
           mergedCerts.push({
             id: lc.id,
             quizId: lc.quizId || lc.quiz_id,
@@ -221,6 +222,38 @@ const Account = () => {
           });
         }
       });
+
+      // Auto-recover certs from local activity logs if missing
+      try {
+        const storedLogs = localStorage.getItem('logrecap_local_logs');
+        if (storedLogs) {
+          const logs = JSON.parse(storedLogs);
+          logs.forEach(log => {
+            if (log.action === 'SUBMIT_QUIZ' && log.details && log.details.includes('Passed: true')) {
+              const matchTitle = log.details.match(/Submitted quiz "(.*?)"/);
+              const matchPerc = log.details.match(/(\d+)%, Passed: true/);
+              if (matchTitle && matchPerc) {
+                const quizTitle = matchTitle[1];
+                const percentage = parseInt(matchPerc[1], 10);
+                if (!mergedCerts.some(m => m.quizTitle === quizTitle && Number(m.percentage) === percentage)) {
+                  mergedCerts.push({
+                    id: log.id || Date.now(),
+                    quizTitle,
+                    percentage,
+                    score: Math.round((percentage / 100) * 10),
+                    totalQuestions: 10,
+                    created_at: log.createdAt || log.created_at || new Date().toISOString(),
+                    date: log.createdAt || log.created_at || new Date().toISOString(),
+                    userName: user?.fullName || user?.username || 'Learner'
+                  });
+                }
+              }
+            }
+          });
+        }
+      } catch (e) {
+        console.error('Error recovering certs from logs in Account:', e);
+      }
 
       const mergedActivity = [...backendActivity];
       localActivity.forEach(la => {
