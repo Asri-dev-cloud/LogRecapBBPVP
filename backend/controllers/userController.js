@@ -1,4 +1,5 @@
 import db from '../config/db.mjs';
+import * as store from '../data/store.js';
 
 /**
  * GET /api/user/profile

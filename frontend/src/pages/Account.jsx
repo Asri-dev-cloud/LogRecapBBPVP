@@ -172,17 +172,37 @@ const Account = () => {
         console.error('Error fetching account data from backend:', err);
       }
 
-      // Load local storage offline fallbacks
+      // Load local storage offline fallbacks with per-user scoping
       let localCerts = [];
       let localActivity = [];
+      const userCertKey = user?.id ? `logrecap_local_certificates_user_${user.id}` : `logrecap_local_certificates_${user?.username || 'guest'}`;
+      const userLogKey = user?.id ? `logrecap_local_logs_user_${user.id}` : `logrecap_local_logs_${user?.username || 'guest'}`;
+
       try {
-        const storedCerts = localStorage.getItem('logrecap_local_certificates');
-        if (storedCerts) {
-          localCerts = JSON.parse(storedCerts);
+        const storedUserCerts = localStorage.getItem(userCertKey);
+        if (storedUserCerts) {
+          localCerts = JSON.parse(storedUserCerts);
+        } else {
+          // Legacy key migration: filter legacy certs belonging to this user
+          const legacyCerts = localStorage.getItem('logrecap_local_certificates');
+          if (legacyCerts) {
+            const parsed = JSON.parse(legacyCerts);
+            localCerts = parsed.filter(lc => {
+              if (lc.userId && user?.id) return String(lc.userId) === String(user.id);
+              if (lc.userName && (user?.fullName || user?.username)) {
+                return lc.userName === user.fullName || lc.userName === user.username;
+              }
+              return true;
+            });
+            if (localCerts.length > 0) {
+              localStorage.setItem(userCertKey, JSON.stringify(localCerts));
+            }
+          }
         }
-        const storedLogs = localStorage.getItem('logrecap_local_logs');
-        if (storedLogs) {
-          localActivity = JSON.parse(storedLogs).map(log => ({
+
+        const storedUserLogs = localStorage.getItem(userLogKey) || localStorage.getItem('logrecap_local_logs');
+        if (storedUserLogs) {
+          localActivity = JSON.parse(storedUserLogs).map(log => ({
             id: log.id,
             action: log.action,
             details: log.details,
@@ -193,7 +213,7 @@ const Account = () => {
         console.error('Error reading local fallback data:', e);
       }
 
-      // Merge and remove duplicates
+      // Merge backend and user-scoped local certificates
       const mergedCerts = backendCerts.map(bc => ({
         id: bc.id,
         quizId: bc.quizId || bc.quiz_id,
@@ -207,12 +227,20 @@ const Account = () => {
       }));
 
       localCerts.forEach(lc => {
-        const lcQuizId = String(lc.quizId || lc.quiz_id || '');
-        if (!mergedCerts.some(bc => String(bc.quizId || bc.quiz_id || '') === lcQuizId && Number(bc.percentage) === Number(lc.percentage))) {
+        const lcQuizId = lc.quizId || lc.quiz_id;
+        const lcTitle = lc.quizTitle || lc.quiz_title || '';
+        const isDuplicate = mergedCerts.some(bc => {
+          const bcQuizId = bc.quizId || bc.quiz_id;
+          const bcTitle = bc.quizTitle || bc.quiz_title || '';
+          const sameQuiz = (bcQuizId && lcQuizId && String(bcQuizId) === String(lcQuizId)) ||
+                           (bcTitle && lcTitle && bcTitle === lcTitle);
+          return sameQuiz && Number(bc.percentage) === Number(lc.percentage);
+        });
+        if (!isDuplicate) {
           mergedCerts.push({
-            id: lc.id,
-            quizId: lc.quizId || lc.quiz_id,
-            quizTitle: lc.quizTitle || lc.quiz_title || 'Kuis LogRecap',
+            id: lc.id || Date.now(),
+            quizId: lcQuizId,
+            quizTitle: lcTitle || 'Kuis LogRecap',
             score: lc.score,
             totalQuestions: lc.totalQuestions || lc.total_questions,
             percentage: lc.percentage ?? 0,
@@ -223,9 +251,9 @@ const Account = () => {
         }
       });
 
-      // Auto-recover certs from local activity logs if missing
+      // Auto-recover certs from user activity logs if missing
       try {
-        const storedLogs = localStorage.getItem('logrecap_local_logs');
+        const storedLogs = localStorage.getItem(userLogKey) || localStorage.getItem('logrecap_local_logs');
         if (storedLogs) {
           const logs = JSON.parse(storedLogs);
           logs.forEach(log => {
@@ -235,7 +263,7 @@ const Account = () => {
               if (matchTitle && matchPerc) {
                 const quizTitle = matchTitle[1];
                 const percentage = parseInt(matchPerc[1], 10);
-                if (!mergedCerts.some(m => m.quizTitle === quizTitle && Number(m.percentage) === percentage)) {
+                if (!mergedCerts.some(m => (m.quizTitle === quizTitle || m.quiz_title === quizTitle) && Number(m.percentage) === percentage)) {
                   mergedCerts.push({
                     id: log.id || Date.now(),
                     quizTitle,
@@ -261,6 +289,7 @@ const Account = () => {
         const estimatedPercentage = estimatedScore * 10;
         const autoCert = {
           id: Date.now(),
+          userId: user?.id,
           quizId: 1,
           quizTitle: 'HTML Fundamentals',
           score: estimatedScore,
@@ -272,7 +301,11 @@ const Account = () => {
         };
         mergedCerts.push(autoCert);
         try {
-          localStorage.setItem('logrecap_local_certificates', JSON.stringify([autoCert]));
+          localStorage.setItem(userCertKey, JSON.stringify(mergedCerts));
+        } catch {}
+      } else if (mergedCerts.length > 0) {
+        try {
+          localStorage.setItem(userCertKey, JSON.stringify(mergedCerts));
         } catch {}
       }
 
@@ -290,7 +323,7 @@ const Account = () => {
       setActivityHistory(mergedActivity);
     };
     fetchUserData();
-  }, [isAuthenticated, token]);
+  }, [isAuthenticated, token, user]);
 
   React.useEffect(() => {
     if (!loading && !isAuthenticated) {

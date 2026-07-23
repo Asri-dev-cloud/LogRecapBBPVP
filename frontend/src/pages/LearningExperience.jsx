@@ -122,10 +122,29 @@ const LearningExperience = () => {
     }
 
     let localCerts = [];
-    const STORAGE_KEY_CERTS = 'logrecap_local_certificates';
+    const userCertKey = user?.id ? `logrecap_local_certificates_user_${user.id}` : `logrecap_local_certificates_${user?.username || 'guest'}`;
+    const userLogKey = user?.id ? `logrecap_local_logs_user_${user.id}` : `logrecap_local_logs_${user?.username || 'guest'}`;
+
     try {
-      const stored = localStorage.getItem(STORAGE_KEY_CERTS);
-      localCerts = stored ? JSON.parse(stored) : [];
+      const storedUserCerts = localStorage.getItem(userCertKey);
+      if (storedUserCerts) {
+        localCerts = JSON.parse(storedUserCerts);
+      } else {
+        const legacyCerts = localStorage.getItem('logrecap_local_certificates');
+        if (legacyCerts) {
+          const parsed = JSON.parse(legacyCerts);
+          localCerts = parsed.filter(lc => {
+            if (lc.userId && user?.id) return String(lc.userId) === String(user.id);
+            if (lc.userName && (user?.fullName || user?.username)) {
+              return lc.userName === user.fullName || lc.userName === user.username;
+            }
+            return true;
+          });
+          if (localCerts.length > 0) {
+            localStorage.setItem(userCertKey, JSON.stringify(localCerts));
+          }
+        }
+      }
     } catch {}
 
     const merged = [...serverCerts].map(cert => ({
@@ -140,12 +159,20 @@ const LearningExperience = () => {
     }));
 
     localCerts.forEach(lc => {
-      const lcQuizId = String(lc.quizId || lc.quiz_id || '');
-      if (!merged.some(mc => String(mc.quizId || mc.quiz_id || '') === lcQuizId && Number(mc.percentage) === Number(lc.percentage))) {
+      const lcQuizId = lc.quizId || lc.quiz_id;
+      const lcTitle = lc.quizTitle || lc.quiz_title || '';
+      const isDuplicate = merged.some(mc => {
+        const mcQuizId = mc.quizId || mc.quiz_id;
+        const mcTitle = mc.quizTitle || mc.quiz_title || '';
+        const sameQuiz = (mcQuizId && lcQuizId && String(mcQuizId) === String(lcQuizId)) ||
+                         (mcTitle && lcTitle && mcTitle === lcTitle);
+        return sameQuiz && Number(mc.percentage) === Number(lc.percentage);
+      });
+      if (!isDuplicate) {
         merged.push({
           ...lc,
-          quizTitle: lc.quizTitle || lc.quiz_title || 'Kuis LogRecap',
-          quizId: lc.quizId || lc.quiz_id,
+          quizTitle: lcTitle || 'Kuis LogRecap',
+          quizId: lcQuizId,
           totalQuestions: lc.totalQuestions || lc.total_questions,
           percentage: lc.percentage ?? 0,
           date: lc.date || lc.created_at,
@@ -156,7 +183,7 @@ const LearningExperience = () => {
 
     // Auto-recover from local activity logs if certificate is missing in list
     try {
-      const storedLogs = localStorage.getItem('logrecap_local_logs');
+      const storedLogs = localStorage.getItem(userLogKey) || localStorage.getItem('logrecap_local_logs');
       if (storedLogs) {
         const logs = JSON.parse(storedLogs);
         logs.forEach(log => {
@@ -166,7 +193,7 @@ const LearningExperience = () => {
             if (matchTitle && matchPerc) {
               const quizTitle = matchTitle[1];
               const percentage = parseInt(matchPerc[1], 10);
-              if (!merged.some(m => m.quizTitle === quizTitle && Number(m.percentage) === percentage)) {
+              if (!merged.some(m => (m.quizTitle === quizTitle || m.quiz_title === quizTitle) && Number(m.percentage) === percentage)) {
                 merged.push({
                   id: log.id || Date.now(),
                   quizTitle,
@@ -191,7 +218,7 @@ const LearningExperience = () => {
       const estimatedPercentage = estimatedScore * 10;
       const autoCert = {
         id: Date.now(),
-        userId: user?.id || 1,
+        userId: user?.id,
         quizId: 1,
         quizTitle: 'HTML Fundamentals',
         userName: user?.fullName || user?.username || 'Learner',
@@ -203,7 +230,11 @@ const LearningExperience = () => {
       };
       merged.push(autoCert);
       try {
-        localStorage.setItem(STORAGE_KEY_CERTS, JSON.stringify([autoCert]));
+        localStorage.setItem(userCertKey, JSON.stringify(merged));
+      } catch {}
+    } else if (merged.length > 0) {
+      try {
+        localStorage.setItem(userCertKey, JSON.stringify(merged));
       } catch {}
     }
 
@@ -325,17 +356,17 @@ const LearningExperience = () => {
     setQuizFinished(true);
     setPassed(didPass);
 
-    // Save local certificate if passed (ALWAYS, so cert is never lost!)
+    // Save local certificate if passed (ALWAYS per user, so cert is never lost!)
     if (didPass) {
-      const STORAGE_KEY_CERTS = 'logrecap_local_certificates';
+      const userCertKey = user?.id ? `logrecap_local_certificates_user_${user.id}` : `logrecap_local_certificates_${user?.username || 'guest'}`;
       let certs = [];
       try {
-        const stored = localStorage.getItem(STORAGE_KEY_CERTS);
+        const stored = localStorage.getItem(userCertKey);
         certs = stored ? JSON.parse(stored) : [];
       } catch {}
       const newCert = {
         id: Date.now(),
-        userId: user?.id || 1,
+        userId: user?.id,
         quizId: activeQuiz.id,
         quizTitle: activeQuiz.title,
         userName: user?.fullName || user?.username || 'Learner',
@@ -347,7 +378,7 @@ const LearningExperience = () => {
       };
       const filtered = certs.filter(c => !(String(c.quizId || c.quiz_id) === String(activeQuiz.id) && Number(c.percentage) === percentage));
       const updatedLocalCerts = [newCert, ...filtered];
-      localStorage.setItem(STORAGE_KEY_CERTS, JSON.stringify(updatedLocalCerts));
+      localStorage.setItem(userCertKey, JSON.stringify(updatedLocalCerts));
       setCertificateHistory(prev => {
         const has = prev.some(c => String(c.quizId || c.quiz_id) === String(activeQuiz.id) && Number(c.percentage) === percentage);
         return has ? prev : [newCert, ...prev];
